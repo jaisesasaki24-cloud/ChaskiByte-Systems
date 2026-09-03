@@ -1,135 +1,193 @@
-# 🛒 Ecosistema de Microservicios: pagatu-orden-ms
-## Sesión 03: Registro, Descubrimiento y Ejecución Concurrente de Servicios
+# 💻 ChaskiPC Hardware E-Commerce - Ecosistema Distribuido
+> Plataforma de comercio electrónico distribuido para la cotización y venta de computadoras ensambladas, periféricos y piezas de hardware con verificación de stock en tiempo real y pasarela de pagos.
+
+[![Spring Boot 3.4.3](https://img.shields.io/badge/Spring%20Boot-3.4.3-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring Cloud 2024.0.0](https://img.shields.io/badge/Spring%20Cloud-2024.0.0-blue.svg)](https://spring.io/projects/spring-cloud)
+[![Java 21](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.org/projects/jdk/21/)
+[![PostgreSQL 15](https://img.shields.io/badge/PostgreSQL-15-blue.svg)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg)](https://www.docker.com/)
 
 ---
 
-### 👤 Datos del Estudiante
-* **Nombre:** Eliceo Parillo Mostajo
-* **Equipo:** Equipo 01
-* **Sesión:** S03 - Registro, Descubrimiento y Ejecución Concurrente de Servicios
-* **Rol o aporte realizado:** Migración de `pagatu-orden-ms` a Config Client y Eureka Client, configuración centralizada en `config-repo`, despliegue simultáneo de dos instancias en paralelo y verificación de persistencia compartida.
-* **Documento oficial (PDF):** [Descargar S03_Equipo01_ParilloEliceo.pdf](S03_Equipo01_ParilloEliceo.pdf)
+## 👥 1. Datos del Equipo e Integrantes
+* **Nombre del equipo:** Equipo 01 - ChaskiByte Systems
+* **Sección:** 5to Ciclo - Grupo Único
+* **Curso:** Desarrollo de Aplicaciones Distribuidas (2026-2)
+* **Docente:** Ing. Abel Ángel Sullón Macalupu
+* **Repositorio Oficial:** [https://github.com/jaisesasaki24-cloud/ChaskiByte-Systems](https://github.com/jaisesasaki24-cloud/ChaskiByte-Systems)
+
+### 🏷️ Topics del Repositorio
+`campus-juliaca` · `semestre-2026-2` · `linea-software` · `tipo-ps` · `dist` · `seccion-g1` · `grupo-01-chaskipc`
+
+### 📋 Asignación de Roles y Microservicios
+| Integrante | Rol en el Proyecto | Microservicio Transaccional | Microservicio No Transaccional |
+| :--- | :--- | :--- | :--- |
+| **Eliceo Parillo Mostajo** | Arquitectura backend, órdenes de compra y catálogo de hardware | `pc-orden-ms` (`pagatu-orden-ms`) | `pc-catalogo-ms` (`pagatu-catalogo-ms`) |
+| **Laura Vargas Cristhian Paul** | Pasarela de pagos externa (Mercado Pago), seguridad y autenticación (Keycloak/JWT) | `pc-pago-ms` | `pc-auth-ms` |
 
 ---
 
-## 📸 1. Evidencia Técnica
+## 🏛️ 2. Arquitectura del Sistema Distribuido (S1 a S4)
 
-### 1.1 Config Server Operativo (`pagatu-config`)
-Verificación del servidor de configuración centralizado entregando los perfiles de `dev` y `prod` en el puerto 8888.
+```mermaid
+flowchart TB
+    Client["Cliente Externo / Frontend / Swagger / PowerShell"]
+    Gateway["API Gateway - pagatu-gateway<br/>Puerto 18080 (DEV)"]
+    Eureka[("Eureka Server - pagatu-eureka<br/>Puerto 8761")]
+    Config["Config Server - pagatu-config<br/>Puerto 8888"]
+    Repo[("config-repo")]
 
-![Config Server](evidencia_1_config_server.png)
-*Figura 1: Servidor `pagatu-config` (puerto 8888) en perfil native aprovisionando configuraciones centralizadas desde config-repo.*
+    subgraph Microservicios["Instancias Concurrentes de Negocio"]
+        O1["pc-orden-ms (Instancia 1 :8082)"]
+        O2["pc-orden-ms (Instancia 2 :8083)"]
+        Cat["pc-catalogo-ms (Instancia :8081)"]
+        Pago["pc-pago-ms (Mercado Pago API)"]
+        Auth["pc-auth-ms (JWT Provider)"]
+    end
 
----
+    subgraph Database["Persistencia Relacional (Docker)"]
+        PG1[("PostgreSQL db-orden :5433")]
+    end
 
-### 1.2 Eureka Server Operativo (`pagatu-eureka`)
-Verificación del servidor de descubrimiento y registro Eureka activo en el puerto 8761 en modo standalone.
+    subgraph Observabilidad["Stack de Observabilidad (Docker obs/)"]
+        Prometheus["Prometheus (:19090)<br/>Eureka Service Discovery"]
+        Grafana["Grafana (:13000)<br/>Dashboard ChaskiPC"]
+        Loki["Loki (:13100) & Promtail"]
+    end
 
-![Eureka Server](evidencia_2_eureka_server.png)
-*Figura 2: Servidor `pagatu-eureka` (puerto 8761) recibiendo registros y heartbeats de los microservicios.*
+    Client -->|"Único punto de acceso HTTP"| Gateway
+    Gateway -. "Descubre instancias vivas" .-> Eureka
+    Gateway -->|"lb://pagatu-orden-ms (Round Robin)"| O1
+    Gateway -->|"lb://pagatu-orden-ms (Round Robin)"| O2
+    Gateway -->|"lb://pagatu-catalogo-ms"| Cat
 
----
+    O1 -. "Auto-registro" .-> Eureka
+    O2 -. "Auto-registro" .-> Eureka
+    Cat -. "Auto-registro" .-> Eureka
+    Gateway -. "Auto-registro" .-> Eureka
 
-### 1.3 `pagatu-catalogo-ms` Registrado en Eureka
-Verificación del microservicio de catálogo ejecutándose en el puerto 8081 y registrado correctamente.
+    O1 --> PG1
+    O2 --> PG1
 
-![Catalogo MS](evidencia_3_catalogo_ms.png)
-*Figura 3: Microservicio `pagatu-catalogo-ms` activo en el puerto 8081 y anunciado en Eureka con estado 204 UP.*
+    Gateway -. "Carga rutas" .-> Config
+    O1 -. "Carga config" .-> Config
+    Config --> Repo
 
----
-
-### 1.4 `pagatu-orden-ms` - Primera Instancia (Puerto 8082)
-Arranque de la primera instancia de orden-ms obteniendo puerto y base de datos PostgreSQL desde el Config Server.
-
-![Orden MS Instancia 1](evidencia_4_orden_instancia1.png)
-*Figura 4: Instancia 1 de `pagatu-orden-ms` iniciada en puerto 8082 y registrada como `pagatu-orden-ms:8082`.*
-
----
-
-### 1.5 `pagatu-orden-ms` - Segunda Instancia (Puerto 8083)
-Despliegue concurrente de la segunda réplica de orden-ms mediante `$env:SERVER_PORT=8083`.
-
-![Orden MS Instancia 2](evidencia_5_orden_instancia2.png)
-*Figura 5: Instancia 2 de `pagatu-orden-ms` iniciada en puerto 8083 y registrada como `pagatu-orden-ms:8083`.*
-
----
-
-### 1.6 Dashboard Web de Eureka (`http://localhost:8761`)
-Comprobación de catálogo unificado en la interfaz web de Eureka mostrando descubrimiento multi-instancia.
-
-![Eureka Web Dashboard](evidencia_6_eureka_web_dashboard.png)
-*Figura 6: Dashboard web de Eureka evidenciando `PAGATU-CATALOGO-MS` (1 instancia) y `PAGATU-ORDEN-MS` (2 instancias) en estado UP.*
-
----
-
-### 1.7 Verificación Integral por PowerShell (Config + Eureka + CRUD)
-Comprobación del flujo completo: entrega HTTP del Config Server, consulta a `/eureka/apps` y persistencia relacional cruzada (POST en 8082 y GET en 8083).
-
-![Pruebas CRUD PowerShell](evidencia_7_pruebas_crud_powershell.png)
-*Figura 7: Salida de PowerShell con usuario, fecha/hora, verificación JSON de Config Server, catálogo Eureka y CRUD concurrente exitoso.*
+    Prometheus -. "eureka_sd_configs" .-> Eureka
+    Grafana --> Prometheus
+    Grafana --> Loki
+```
 
 ---
 
-## 🧠 2. Comprensión del Patrón (Service Registry)
+## 📂 3. Estructura del Repositorio
 
-### ¿Por qué un componente que consulta el registro ya no necesita una lista de direcciones escrita a mano para encontrar ninguna de las dos instancias de pagatu-orden-ms, aunque ambos puertos sean fijos y elegidos a mano?
-
-El patrón **Service Registry (Eureka)** introduce una capa de abstracción basada en identificadores lógicos (`spring.application.name`):
-
-1. **Abstracción por Nombre Lógico:** Los componentes clientes (como un API Gateway o servicios mediante OpenFeign) no se comunican directamente con `localhost:8082` ni `localhost:8083`. En su lugar, solicitan al registro: *"Dame las instancias disponibles de `PAGATU-ORDEN-MS`"*.
-2. **Autorregistro Dinámico:** Cada instancia al iniciar publica automáticamente sus metadatos (IP, puerto y estado de salud). Eureka mantiene actualizado el catálogo mediante *heartbeats* periódicos.
-3. **Descubrimiento y Balanceo en Memoria:** El componente que consulta el registro descarga la lista de nodos y aplica un balanceador de carga del lado del cliente (Spring Cloud LoadBalancer con Round Robin) para distribuir las peticiones entre el puerto 8082 y 8083.
-4. **Desacoplamiento Total:** Aunque los puertos sean fijos y elegidos a mano, el cliente nunca los tiene codificados (*hardcoded*). Si se agregan más puertos o se cambian los servidores, el sistema continúa funcionando sin necesidad de modificar ni una sola línea de código o configuración en los servicios consumidores.
-
----
-
-## 🛠️ 3. Error o Hallazgo Diagnosticado
-
-* **Descripción del Problema:** Al compilar y arrancar `pagatu-orden-ms`, se presentó el error `Failed to configure a DataSource: 'url' attribute is not specified` y la aplicación fallaba al iniciar. Además, en los archivos Java figuraba el error `illegal character: '\ufeff'`.
-* **Causa Raíz:** 
-  1. Los archivos fuente tenían caracteres de marca de orden de bytes (*UTF-8 with BOM*) agregados por el editor de texto.
-  2. En el archivo `pom.xml` faltaban las dependencias de `spring-cloud-starter-config` y `spring-cloud-starter-netflix-eureka-client`, lo que impedía que Spring Boot procesara la directiva `spring.config.import` para descargar la configuración de PostgreSQL desde el Config Server.
-* **Solución Implementada:** 
-  Se ejecutó un script en PowerShell para limpiar el carácter BOM (`\ufeff`) de los archivos `.java`. Luego, se actualizaron las dependencias en `pom.xml` integrando el BOM `spring-cloud-dependencies` (versión `2024.0.0`) y las librerías de Config y Eureka Client, permitiendo que `pagatu-orden-ms` inicie correctamente conectado a su configuración remota.
-
----
-
-## 💡 4. Reflexión Técnica Breve
-
-**¿Por qué el registro y descubrimiento de servicios es un prerrequisito para el Gateway y el balanceo de carga que se construyen en S4?**
-
-> *El registro y descubrimiento de servicios es un prerrequisito indispensable porque el API Gateway no debe estar acoplado a direcciones IP ni a puertos estáticos de la infraestructura. En una arquitectura de microservicios, las instancias son efímeras y escalan horizontalmente según la demanda de tráfico. Eureka provee la tabla de enrutamiento viva y centralizada que el Gateway consulta en tiempo real para resolver rutas dinámicas. Sin el Service Registry, sería imposible balancear la carga automáticamente (Round Robin) o redirigir el tráfico ante la caída de un nodo sin tener que reescribir y reiniciar manualmente la configuración del Gateway.*
+```text
+ChaskiByte-Systems/
+├── config-repo/                     # Repositorio centralizado de configuraciones (DEV y PROD)
+│   ├── application.yml
+│   ├── pagatu-gateway-dev.yml       # Rutas lb:// y reglas de Gateway
+│   ├── pagatu-orden-ms-dev.yml      # DB PostgreSQL y Eureka Client
+│   └── ...
+├── pagatu-config/                   # Spring Cloud Config Server (Puerto 8888)
+├── pagatu-eureka/                   # Netflix Eureka Service Discovery (Puerto 8761)
+├── pagatu-gateway/                  # Spring Cloud Gateway no bloqueante (Puerto 18080)
+├── pagatu-orden-ms/                 # Microservicio de Órdenes ChaskiPC (Puertos 8082, 8083)
+├── pagatu-catalogo-ms/              # Microservicio de Catálogo de Hardware (Puerto 8081)
+├── obs/                             # Docker Compose de Observabilidad (Prometheus, Grafana, Loki)
+│   ├── compose-dev.yml
+│   ├── prometheus/
+│   └── grafana/
+├── BRIEF_TECNICO.md                 # Documento técnico oficial del proyecto sello
+├── S03_Equipo01_ParilloEliceo.pdf   # Informe oficial de la Sesión 03 (Eureka & Múltiples Instancias)
+├── S04_Equipo01_ParilloEliceo.pdf   # Informe oficial de la Sesión 04 (API Gateway & Balanceo de Carga)
+├── iniciar_todo.bat                 # Lanzador automático de todas las consolas en Windows
+└── README.md
+```
 
 ---
 
-## ❓ 5. Preguntas de Defensa
+## 🚀 4. Guía de Ejecución en Entorno Local (DEV)
 
-1. **¿Por qué `pagatu-eureka` no se registra a sí mismo (`register-with-eureka: false`)?**  
-   Porque opera como un servidor de registro central *standalone*. Si intentara registrarse a sí mismo, emitiría peticiones fallidas continuas buscando réplicas de clúster inexistentes, generando sobrecarga innecesaria en los logs.
-2. **¿Qué pasaría si intentaras levantar la segunda instancia de `pagatu-orden-ms` sin el override `--server.port=8083`?**  
-   Se produciría una excepción `java.net.BindException: Address already in use` (`PortAlreadyInUseException`), dado que dos procesos no pueden escuchar en el mismo socket TCP (8082).
-3. **¿Cómo verificaste que `pagatu-orden-ms` quedó correctamente registrado, y no solo que el proceso arrancó?**  
-   Consultando la API REST de Eureka (`/eureka/apps`) y el Dashboard web, corroborando que ambas instancias aparecen con estado `UP` y con sus `instanceId` diferenciados.
-4. **¿Qué le pasa a una instancia en el dashboard de Eureka si dejas de enviarle heartbeat (Ctrl+C)?**  
-   Eureka deja de recibir los latidos de renovación (cada 30s). Al expirar el tiempo de arrendamiento (*lease expiration* de 90s), el servidor elimina la instancia de su catálogo para evitar redirigir tráfico a un servicio caído.
-5. **¿Por qué el nombre lógico (`spring.application.name`) es el mismo dato que ya usa `pagatu-config` desde S2?**  
-   Porque actúa como la clave primaria canónica en el ecosistema Spring Cloud: Config Server lo usa para asociar el archivo YAML en el repositorio (`pagatu-orden-ms-dev.yml`) y Eureka lo emplea como el Service ID (VIPAddress) para el descubrimiento.
+### Requisitos Previos:
+* **Java Development Kit (JDK 21)**
+* **Docker Desktop** (para PostgreSQL y el stack de observabilidad)
+
+### Paso 1: Levantar Bases de Datos y Observabilidad
+```powershell
+# Levantar PostgreSQL
+cd "pagatu-orden-ms"
+docker compose -f compose-dev.yml up -d
+
+# Levantar Observabilidad (Prometheus + Grafana + Loki)
+cd "../obs"
+docker compose -f compose-dev.yml up -d
+```
+
+### Paso 2: Ejecutar los Servicios de Infraestructura y Negocio
+Puedes ejecutar `iniciar_todo.bat` o abrir terminales independientes en PowerShell:
+
+```powershell
+# 1. Config Server (Puerto 8888)
+cd "pagatu-config"
+.\mvnw.cmd spring-boot:run
+
+# 2. Eureka Server (Puerto 8761)
+cd "pagatu-eureka"
+.\mvnw.cmd spring-boot:run
+
+# 3. API Gateway - Punto Único de Acceso (Puerto 18080)
+cd "pagatu-gateway"
+.\mvnw.cmd spring-boot:run
+
+# 4. Catálogo de Hardware (Puerto 8081)
+cd "pagatu-catalogo-ms"
+.\mvnw.cmd spring-boot:run
+
+# 5. Órdenes ChaskiPC - Instancia 1 (Puerto 8082)
+cd "pagatu-orden-ms"
+.\mvnw.cmd spring-boot:run
+
+# 6. Órdenes ChaskiPC - Instancia 2 (Puerto 8083)
+cd "pagatu-orden-ms"
+.\mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--server.port=8083"
+```
 
 ---
 
-## 📝 Anexo: Feedback de la Sesión
+## 🧪 5. Pruebas y Verificación del Ecosistema
 
-1. **¿Cuál es el aprendizaje más importante que te llevas de la clase de hoy?**  
-   Comprender cómo el Service Registry (Eureka) permite que los microservicios se descubran dinámicamente usando únicamente su nombre lógico, abstrayendo por completo los puertos e IPs físicas.
-2. **¿Qué punto de la clase te resultó más confuso o te dejó con dudas?**  
-   El funcionamiento del *Self-Preservation Mode* de Eureka y cómo se configuran los umbrales de expiración del *heartbeat* en entornos distribuidos.
-3. **¿Tienes alguna pregunta que te gustaría que sea respondida la siguiente clase?**  
-   ¿Cómo gestiona Spring Cloud Gateway la distribución del tráfico cuando una instancia registrada en Eureka comienza a responder con errores HTTP 500 pero sigue enviando *heartbeats* como `UP`?
-4. **Sobre tu nivel de comprensión de la clase de hoy:**  
-   [X] ¡Entendido! - Lo domino y podría explicarlo.
-5. **¿Cómo puedo ayudarte a comprender mejor el tema?**  
-   Incluyendo diagramas de secuencia visuales sobre el ciclo de vida del *heartbeat* y la resolución de rutas en el Gateway.
-6. **Pensando en tu participación y esfuerzo:**  
-   [X] Muy Comprometido/a: Me esforcé al máximo.
-7. **Mi satisfacción con la clase fue:**  
-   10 / 10
+### 🌐 Dashboards Web
+* **Eureka Dashboard:** [http://localhost:8761](http://localhost:8761)
+* **Grafana Dashboard:** [http://localhost:13000](http://localhost:13000) (User: `admin` / Pass: `admin`)
+* **Prometheus Targets:** [http://localhost:19090/targets](http://localhost:19090/targets)
+* **Config Server Dev:** [http://localhost:8888/pagatu-orden-ms/dev](http://localhost:8888/pagatu-orden-ms/dev)
+
+### 💻 Pruebas de Endpoints por el Gateway (Puerto 18080)
+
+```powershell
+# 1. Consultar órdenes a través del Gateway (balanceo Round Robin entre 8082 y 8083)
+Invoke-RestMethod -Method Get -Uri "http://localhost:18080/api/ordenes"
+
+# 2. Crear una nueva orden de compra en ChaskiPC
+$body = @{
+    cliente = "Eliceo Parillo Mostajo - ChaskiPC"
+    total = 4850.00
+    estado = "PENDIENTE"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Method Post -Uri "http://localhost:18080/api/ordenes" -Body $body -ContentType "application/json"
+
+# 3. Verificar la distribución equitativa de peticiones (Round Robin)
+1..4 | ForEach-Object {
+    Invoke-RestMethod -Method Get -Uri "http://localhost:18080/api/ordenes" | Out-Null
+    "Petición $_ procesada por el Gateway"
+}
+```
+
+---
+
+## 📑 6. Informes Académicos Disponibles
+* 📄 [**`BRIEF_TECNICO.md`**](BRIEF_TECNICO.md): Ficha técnica oficial del proyecto sello ChaskiPC.
+* 📄 [**`S03_Equipo01_ParilloEliceo.pdf`**](S03_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 03 (Eureka Server, Múltiples Instancias, Observabilidad).
+* 📄 [**`S04_Equipo01_ParilloEliceo.pdf`**](S04_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 04 (API Gateway, Rutas `lb://` y Balanceo de Carga).

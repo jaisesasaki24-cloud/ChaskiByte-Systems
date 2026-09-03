@@ -1,0 +1,32 @@
+# Compiled class file
+**/target/
+target/
+*.class
+
+# Log files
+*.log
+logs/
+
+# Package Files
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual Machine Crash Logs
+hs_err_pid*
+
+# IDE and Editor Files
+.idea/
+.vscode/
+*.iml
+.project
+.classpath
+.settings/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+test_screen.png

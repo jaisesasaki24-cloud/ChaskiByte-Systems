@@ -9,4 +9,4 @@ spring:
     config:
       server:
         native:
-          search-locations: file:///C:/Users/USUARIO/Documents/tareamicro/config-repo
+          search-locations: file:///C:/Users/USUARIO/Documents/Tarea Eureka/config-repo

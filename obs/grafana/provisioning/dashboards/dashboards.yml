@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'ChaskiPC Dashboards'
+    orgId: 1
+    folder: 'ChaskiPC'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/definitions

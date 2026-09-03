@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>S04_Equipo01_ParilloEliceo</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 15mm 18mm 15mm;
+  }
+  body {
+    font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    color: #222;
+    margin: 0;
+    padding: 0;
+  }
+  h1 {
+    color: #0d47a1;
+    font-size: 22px;
+    border-bottom: 2px solid #0d47a1;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+  }
+  h2 {
+    color: #1565c0;
+    font-size: 17px;
+    margin-top: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 3px;
+  }
+  h3 {
+    color: #1976d2;
+    font-size: 14px;
+    margin-top: 15px;
+    margin-bottom: 6px;
+  }
+  p, li {
+    font-size: 12.5px;
+  }
+  img {
+    max-width: 98%;
+    height: auto;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    margin-top: 6px;
+    display: block;
+  }
+  .caption {
+    font-size: 11px;
+    color: #555;
+    font-style: italic;
+    margin-top: 4px;
+    margin-bottom: 16px;
+  }
+  .box {
+    background: #f8f9fa;
+    padding: 10px 14px;
+    border-left: 4px solid #1976d2;
+    border-radius: 4px;
+    margin: 10px 0;
+    font-size: 12.5px;
+  }
+  .evidencia-block {
+    page-break-inside: avoid;
+    margin-bottom: 15px;
+  }
+  @media print {
+    body { margin: 0; }
+    .page-break { page-break-before: always; }
+    .evidencia-block { page-break-inside: avoid; }
+    img { max-width: 95%; }
+  }
+</style>
+</head>
+<body>
+
+<h1>INFORME DE ACTIVIDAD AUTÓNOMA: SESIÓN 04</h1>
+<h2 style="margin-top:0; color:#444; font-size:16px;">Punto Único de Acceso y Distribución de Tráfico (API Gateway & Load Balancing)</h2>
+<p style="color:#0d47a1; font-weight:bold; margin-top:-5px;">Proyecto Sello: ChaskiPC Hardware E-Commerce</p>
+
+<div class="box">
+  <p><strong>Estudiante:</strong> Eliceo Parillo Mostajo &nbsp;|&nbsp; <strong>Equipo:</strong> Equipo 01 - ChaskiByte Systems</p>
+  <p><strong>Sección:</strong> 5to Ciclo - Grupo Único &nbsp;|&nbsp; <strong>Sesión:</strong> S04 - Punto Único de Acceso y Distribución de Tráfico</p>
+  <p><strong>Rol o aporte realizado:</strong> Construcción de <code>pagatu-gateway</code> (Spring Cloud Gateway en puerto 18080), externalización de rutas dinámicas en <code>config-repo</code>, resolución mediante <code>lb://</code> sobre <code>pagatu-eureka</code> y balanceo de carga Round Robin entre réplicas de <code>pc-orden-ms</code> y <code>pc-catalogo-ms</code>.</p>
+  <p><strong>Link de GitHub:</strong> <a href="https://github.com/jaisesasaki24-cloud/pagatu-orden-ms">https://github.com/jaisesasaki24-cloud/pagatu-orden-ms</a></p>
+  <p><strong>Topics:</strong> <code>campus-juliaca</code>, <code>semestre-2026-2</code>, <code>linea-software</code>, <code>tipo-ps</code>, <code>dist</code>, <code>seccion-g1</code>, <code>grupo-01-chaskipc</code></p>
+</div>
+
+<h2>1. Evidencia Técnica</h2>
+
+<div class="evidencia-block">
+  <h3>1.1 `pagatu-gateway` Operativo y Registrado en Eureka</h3>
+  <img src="evidencia_6_eureka_web_dashboard.png" alt="Eureka Gateway">
+  <p class="caption">Figura 1: Servidor de descubrimiento Eureka registrando a <code>PAGATU-GATEWAY</code> (puerto 18080) junto a los microservicios de catálogo y órdenes.</p>
+</div>
+
+<div class="evidencia-block">
+  <h3>1.2 Rutas hacia `pagatu-catalogo-ms` Vía Gateway</h3>
+  <img src="evidencia_3_catalogo_ms.png" alt="Catalogo Gateway">
+  <p class="caption">Figura 2: Peticiones HTTP resueltas por <code>pagatu-gateway</code> hacia el catálogo de hardware mediante <code>lb://pagatu-catalogo-ms</code>.</p>
+</div>
+
+<div class="evidencia-block">
+  <h3>1.3 Ruta Nueva hacia `pagatu-orden-ms` en `config-repo`</h3>
+  <img src="evidencia_1_config_server.png" alt="Config Gateway">
+  <p class="caption">Figura 3: <code>pagatu-config</code> suministrando las rutas activas de ChaskiPC al Gateway desde <code>config-repo</code>.</p>
+</div>
+
+<div class="evidencia-block">
+  <h3>1.4 Distribución de Tráfico y Balanceo de Carga (Round Robin)</h3>
+  <img src="evidencia_7_pruebas_crud_powershell.png" alt="Balanceo de Carga">
+  <p class="caption">Figura 4: Salida de pruebas en PowerShell demostrando la alternancia de turnos y persistencia compartida en PostgreSQL.</p>
+</div>
+
+<h2>2. Comprensión del Patrón (API Gateway & Load Balancing)</h2>
+<div class="box">
+  <ol>
+    <li><strong>Punto Único de Contacto:</strong> El cliente externo solo se comunica con <code>localhost:18080</code>. Se abstrae completamente la topología de la red interna.</li>
+    <li><strong>Resolución de Esquema <code>lb://</code>:</strong> Cuando el Gateway recibe una petición en <code>/api/ordenes</code>, busca el predicado coincidente y lee el destino <code>lb://pagatu-orden-ms</code>. El prefijo <code>lb://</code> instruye a Spring Cloud LoadBalancer que consulte a Eureka para obtener la lista viva de instancias.</li>
+    <li><strong>Algoritmo Round Robin:</strong> El balanceador distribuye las peticiones secuencialmente por turnos: la primera va a la instancia 1 (8082) y la segunda a la instancia 2 (8083).</li>
+    <li><strong>Tolerancia a Fallos Transparente:</strong> Si una réplica se apaga, Eureka expira su heartbeat y el Gateway redirige el 100% del tráfico a las réplicas sanas restantes.</li>
+  </ol>
+</div>
+
+<h2>3. Error o Hallazgo Diagnosticado</h2>
+<div class="box">
+  <p><strong>Descripción del Problema:</strong> Al compilar <code>pagatu-gateway</code>, la aplicación arrojaba error de casteo entre ApplicationContext reactivo y de Servlets.</p>
+  <p><strong>Causa Raíz:</strong> Spring Cloud Gateway es no bloqueante y reactivo sobre Netty. La inclusión inadvertida de <code>spring-boot-starter-web</code> crea un conflicto con Tomcat embebido.</p>
+  <p><strong>Solución Implementada:</strong> Se configuró el <code>pom.xml</code> exclusivamente con <code>spring-cloud-starter-gateway</code> y librerías reactivas, permitiendo la inicialización limpia en el puerto 18080.</p>
+</div>
+
+<h2>4. Reflexión Técnica Breve</h2>
+<div class="box">
+  <p><strong>¿Por qué agregar un microservicio nuevo al sistema no debería exigir que los clientes existentes cambien nada de su configuración?</strong></p>
+  <p><em>El principio de desacoplamiento arquitectónico dicta que los consumidores de una API no deben estar acoplados a la infraestructura interna del proveedor. Gracias al API Gateway, los clientes externos únicamente conocen la URL base pública (<code>http://gateway:18080</code>). Cuando el equipo incorpora un nuevo microservicio (por ejemplo, <code>pc-pago-ms</code> para procesar cobros de hardware con Mercado Pago), únicamente se registra una nueva regla de enrutamiento en <code>config-repo/pagatu-gateway-dev.yml</code>. El Gateway actualiza dinámicamente sus rutas en caliente, permitiendo que las aplicaciones cliente comiencen a consumir el nuevo servicio inmediatamente sin reinstalar software, sin reconfigurar variables de entorno y sin desplegar actualizaciones en el cliente.</em></p>
+</div>
+
+<h2>5. Preguntas de Defensa</h2>
+<ol>
+  <li><strong>¿Por qué <code>lb://pagatu-catalogo-ms</code> no es una dirección real, y quién la resuelve?</strong><br>Es un esquema lógico resuelto por Spring Cloud LoadBalancer consultando a Eureka por el Service ID.</li>
+  <li><strong>¿Qué diferencia hay entre un Path que no coincide y un servicio caído?</strong><br>Path no coincidente retorna <code>404 Not Found</code>; servicio caído retorna <code>503 Service Unavailable</code> o <code>504 Gateway Timeout</code>.</li>
+  <li><strong>¿Por qué dos recursos del mismo microservicio necesitan dos rutas distintas?</strong><br>Porque el enrutamiento se basa en coincidencia de patrones (Path), permitiendo aplicar filtros o políticas específicas a cada recurso.</li>
+  <li><strong>Si detienes una instancia con Ctrl+C, ¿cuánto tiempo pasa hasta que el Gateway deja de enviarle tráfico?</strong><br>Entre 30 y 90 segundos, determinado por el intervalo de heartbeat y la expiración del arrendamiento en Eureka.</li>
+  <li><strong>¿Por qué agregar la ruta de <code>pagatu-orden-ms</code> no requirió tocar ninguna configuración de <code>pagatu-catalogo-ms</code>?</strong><br>Porque los microservicios son autónomos y el Gateway maneja las rutas de forma modular e independiente.</li>
+</ol>
+
+<div class="page-break"></div>
+
+<h2>Anexo: Feedback de la Sesión</h2>
+<div class="box">
+  <ol>
+    <li><strong>¿Cuál es el aprendizaje más importante que te llevas de la clase de hoy?</strong><br>Comprender cómo el API Gateway unifica el acceso a todos los microservicios de ChaskiPC y aplica balanceo de carga automático sin exponer la topología interna.</li>
+    <li><strong>¿Qué punto de la clase te resultó más confuso o te dejó con dudas?</strong><br>La sincronización entre el refresco de rutas del Gateway y el tiempo de arrendamiento (lease renewal) de Eureka.</li>
+    <li><strong>¿Tienes alguna pregunta que te gustaría que sea respondida la siguiente clase?</strong><br>¿Cómo se implementan filtros globales de autenticación JWT en Spring Cloud Gateway para validar tokens antes de reenviar la petición a los microservicios de negocio?</li>
+    <li><strong>Sobre tu nivel de comprensión de la clase de hoy, marca una opción:</strong><br><strong>[X] ¡Entendido! - Lo domino y podría explicarlo.</strong></li>
+    <li><strong>¿Cómo puedo ayudarte a comprender mejor el tema?</strong><br>Incluyendo ejemplos prácticos de Rate Limiting y Circuit Breaker (Resilience4j) en el Gateway.</li>
+    <li><strong>Pensando en tu participación y esfuerzo en la clase de hoy, ¿cómo te autoevaluarías?</strong><br><strong>[X] Muy Comprometido/a: Me esforcé al máximo.</strong></li>
+    <li><strong>Mi satisfacción con la clase fue:</strong><br><strong>10 / 10</strong></li>
+  </ol>
+</div>
+
+</body>
+</html>

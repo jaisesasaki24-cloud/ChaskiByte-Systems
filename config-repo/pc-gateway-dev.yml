@@ -1,0 +1,44 @@
+server:
+  port: 18080
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: pagatu-catalogo-categorias
+          uri: lb://pagatu-catalogo-ms
+          predicates:
+            - Path=/api/v1/categorias/**
+        - id: pagatu-catalogo-productos
+          uri: lb://pagatu-catalogo-ms
+          predicates:
+            - Path=/api/v1/productos/**
+        - id: pagatu-orden-ms
+          uri: lb://pagatu-orden-ms
+          predicates:
+            - Path=/api/ordenes/**
+        - id: pagatu-orden-ms-v1
+          uri: lb://pagatu-orden-ms
+          predicates:
+            - Path=/api/v1/ordenes/**
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,gateway
+  endpoint:
+    health:
+      show-details: always
