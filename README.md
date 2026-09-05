@@ -91,7 +91,54 @@ flowchart TB
 
 ---
 
-## 📂 3. Estructura del Repositorio
+## 🗺️ 3. Matriz Integral de Mapeo del Sistema Distribuido
+
+El sistema cuenta con un mapeo exhaustivo y desacoplado en cada una de sus capas operacionales:
+
+### 3.1 Mapeo de Enrutamiento en API Gateway (`pagatu-gateway` :18080)
+| Ruta Pública Expuesta | Destino Lógico (Eureka) | Balanceador / Modo | Microservicio Destino | Descripción de Negocio |
+| :--- | :--- | :---: | :--- | :--- |
+| `GET /api/v1/categorias/**` | `lb://pagatu-catalogo-ms` | Directo | `pc-catalogo-ms` (:8081) | Consulta de familias de hardware |
+| `GET /api/v1/productos/**` | `lb://pagatu-catalogo-ms` | Directo | `pc-catalogo-ms` (:8081) | Catálogo de componentes y stock |
+| `POST /api/v1/productos` | `lb://pagatu-catalogo-ms` | Directo | `pc-catalogo-ms` (:8081) | Alta de componentes tecnológicos |
+| `GET /api/v1/ordenes/**` | `lb://pagatu-orden-ms` | **Round Robin** | `pc-orden-ms` (:8082, :8083) | Histórico de compras y detalle |
+| `POST /api/v1/ordenes` | `lb://pagatu-orden-ms` | **Round Robin** | `pc-orden-ms` (:8082, :8083) | Emisión de orden con 18% de IGV |
+| `PUT /api/v1/ordenes/{id}/estado` | `lb://pagatu-orden-ms` | **Round Robin** | `pc-orden-ms` (:8082, :8083) | Transición de estado (`PAGADO`, etc.) |
+| `POST /api/v1/pagos/**` | `lb://pc-pago-ms` | Directo | `pc-pago-ms` | Integración Mercado Pago Sandbox |
+| `POST /api/v1/auth/**` | `lb://pc-auth-ms` | Directo | `pc-auth-ms` | Identidad, login y JWT |
+
+### 3.2 Mapeo de Registro Dinámico en Eureka (`pagatu-eureka` :8761)
+| Application Name (`spring.application.name`) | Instance ID Mapeado | Puerto DEV | Puerto PROD | Estado Eureka |
+| :--- | :--- | :---: | :---: | :---: |
+| `PAGATU-GATEWAY` | `pagatu-gateway:18080` | 18080 | 28080 | `UP` |
+| `PAGATU-CONFIG` | `pagatu-config:8888` | 8888 | 28888 | `UP` |
+| `PAGATU-CATALOGO-MS` | `pagatu-catalogo-ms:8081` | 8081 | Dinámico | `UP` |
+| `PAGATU-ORDEN-MS` (Instancia 1) | `pagatu-orden-ms:8082` | 8082 | Dinámico | `UP` |
+| `PAGATU-ORDEN-MS` (Instancia 2) | `pagatu-orden-ms:8083` | 8083 | Dinámico | `UP` |
+
+### 3.3 Mapeo Objeto-Relacional JPA Cabecera-Detalle (PostgreSQL :5433)
+* **Cabecera `Orden` (`@Table(name = "ordenes")`):**  
+  * `id` (PK IDENTITY), `codigo_orden`, `cliente`, `cliente_id`, `subtotal`, `igv` (18%), `total`, `estado`, `tipo_comprobante`, `metodo_pago`.  
+  * Mapeo de relación: `@OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true) @JsonManagedReference`
+* **Detalle `DetalleOrden` (`@Table(name = "orden_detalles")`):**  
+  * `id` (PK IDENTITY), `orden_id` (FK a `ordenes.id`), `producto_id`, `nombre_producto`, `precio_unitario`, `cantidad`, `subtotal_item`.  
+  * Mapeo de relación: `@ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "orden_id") @JsonBackReference`
+* **Mitigación Jackson:** Los decoradores `@JsonManagedReference` y `@JsonBackReference` eliminan cualquier bucle cíclico en la serialización JSON.
+
+### 3.4 Mapeo de Códigos de Respuesta HTTP Estandarizados
+| Método HTTP | Endpoint Mapeado | Código Exitoso | Código Fallo | Criterio de Activación |
+| :--- | :--- | :---: | :---: | :--- |
+| `POST` | `/api/v1/ordenes` | **`201 Created`** | `400 Bad Request` | Retorna 201 con payload creado. Retorna 400 si `cliente` es nulo/vacío. |
+| `GET` | `/api/v1/ordenes` | **`200 OK`** | - | Retorna la colección completa de órdenes. |
+| `GET` | `/api/v1/ordenes/{id}` | **`200 OK`** | **`404 Not Found`** | Retorna 200 con la orden desglosada o 404 si el ID no existe en BD. |
+| `PUT` | `/api/v1/ordenes/{id}/estado` | **`200 OK`** | `400` / `404` | Modifica estado de orden. Retorna 400 si estado es vacío o 404 si ID no existe. |
+| `DELETE` | `/api/v1/ordenes/{id}` | **`204 No Content`** | **`404 Not Found`** | Borra orden si existe (204) o devuelve 404 Not Found. |
+| `GET` | `/api/v1/productos` | **`200 OK`** | - | Retorna lista de hardware o filtra por `?categoriaId=`. |
+| `POST` | `/api/v1/productos` | **`201 Created`** | `400 Bad Request` | Da de alta un nuevo producto gamer. |
+
+---
+
+## 📂 4. Estructura del Repositorio
 
 ```text
 ChaskiByte-Systems/
@@ -125,7 +172,7 @@ ChaskiByte-Systems/
 
 ---
 
-## 🚀 4. Guía de Ejecución en Entorno Local (DEV)
+## 🚀 5. Guía de Ejecución en Entorno Local (DEV)
 
 ### Requisitos Previos:
 * **Java Development Kit (JDK 21)**
