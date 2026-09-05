@@ -20,11 +20,11 @@
 ### 🏷️ Topics del Repositorio
 `campus-juliaca` · `semestre-2026-2` · `linea-software` · `tipo-ps` · `dist` · `seccion-g1` · `grupo-01-chaskipc`
 
-### 📋 Asignación de Roles y Microservicios
+### 📋 Asignación de Roles y Microservicios (2 Microservicios por Integrante)
 | Integrante | Rol en el Proyecto | Microservicio Transaccional | Microservicio No Transaccional |
 | :--- | :--- | :--- | :--- |
-| **Eliceo Parillo Mostajo** | Arquitectura backend, órdenes de compra y catálogo de hardware | `pc-orden-ms` (`pagatu-orden-ms`) | `pc-catalogo-ms` (`pagatu-catalogo-ms`) |
-| **Laura Vargas Cristhian Paul** | Pasarela de pagos externa (Mercado Pago), seguridad y autenticación (Keycloak/JWT) | `pc-pago-ms` | `pc-auth-ms` |
+| **Eliceo Parillo Mostajo** | Arquitectura backend, órdenes de compra y catálogo de hardware | `pc-orden-ms` (Cabecera-Detalle, IGV 18%, PostgreSQL :5433) | `pc-catalogo-ms` (Catálogo de Hardware Gamer y Stock :8081) |
+| **Laura Vargas Cristhian Paul** | Pasarela de pagos externa, seguridad y autenticación | `pc-pago-ms` (Pasarela Mercado Pago Sandbox y Webhooks) | `pc-auth-ms` (Gestión de Usuarios y Seguridad Perimetral) |
 
 ---
 
@@ -33,15 +33,20 @@
 ```mermaid
 flowchart TB
     Client["Cliente Externo / Frontend / Swagger / PowerShell"]
-    Gateway["API Gateway: pagatu-gateway<br/>Puerto 18080 (DEV) / 28080 (PROD)"]
-    Eureka[("Eureka Server: pagatu-eureka<br/>Puerto 8761 (DEV) / 28761 (PROD)")]
-    Config["Config Server: pagatu-config<br/>Puerto 8888 (DEV) / 28888 (PROD)")]
+    Gateway["API Gateway: pagatu-gateway<br/>Puerto 18080 DEV / 28080 PROD"]
+    Eureka[("Eureka Server: pagatu-eureka<br/>Puerto 8761 DEV / 28761 PROD")]
+    Config["Config Server: pagatu-config<br/>Puerto 8888 DEV / 28888 PROD"]
     Repo[("config-repo")]
 
-    subgraph Microservicios["Microservicios de Negocio ChaskiPC"]
-        Cat["pc-catalogo-ms (:8081)<br/>Categorías & Productos de Hardware"]
-        O1["pc-orden-ms (Instancia 1 :8082)<br/>Cabecera-Detalle & IGV"]
-        O2["pc-orden-ms (Instancia 2 :8083)<br/>Persistencia PostgreSQL"]
+    subgraph Eliceo["Microservicios: Eliceo Parillo Mostajo"]
+        Cat["pc-catalogo-ms (:8081)<br/>Catálogo de Hardware (No Transaccional)"]
+        O1["pc-orden-ms Instancia 1 (:8082)<br/>Órdenes y Facturación IGV 18% (Transaccional)"]
+        O2["pc-orden-ms Instancia 2 (:8083)<br/>Réplica Concurrente para Balanceo"]
+    end
+
+    subgraph Cristhian["Microservicios: Laura Vargas Cristhian Paul"]
+        Pago["pc-pago-ms<br/>Pasarela de Pagos Mercado Pago (Transaccional)"]
+        Auth["pc-auth-ms<br/>Gestión de Usuarios y Perfiles (No Transaccional)"]
     end
 
     subgraph Database["Persistencia Relacional (Docker)"]
@@ -59,10 +64,14 @@ flowchart TB
     Gateway -->|"lb://pagatu-catalogo-ms"| Cat
     Gateway -->|"lb://pagatu-orden-ms (Round Robin)"| O1
     Gateway -->|"lb://pagatu-orden-ms (Round Robin)"| O2
+    Gateway -->|"lb://pc-pago-ms"| Pago
+    Gateway -->|"lb://pc-auth-ms"| Auth
 
     Cat -. "Auto-registro" .-> Eureka
     O1 -. "Auto-registro" .-> Eureka
     O2 -. "Auto-registro" .-> Eureka
+    Pago -. "Auto-registro" .-> Eureka
+    Auth -. "Auto-registro" .-> Eureka
     Gateway -. "Auto-registro" .-> Eureka
 
     O1 --> PG1
@@ -71,6 +80,8 @@ flowchart TB
     Gateway -. "Carga rutas" .-> Config
     O1 -. "Carga config" .-> Config
     Cat -. "Carga config" .-> Config
+    Pago -. "Carga config" .-> Config
+    Auth -. "Carga config" .-> Config
     Config --> Repo
 
     Prometheus -. "eureka_sd_configs" .-> Eureka

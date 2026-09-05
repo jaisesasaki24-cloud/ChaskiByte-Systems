@@ -20,15 +20,24 @@
 ```mermaid
 flowchart TB
     Cliente["Cliente Externo (Frontend / PowerShell / Swagger)"]
-    Gateway["API Gateway: pagatu-gateway<br/>Puerto 18080 (DEV) / 28080 (PROD)"]
-    Eureka[("Eureka Server: pagatu-eureka<br/>Puerto 8761 (DEV) / 28761 (PROD)")]
-    Config["Config Server: pagatu-config<br/>Puerto 8888 (DEV) / 28888 (PROD)"]
+    Gateway["API Gateway: pagatu-gateway<br/>Puerto 18080 DEV / 28080 PROD"]
+    Eureka[("Eureka Server: pagatu-eureka<br/>Puerto 8761 DEV / 28761 PROD")]
+    Config["Config Server: pagatu-config<br/>Puerto 8888 DEV / 28888 PROD"]
     Repo[("config-repo (dev/prod)")]
 
-    subgraph Negocio["Microservicios de Negocio ChaskiPC"]
-        Cat["pc-catalogo-ms (Puerto :8081)<br/>Categorías & Productos de Hardware"]
-        Ord1["pc-orden-ms (Instancia 1 :8082)<br/>Cabecera-Detalle & IGV"]
-        Ord2["pc-orden-ms (Instancia 2 :8083)<br/>Persistencia PostgreSQL"]
+    subgraph Eliceo["Microservicios: Eliceo Parillo Mostajo"]
+        Cat["pc-catalogo-ms (:8081)<br/>Catálogo de Hardware (No Transaccional)"]
+        Ord1["pc-orden-ms Instancia 1 (:8082)<br/>Órdenes y Facturación IGV 18% (Transaccional)"]
+        Ord2["pc-orden-ms Instancia 2 (:8083)<br/>Réplica Concurrente para Balanceo"]
+    end
+
+    subgraph Cristhian["Microservicios: Laura Vargas Cristhian Paul"]
+        Pago["pc-pago-ms<br/>Pasarela de Pagos Mercado Pago (Transaccional)"]
+        Auth["pc-auth-ms<br/>Gestión de Usuarios y Perfiles (No Transaccional)"]
+    end
+
+    subgraph Database["Persistencia Relacional (Docker)"]
+        PG1[("PostgreSQL db-orden :5433")]
     end
 
     subgraph Observabilidad["Observabilidad Integral (Docker Compose)"]
@@ -42,14 +51,23 @@ flowchart TB
     Gateway -->|"lb://pagatu-catalogo-ms"| Cat
     Gateway -->|"lb://pagatu-orden-ms (Round Robin)"| Ord1
     Gateway -->|"lb://pagatu-orden-ms (Round Robin)"| Ord2
+    Gateway -->|"lb://pc-pago-ms"| Pago
+    Gateway -->|"lb://pc-auth-ms"| Auth
 
     Cat -. "Registra instancia" .-> Eureka
     Ord1 -. "Registra instancia" .-> Eureka
     Ord2 -. "Registra instancia" .-> Eureka
+    Pago -. "Registra instancia" .-> Eureka
+    Auth -. "Registra instancia" .-> Eureka
+
+    Ord1 --> PG1
+    Ord2 --> PG1
 
     Cat -. "Lee config remota" .-> Config
     Ord1 -. "Lee config remota" .-> Config
     Ord2 -. "Lee config remota" .-> Config
+    Pago -. "Lee config remota" .-> Config
+    Auth -. "Lee config remota" .-> Config
     Gateway -. "Lee config remota" .-> Config
     Config --> Repo
 
