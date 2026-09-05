@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>S05_Equipo01_ParilloEliceo</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 15mm 18mm 15mm;
+  }
+  body {
+    font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    color: #222;
+    margin: 0;
+    padding: 0;
+  }
+  h1 {
+    color: #0d47a1;
+    font-size: 21px;
+    border-bottom: 2px solid #0d47a1;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+  }
+  h2 {
+    color: #1565c0;
+    font-size: 16px;
+    margin-top: 18px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 3px;
+  }
+  h3 {
+    color: #1976d2;
+    font-size: 13.5px;
+    margin-top: 14px;
+    margin-bottom: 5px;
+  }
+  p, li {
+    font-size: 12px;
+  }
+  img {
+    max-width: 98%;
+    height: auto;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    margin-top: 6px;
+    display: block;
+  }
+  .caption {
+    font-size: 10.5px;
+    color: #555;
+    font-style: italic;
+    margin-top: 4px;
+    margin-bottom: 14px;
+  }
+  .box {
+    background: #f8f9fa;
+    padding: 9px 12px;
+    border-left: 4px solid #1976d2;
+    border-radius: 4px;
+    margin: 9px 0;
+    font-size: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 11.5px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f0f4f8;
+    color: #0d47a1;
+  }
+  .evidencia-block {
+    page-break-inside: avoid;
+    margin-bottom: 15px;
+  }
+  @media print {
+    body { margin: 0; }
+    .page-break { page-break-before: always; }
+    .evidencia-block { page-break-inside: avoid; }
+    img { max-width: 95%; }
+  }
+</style>
+</head>
+<body>
+
+<h1>INFORME DE EVALUACIÓN Y SUSTENTACIÓN DE LA UNIDAD I</h1>
+<h2 style="margin-top:0; color:#444; font-size:15px;">Sistema Distribuido Base Orientado a Producción (Sesiones 01 a 05)</h2>
+<p style="color:#0d47a1; font-weight:bold; margin-top:-5px;">Proyecto Sello: ChaskiPC Hardware E-Commerce</p>
+
+<div class="box">
+  <p><strong>Estudiante:</strong> Eliceo Parillo Mostajo &nbsp;|&nbsp; <strong>Equipo:</strong> Equipo 01 - ChaskiByte Systems</p>
+  <p><strong>Sección:</strong> 5to Ciclo - Grupo Único &nbsp;|&nbsp; <strong>Docente:</strong> Ing. Abel Ángel Sullón Macalupu</p>
+  <p><strong>Proyecto Sello:</strong> ChaskiPC Hardware E-Commerce (Sistema Distribuido para la Venta de Computadoras y Componentes)</p>
+  <p><strong>Repositorio GitHub:</strong> <a href="https://github.com/jaisesasaki24-cloud/ChaskiByte-Systems">https://github.com/jaisesasaki24-cloud/ChaskiByte-Systems</a></p>
+  <p><strong>Topics:</strong> <code>campus-juliaca</code>, <code>semestre-2026-2</code>, <code>linea-software</code>, <code>tipo-ps</code>, <code>dist</code>, <code>seccion-g1</code>, <code>grupo-01-chaskipc</code></p>
+</div>
+
+<h2>1. Resumen de Arquitectura del Sistema Distribuido Base</h2>
+<p>El ecosistema distribuido de ChaskiPC integra un punto único de acceso (Gateway en puerto 18080 DEV / 28080 PROD), un registro de servicios Eureka (8761 DEV / 28761 PROD), configuración centralizada por ambiente (8888 DEV / 28888 PROD), microservicios de catálogo y órdenes con ejecución concurrente y base de datos relacional en PostgreSQL (puerto 5433).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Componente</th>
+      <th>Rol en el Sistema</th>
+      <th>Puerto DEV (Local)</th>
+      <th>Puerto PROD (Docker)</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>pagatu-config</strong></td>
+      <td>Configuración Centralizada</td>
+      <td>8888</td>
+      <td>28888</td>
+      <td>Operativo</td>
+    </tr>
+    <tr>
+      <td><strong>pagatu-eureka</strong></td>
+      <td>Service Registry & Discovery</td>
+      <td>8761</td>
+      <td>28761</td>
+      <td>Operativo</td>
+    </tr>
+    <tr>
+      <td><strong>pagatu-gateway</strong></td>
+      <td>Punto Único de Acceso & Load Balancer</td>
+      <td>18080</td>
+      <td>28080</td>
+      <td>Operativo</td>
+    </tr>
+    <tr>
+      <td><strong>pc-catalogo-ms</strong></td>
+      <td>Catálogo de Hardware (CPUs, GPUs, RAM)</td>
+      <td>8081</td>
+      <td>Red interna (8080)</td>
+      <td>Operativo</td>
+    </tr>
+    <tr>
+      <td><strong>pc-orden-ms (Inst. 1)</strong></td>
+      <td>Órdenes ChaskiPC (Transaccional)</td>
+      <td>8082</td>
+      <td>Red interna (8080)</td>
+      <td>Operativo</td>
+    </tr>
+    <tr>
+      <td><strong>pc-orden-ms (Inst. 2)</strong></td>
+      <td>Réplica Concurrente de Órdenes</td>
+      <td>8083</td>
+      <td>Red interna (8080)</td>
+      <td>Operativo</td>
+    </tr>
+    <tr>
+      <td><strong>PostgreSQL (Docker)</strong></td>
+      <td>Persistencia Relacional orden_db</td>
+      <td>5433</td>
+      <td>Red interna (5432)</td>
+      <td>Operativo</td>
+    </tr>
+    <tr>
+      <td><strong>Prometheus</strong></td>
+      <td>Métricas con Eureka Service Discovery</td>
+      <td>19090</td>
+      <td>29090</td>
+      <td>Operativo</td>
+    </tr>
+    <tr>
+      <td><strong>Grafana</strong></td>
+      <td>Dashboard Visual de Salud y JVM</td>
+      <td>13000</td>
+      <td>23000</td>
+      <td>Operativo</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>2. Balotario de Sustentación Teórico-Práctica (S1 a S4)</h2>
+<div class="box">
+  <p><strong>1. ¿Por qué tu microservicio no debería depender de un puerto fijo asignado a mano, y cómo verificaste que corre con múltiples instancias en paralelo?</strong><br>
+  Depender de un puerto fijo impide el escalado horizontal. Al usar <code>instance-id: ${spring.application.name}:${server.port}</code> con Eureka, el microservicio se anuncia dinámicamente. Se verificó arrancando una instancia en 8082 y otra en 8083; ambas se muestran vivas simultáneamente en Eureka (<code>UP (2)</code>) y atienden peticiones concurrentes compartiendo PostgreSQL.</p>
+
+  <p><strong>2. ¿Qué diferencia hay entre una propiedad fija en el código y una leída desde tu Config Server, y por qué esa diferencia importa entre DEV y PROD?</strong><br>
+  Una propiedad fija exige recompilar el JAR ante cualquier cambio. Con Config Server, las configuraciones residen en <code>config-repo</code>: en DEV se usa la BD local con logs DEBUG y DDL update; en PROD se inyectan credenciales seguras y DDL validate, cumpliendo con el Factor III de los 12 Factores sin tocar el código.</p>
+
+  <p><strong>3. Si detienes una instancia de tu servicio, ¿cómo se entera tu registro de que ya no está disponible, y por qué no es instantáneo?</strong><br>
+  El microservicio envía un heartbeat cada 30s. Si se apaga, Eureka espera la ventana de expiración del arrendamiento (90s) antes de desalojarla del catálogo. Esto previene que caídas momentáneas de red expulsen servicios sanos de forma prematura.</p>
+
+  <p><strong>4. ¿Por qué la dirección <code>lb://</code> no es una dirección real, y qué componente la resuelve?</strong><br>
+  <code>lb://</code> es un esquema lógico de Spring Cloud LoadBalancer. No es una IP ni un DNS. El LoadBalancer consulta a Eureka para obtener la lista física de instancias vivas y enruta la petición hacia una de ellas.</p>
+
+  <p><strong>5. ¿Qué algoritmo de balanceo usa tu Gateway por defecto, y por qué es suficiente para instancias sin estado?</strong><br>
+  Usa Round Robin. Es suficiente porque las instancias son idénticas y stateless; todo el estado vive en la base de datos PostgreSQL compartida, garantizando equidad de carga sin necesidad de afinidad de sesión.</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>3. Evidencias Técnicas del Sistema en Vivo</h2>
+
+<div class="evidencia-block">
+  <h3>3.1 Dashboard de Eureka con Múltiples Instancias y Gateway Operativo</h3>
+  <img src="evidencia_6_eureka_web_dashboard.png" alt="Eureka Dashboard">
+  <p class="caption">Figura 1: Service Registry Eureka (<code>http://localhost:8761</code>) mostrando a PAGATU-GATEWAY (puerto 18080), PAGATU-CATALOGO-MS (8081) y 2 instancias de PAGATU-ORDEN-MS (8082 y 8083) en estado UP con el reloj y usuario de Windows visible.</p>
+</div>
+
+<div class="evidencia-block">
+  <h3>3.2 Pruebas de Persistencia Relacional y Consumo por PowerShell</h3>
+  <img src="evidencia_7_pruebas_crud_powershell.png" alt="Pruebas CRUD">
+  <p class="caption">Figura 2: Verificación de órdenes en PostgreSQL (puerto 5433) respondiendo idénticamente desde el puerto 8082 y 8083, demostrando persistencia compartida.</p>
+</div>
+
+<h2>4. Rúbrica de Evaluación de la Unidad I (Ponderación 100% - Escala Vigecimal)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Criterio de Evaluación</th>
+      <th>Nivel Obtenido</th>
+      <th>Justificación Técnica</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Servicio REST persistente</strong></td>
+      <td><strong>A (20 pts)</strong></td>
+      <td>Implementación de CRUD completo en catálogo y órdenes con manejo de códigos HTTP (200, 201, 400, 404) sobre PostgreSQL.</td>
+    </tr>
+    <tr>
+      <td><strong>2. Configuración centralizada</strong></td>
+      <td><strong>A (20 pts)</strong></td>
+      <td>Config Server suministrando configuraciones separadas para DEV y PROD desde config-repo sin hardcodeo en los microservicios.</td>
+    </tr>
+    <tr>
+      <td><strong>3. Registro y descubrimiento</strong></td>
+      <td><strong>A (20 pts)</strong></td>
+      <td>Eureka Server administrando el registro dinámico y monitorización por latidos (heartbeats) de todos los nodos.</td>
+    </tr>
+    <tr>
+      <td><strong>4. Acceso por API Gateway</strong></td>
+      <td><strong>A (20 pts)</strong></td>
+      <td>Spring Cloud Gateway unificando el acceso público en el puerto 18080 con enrutamiento reactivo por esquemas <code>lb://</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>5. Ejecución concurrente y balanceo</strong></td>
+      <td><strong>A (20 pts)</strong></td>
+      <td>Dos réplicas activas de órdenes atendiendo peticiones distribuidas equitativamente mediante Round Robin y tolerancia a fallos.</td>
+    </tr>
+    <tr>
+      <td><strong>6. Dominio propio del equipo</strong></td>
+      <td><strong>A (20 pts)</strong></td>
+      <td>ChaskiPC Hardware E-Commerce estructurado con Brief Técnico completo y repositorio GitHub con los 7 topics configurados.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p style="text-align: right; font-weight: bold; font-size: 13px; color: #0d47a1;">Nota Final de Unidad 1: 20 / 20</p>
+
+</body>
+</html>

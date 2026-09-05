@@ -1,0 +1,57 @@
+# Docker Compose - Infraestructura y Producción Local ChaskiPC
+services:
+  pagatu-config:
+    build:
+      context: ../pagatu-config
+      dockerfile: Dockerfile
+    container_name: pagatu-config-prod
+    restart: unless-stopped
+    ports:
+      - "28888:8888"
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+    networks:
+      - pagatu-prod-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pagatu-eureka:
+    build:
+      context: ../pagatu-eureka
+      dockerfile: Dockerfile
+    container_name: pagatu-eureka-prod
+    restart: unless-stopped
+    ports:
+      - "28761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      CONFIG_SERVER_URL: http://pagatu-config:8888
+    depends_on:
+      pagatu-config:
+        condition: service_healthy
+    networks:
+      - pagatu-prod-net
+
+  pagatu-gateway:
+    build:
+      context: ../pagatu-gateway
+      dockerfile: Dockerfile
+    container_name: pagatu-gateway-prod
+    restart: unless-stopped
+    ports:
+      - "28080:8080" # Único puerto de negocio expuesto al host en producción
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      CONFIG_SERVER_URL: http://pagatu-config:8888
+    depends_on:
+      pagatu-eureka:
+        condition: service_started
+    networks:
+      - pagatu-prod-net
+
+networks:
+  pagatu-prod-net:
+    driver: bridge
