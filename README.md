@@ -224,7 +224,9 @@ Al trasladar el ecosistema a las máquinas de laboratorio universitario (**DTI-L
 
 ### ⚡ Lanzadores Disponibles en el Repositorio
 
-* **`iniciar_db.bat`**: Levanta de inmediato el contenedor PostgreSQL `chaskipc-db-orden` en el puerto 5433 con la base de datos `orden_db` y usuario `admin`.
-* **`iniciar_todo.bat`**: Doble clic para arrancar todo. Detecta si Python está instalado; si no, ejecuta automáticamente el lanzador nativo de PowerShell.
+* **`iniciar_infra_completa.bat`**: Levanta en 1 solo clic PostgreSQL (5433) + Prometheus (19090) + Grafana (13000) + Loki (13100) + Promtail.
+* **`iniciar_observabilidad.bat`**: Levanta únicamente el stack de monitoreo (Prometheus, Grafana, Loki y Promtail).
+* **`iniciar_db.bat`**: Levanta el contenedor PostgreSQL `chaskipc-db-orden` en el puerto 5433 con `orden_db` y usuario `admin`.
+* **`iniciar_todo.bat`**: Doble clic para arrancar el ecosistema completo (auto-inicia Docker, verifica Java 21 y abre los 5 microservicios en terminales independientes).
 * **`iniciar_todo.ps1`**: Lanzador 100% nativo de PowerShell sin necesidad de Python.
 * **`iniciar_todo.py`**: Lanzador en Python con rutas dinámicas relativas.

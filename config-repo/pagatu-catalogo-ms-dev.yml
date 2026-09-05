@@ -26,3 +26,7 @@ management:
     web:
       exposure:
         include: health,info,metrics,prometheus
+
+logging:
+  file:
+    name: ../logs/${spring.application.name}.log

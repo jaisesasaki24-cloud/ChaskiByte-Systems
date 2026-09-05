@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 ChaskiByte Systems - Ecosistema de Microservicios ChaskiPC
-Lanzador Portable Multi-Entorno (Desarrollado para Laboratorio DTI y Entornos Locales)
-Resuelve automaticamente los 7 problemas tecnicos:
-1. Rutas relativas dinamicas (sin rutas hardcoded, funciona en cualquier PC o USB).
-2. Compatibilidad con PowerShell ($env:SERVER_PORT sin problemas de comillas).
-3. Deteccion y forzado de Java 21 si JAVA_HOME apunta a Java 17 u otra version.
-4. Inyeccion dinamica de search-locations para Config Server.
+Lanzador Automatizado Integral:
+1. Docker Infra: Levanta automáticamente PostgreSQL (5433), Prometheus (19090), Grafana (13000), Loki (13100) si Docker está activo.
+2. Rutas Relativas Dinámicas: 100% portable a cualquier PC, laboratorio o unidad USB.
+3. Detección Inteligente de Java 21: Evita conflictos de versiones con JDKs previos.
+4. Microservicios Spring Boot: Config Server, Eureka, Catalogo, Orden (2 instancias) y Gateway en ventanas independientes.
 """
 import os
 import sys
@@ -14,12 +13,10 @@ import subprocess
 import time
 import glob
 
-# 1. Resolver ruta base dinamica
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_REPO_DIR = os.path.join(BASE_DIR, "config-repo").replace("\\", "/")
 CONFIG_REPO_URI = f"file:///{CONFIG_REPO_DIR}"
 
-# 2. Deteccion automatica de Java 21
 def detect_java_21():
     java_home = os.environ.get("JAVA_HOME", "")
     if "21" in java_home:
@@ -40,7 +37,30 @@ def detect_java_21():
 JAVA_21_HOME = detect_java_21()
 java_env_setup = f'$env:JAVA_HOME = "{JAVA_21_HOME}"; ' if JAVA_21_HOME else ""
 
-# 3. Definicion de microservicios con rutas relativas
+print("=================================================================")
+print("   CHASKIBYTE SYSTEMS - LANZADOR AUTOMATIZADO INTEGRAL          ")
+print("=================================================================")
+print(f"[*] Directorio Base: {BASE_DIR}")
+print(f"[*] Config Repo URI: {CONFIG_REPO_URI}")
+if JAVA_21_HOME:
+    print(f"[*] JDK 21 Detectado: {JAVA_21_HOME}")
+print("-----------------------------------------------------------------")
+
+# Comprobar e iniciar Docker (PostgreSQL + Observabilidad)
+try:
+    res = subprocess.run(["docker", "info"], capture_output=True, text=True, timeout=4)
+    if res.returncode == 0:
+        print("[*] Docker detectado. Levantando PostgreSQL y Stack de Observabilidad...")
+        subprocess.run(["docker", "compose", "-f", os.path.join(BASE_DIR, "infra", "docker-compose-db.yml"), "up", "-d"], capture_output=True)
+        subprocess.run(["docker", "compose", "-f", os.path.join(BASE_DIR, "obs", "compose-dev.yml"), "up", "-d"], capture_output=True)
+        print("[OK] PostgreSQL (5433), Prometheus (19090), Grafana (13000), Loki (13100) listos.")
+    else:
+        print("[AVISO] Docker Desktop no esta iniciado. Si requieres base de datos o Grafana, inicia Docker.")
+except Exception:
+    print("[AVISO] Docker no disponible. Continuando con arranque de microservicios...")
+
+print("-----------------------------------------------------------------")
+
 commands = [
     {
         "title": "1. CONFIG-SERVER [Puerto 8888]",
@@ -79,26 +99,22 @@ commands = [
         "wait": 3
     },
     {
-        "title": "7. PRUEBAS CRUD Y MONITOREO (PowerShell)",
+        "title": "7. MONITOR Y CONSOLA DE PRUEBAS",
         "dir": BASE_DIR,
         "cmd": 'Write-Host "=== CHASKIPC: ECOSISTEMA INICIADO CORRECTAMENTE ===" -ForegroundColor Cyan; '
-               'Write-Host "Comandos de verificacion rapida:" -ForegroundColor Yellow; '
-               'Write-Host "  1. Config Server: Invoke-RestMethod -Uri http://localhost:8888/pagatu-orden-ms/dev" -ForegroundColor White; '
-               'Write-Host "  2. Eureka Apps:   (Invoke-RestMethod -Uri http://localhost:8761/eureka/apps).applications.application.name" -ForegroundColor White; '
-               'Write-Host "  3. Gateway Orden: Invoke-RestMethod -Uri http://localhost:18080/api/v1/ordenes" -ForegroundColor White; '
-               'Write-Host "  4. Gateway Prods: Invoke-RestMethod -Uri http://localhost:18080/api/v1/productos" -ForegroundColor White',
+               'Write-Host "Enlaces y Servicios Disponibles:" -ForegroundColor Yellow; '
+               'Write-Host "  - API Gateway:    http://localhost:18080/api/v1/ordenes" -ForegroundColor White; '
+               'Write-Host "  - Eureka Server:  http://localhost:8761" -ForegroundColor White; '
+               'Write-Host "  - Config Server:  http://localhost:8888/pagatu-orden-ms/dev" -ForegroundColor White; '
+               'Write-Host "  - Grafana Visual: http://localhost:13000 (admin / admin)" -ForegroundColor Green; '
+               'Write-Host "  - Prometheus:     http://localhost:19090" -ForegroundColor Green; '
+               'Write-Host "  - Loki Logs:      http://localhost:13100" -ForegroundColor Green; '
+               'Write-Host "Comandos de prueba rapida:" -ForegroundColor Yellow; '
+               'Write-Host "  Invoke-RestMethod -Uri http://localhost:18080/api/v1/productos" -ForegroundColor Gray; '
+               'Write-Host "  Invoke-RestMethod -Uri http://localhost:18080/api/v1/ordenes" -ForegroundColor Gray',
         "wait": 0
     }
 ]
-
-print("=================================================================")
-print("   CHASKIBYTE SYSTEMS - LANZADOR AUTOMATIZADO DE MICROSERVICIOS  ")
-print("=================================================================")
-print(f"[*] Directorio Base: {BASE_DIR}")
-print(f"[*] Config Repo URI: {CONFIG_REPO_URI}")
-if JAVA_21_HOME:
-    print(f"[*] JDK 21 Detectado: {JAVA_21_HOME}")
-print("-----------------------------------------------------------------")
 
 for item in commands:
     ps_cmd = f'$host.UI.RawUI.WindowTitle = "{item["title"]}"; Set-Location "{item["dir"]}"; {item["cmd"]}'
@@ -108,4 +124,4 @@ for item in commands:
         time.sleep(item["wait"])
 
 print("-----------------------------------------------------------------")
-print("[EXITO] Todas las ventanas han sido desplegadas correctamente.")
+print("[EXITO] Ecosistema completo desplegado exitosamente.")

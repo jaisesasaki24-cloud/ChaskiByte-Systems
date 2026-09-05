@@ -42,3 +42,7 @@ management:
   endpoint:
     health:
       show-details: always
+
+logging:
+  file:
+    name: ../logs/${spring.application.name}.log
