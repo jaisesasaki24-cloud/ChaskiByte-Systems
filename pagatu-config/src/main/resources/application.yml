@@ -9,4 +9,4 @@ spring:
     config:
       server:
         native:
-          search-locations: file:///C:/Users/USUARIO/Documents/Tarea Eureka/config-repo
+          search-locations: ${CONFIG_REPO_PATH:file:../config-repo,file:./config-repo,file:///C:/Users/USUARIO/Documents/Tarea Eureka/config-repo}

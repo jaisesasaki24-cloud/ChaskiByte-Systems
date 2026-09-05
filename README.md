@@ -105,7 +105,10 @@ ChaskiByte-Systems/
 ├── S03_Equipo01_ParilloEliceo.pdf   # Informe de Sesión 03 (Eureka & Múltiples Instancias)
 ├── S04_Equipo01_ParilloEliceo.pdf   # Informe de Sesión 04 (API Gateway & Balanceo de Carga)
 ├── S05_Equipo01_ParilloEliceo.pdf   # Informe Oficial de Evaluación y Cierre de la Unidad I
-├── iniciar_todo.bat                 # Lanzador automático de todas las consolas en Windows
+├── iniciar_db.bat                   # Script de 1 clic para arrancar PostgreSQL (Puerto 5433)
+├── iniciar_todo.bat                 # Lanzador universal Windows (autodetecta Python o PowerShell)
+├── iniciar_todo.ps1                 # Lanzador nativo en PowerShell puro (cero dependencias)
+├── iniciar_todo.py                  # Lanzador en Python con rutas relativas dinámicas
 └── README.md
 ```
 
@@ -201,3 +204,27 @@ Invoke-RestMethod -Method Post -Uri "http://localhost:18080/api/v1/ordenes" -Bod
 * 📄 [**`S03_Equipo01_ParilloEliceo.pdf`**](S03_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 03 (Eureka Server, Múltiples Instancias, Observabilidad).
 * 📄 [**`S04_Equipo01_ParilloEliceo.pdf`**](S04_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 04 (API Gateway, Rutas `lb://` y Balanceo de Carga).
 * 📄 [**`S05_Equipo01_ParilloEliceo.pdf`**](S05_Equipo01_ParilloEliceo.pdf): **Informe Oficial de Evaluación y Sustentación de la Unidad I** (Balotario de defensa teórico-práctica resuelto y rúbrica de 20 pts).
+
+
+---
+
+## 🛠️ 6. Bitácora de Despliegue DevOps: Resolución de los 7 Desafíos Técnicos de Portabilidad (DTI-Laboratorio)
+
+Al trasladar el ecosistema a las máquinas de laboratorio universitario (**DTI-Laboratorio**), se superaron 7 problemas técnicos clásicos de portabilidad y dependencias en microservicios:
+
+| # | Problema Detectado | Causa Raíz | Solución Técnica Implementada |
+| :-: | :--- | :--- | :--- |
+| **1** | **Rutas quemadas (Hardcoded Paths)** | `iniciar_todo.py` buscaba rutas absolutas de la máquina origen (`C:\Users\USUARIO\...`). | Refactorización a rutas relativas con `os.path.dirname(os.path.abspath(__file__))` y `$MyInvocation.MyCommand.Path`. 100% portable a cualquier PC o USB. |
+| **2** | **Falta del intérprete de Python** | El `.bat` fallaba en máquinas de laboratorio sin Python en PATH. | Instalación rápida (`winget install Python.Python.3.12`), creación del script nativo `iniciar_todo.ps1` (PowerShell puro) y `.bat` con fallback automático. |
+| **3** | **Incompatibilidad Java (`release 21 not supported`)** | `JAVA_HOME` apuntaba a Java 17 preinstalado a pesar de tener JDK 21 en disco. | Actualización con `setx /M JAVA_HOME "..."` e inyección automática preventiva de `$env:JAVA_HOME` en cada consola lanzada. |
+| **4** | **Conflicto de comillas en PowerShell (Instancia 2)** | PowerShell fragmentaba `-Dspring-boot.run.arguments="--server.port=8083"`. | Desacoplamiento usando variable de entorno nativa de Spring: `$env:SERVER_PORT='8083'; .\mvnw.cmd spring-boot:run`. |
+| **5** | **Config Server desconectado (`DataSource url is not specified`)** | `search-locations` apuntaba a la ruta estática de la PC anterior, entregando YAMLs vacíos. | Parametrización dinámica en `application.yml` con `${CONFIG_REPO_PATH:file:../config-repo}` e inyección por script. |
+| **6** | **Servidor PostgreSQL apagado (`Connection refused: 5433`)** | Los contenedores Docker de la base de datos estaban detenidos (`Exited`). | Creación de `infra/docker-compose-db.yml` y script de un solo clic `iniciar_db.bat`. |
+| **7** | **Error de autenticación (`password failed for user "admin"`)** | El contenedor se creó con usuario `postgres`, mientras el código requería `admin` / `adminpassword`. | Sentencias DDL/DCL en PostgreSQL y declaración estandarizada en `docker-compose-db.yml`. |
+
+### ⚡ Lanzadores Disponibles en el Repositorio
+
+* **`iniciar_db.bat`**: Levanta de inmediato el contenedor PostgreSQL `chaskipc-db-orden` en el puerto 5433 con la base de datos `orden_db` y usuario `admin`.
+* **`iniciar_todo.bat`**: Doble clic para arrancar todo. Detecta si Python está instalado; si no, ejecuta automáticamente el lanzador nativo de PowerShell.
+* **`iniciar_todo.ps1`**: Lanzador 100% nativo de PowerShell sin necesidad de Python.
+* **`iniciar_todo.py`**: Lanzador en Python con rutas dinámicas relativas.

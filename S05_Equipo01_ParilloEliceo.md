@@ -9,7 +9,7 @@
 * **Proyecto Sello:** ChaskiPC Hardware E-Commerce (Sistema Distribuido para la Venta de Computadoras y Componentes)
 * **Docente:** Ing. Abel Ángel Sullón Macalupu
 * **Sesión:** S05 - Evaluación de la Unidad I
-* **Rol o aporte realizado:** Arquitectura backend del ecosistema distribuido, microservicio transaccional `pc-orden-ms` (cabecera-detalle, IGV), microservicio no transaccional `pc-catalogo-ms` (categorías y productos de hardware), configuración centralizada (`pagatu-config`), registro dinámico (`pagatu-eureka`), enrutamiento balanceado (`pagatu-gateway`), y stack de observabilidad (Prometheus + Grafana).
+* **Rol o aporte realizado:** Arquitectura backend del ecosistema distribuido, microservicio transaccional `pc-orden-ms` (cabecera-detalle, IGV), microservicio no transaccional `pc-catalogo-ms` (categorías y productos de hardware), configuración centralizada (`pagatu-config`), registro dinámico (`pagatu-eureka`), enrutamiento balanceado (`pagatu-gateway`), stack de observabilidad (Prometheus + Grafana), y resolución de portabilidad DevOps multi-entorno.
 * **Repositorio Oficial en GitHub:** https://github.com/jaisesasaki24-cloud/ChaskiByte-Systems
 * **Topics del Repositorio:** `campus-juliaca`, `semestre-2026-2`, `linea-software`, `tipo-ps`, `dist`, `seccion-g1`, `grupo-01-chaskipc`
 
@@ -22,7 +22,7 @@ flowchart TB
     Cliente["Cliente Externo (Frontend / PowerShell / Swagger)"]
     Gateway["API Gateway: pagatu-gateway<br/>Puerto 18080 (DEV) / 28080 (PROD)"]
     Eureka[("Eureka Server: pagatu-eureka<br/>Puerto 8761 (DEV) / 28761 (PROD)")]
-    Config["Config Server: pagatu-config<br/>Puerto 8888 (DEV) / 28888 (PROD)")]
+    Config["Config Server: pagatu-config<br/>Puerto 8888 (DEV) / 28888 (PROD)"]
     Repo[("config-repo (dev/prod)")]
 
     subgraph Negocio["Microservicios de Negocio ChaskiPC"]
@@ -46,94 +46,64 @@ flowchart TB
     Cat -. "Registra instancia" .-> Eureka
     Ord1 -. "Registra instancia" .-> Eureka
     Ord2 -. "Registra instancia" .-> Eureka
-    Gateway -. "Registra instancia" .-> Eureka
 
-    Gateway -. "Importa rutas" .-> Config
-    Ord1 -. "Importa DB & props" .-> Config
-    Ord2 -. "Importa DB & props" .-> Config
-    Cat -. "Importa props" .-> Config
+    Cat -. "Lee config remota" .-> Config
+    Ord1 -. "Lee config remota" .-> Config
+    Ord2 -. "Lee config remota" .-> Config
+    Gateway -. "Lee config remota" .-> Config
     Config --> Repo
 
-    Prometheus -. "eureka_sd_configs" .-> Eureka
+    Prometheus -. "Scrape métricas" .-> Eureka
     Grafana --> Prometheus
-    Grafana --> Loki
 ```
 
-### Tabla de Puertos por Componente y Ambiente
+### Tabla de Puertos y Servicios del Ecosistema
+
 | Componente | Rol en el Sistema | Puerto DEV (Local) | Puerto PROD (Docker) | Estado |
 | :--- | :--- | :---: | :---: | :---: |
-| **`pagatu-config`** | Servidor de Configuración Centralizada | `8888` | `28888` (Interno `8888`) | Operativo |
-| **`pagatu-eureka`** | Service Registry & Discovery | `8761` | `28761` (Interno `8761`) | Operativo |
-| **`pagatu-gateway`** | Punto Único de Acceso y Load Balancer | `18080` | `28080` (Interno `8080`) | Operativo |
-| **`pc-catalogo-ms`** | Catálogo de Hardware (CPUs, GPUs, RAM) | `8081` | Red interna (`8080`) | Operativo |
-| **`pc-orden-ms` (Inst. 1)** | Órdenes ChaskiPC (Transaccional) | `8082` | Red interna (`8080`) | Operativo |
-| **`pc-orden-ms` (Inst. 2)** | Réplica concurrente de órdenes | `8083` | Red interna (`8080`) | Operativo |
-| **`PostgreSQL`** | Base de datos relacional `orden_db` | `5433` | Red interna (`5432`) | Operativo |
-| **`Prometheus`** | Recolección de métricas vía Eureka SD | `19090` | `29090` | Operativo |
-| **`Grafana`** | Tablero visual de salud y métricas | `13000` | `23000` | Operativo |
+| **pagatu-config** | Configuración Centralizada (Native Profile) | `8888` | `28888` | Operativo |
+| **pagatu-eureka** | Service Registry & Discovery | `8761` | `28761` | Operativo |
+| **pagatu-gateway** | Entrada Única & Load Balancer Reactivo | `18080` | `28080` | Operativo |
+| **pc-catalogo-ms** | Catálogo de Hardware (CPUs, GPUs, RAM) | `8081` | Red interna (`8080`) | Operativo |
+| **pc-orden-ms (Inst. 1)** | Órdenes ChaskiPC (Transaccional) | `8082` | Red interna (`8080`) | Operativo |
+| **pc-orden-ms (Inst. 2)** | Réplica Concurrente de Órdenes | `8083` | Red interna (`8080`) | Operativo |
+| **PostgreSQL (Docker)** | Persistencia Relacional `orden_db` | `5433` | Red interna (`5432`) | Operativo |
+| **Prometheus** | Métricas con Eureka Service Discovery | `19090` | `29090` | Operativo |
+| **Grafana** | Dashboard Visual de Salud y JVM | `13000` | `23000` | Operativo |
 
 ---
 
-## 2. Balotario Oficial de Sustentación Teórico-Práctica (S1 a S4)
+## 2. Balotario Teórico-Práctico de Sustentación (S1 a S4)
 
 ### Pregunta 1: ¿Por qué tu microservicio no debería depender de un puerto fijo asignado a mano, y cómo verificaste que corre con múltiples instancias en paralelo?
-> **Respuesta Técnica:**
-> Depender de un puerto fijo destruye la capacidad de escalabilidad horizontal del sistema distribuido. Si un microservicio tiene el puerto `8082` codificado en su configuración, es imposible levantar una segunda réplica en la misma máquina física o en el mismo contenedor sin provocar un error de `BindException: Address already in use`.
-> 
-> En ChaskiPC, el microservicio `pc-orden-ms` se configuró como cliente dinámico de Eureka utilizando:
-> ```yaml
-> eureka:
->   instance:
->     instance-id: ${spring.application.name}:${server.port}
->     prefer-ip-address: true
-> ```
-> Para verificar la ejecución concurrente en paralelo:
-> 1. Se inició la **Instancia 1** en el puerto base `8082`.
-> 2. Se inició la **Instancia 2** en una terminal paralela pasando el argumento `--server.port=8083`.
-> 3. Al abrir el Dashboard web de Eureka (`http://localhost:8761`), se comprobó que ambas instancias aparecen simultáneamente bajo el nombre lógico `PAGATU-ORDEN-MS` con estado `UP (2) - pagatu-orden-ms:8082, pagatu-orden-ms:8083`. Ambas atienden peticiones concurrentes compartiendo la misma base de datos PostgreSQL en el puerto `5433`.
-
----
+* **Fundamento Arquitectónico:** Asignar puertos fijos en el código o configuración acopla la aplicación a la infraestructura del host físico y rompe el principio de **escalado elástico horizontal**. En microservicios cloud-native, cada réplica debe declararse como efímera y sin estado. Al configurar `instance-id: ${spring.application.name}:${server.port}` y registrarse ante Eureka, la topología física queda completamente abstraída de los clientes.
+* **Verificación Práctica:** Se ejecutaron dos instancias del microservicio transaccional:
+  * Instancia 1: `server.port=8082`
+  * Instancia 2: `$env:SERVER_PORT=8083`
+  Ambas instancias se registraron bajo el mismo identificador de servicio `PAGATU-ORDEN-MS`. En el dashboard de Eureka (`http://localhost:8761`) se verificó el registro concurrente simultáneo: `PAGATU-ORDEN-MS (2) - UP (2) - [192.168.1.13:8082, 192.168.1.13:8083]`.
 
 ### Pregunta 2: ¿Qué diferencia hay entre una propiedad fija en el código y una leída desde tu Config Server, y por qué esa diferencia importa entre DEV y PROD?
-> **Respuesta Técnica:**
-> Una propiedad fija (empaquetada en el archivo `application.yml` dentro del `.jar`) requiere recompilar, reconstruir y redesplegar todo el microservicio cada vez que cambia una credencial, una URL de base de datos o un nivel de log.
-> 
-> Al utilizar Spring Cloud Config Server (`pagatu-config`), la configuración se desacopla completamente del código ejecutable y se almacena externamente en `config-repo/`:
-> * En **DEV**, el microservicio lee `pc-orden-ms-dev.yml` conectándose a `localhost:5433` con DDL `update` y logs en nivel `DEBUG`.
-> * En **PROD**, el mismo binario ejecutable sin modificar lee `pc-orden-ms-prod.yml` conectándose al contenedor `postgres-orden:5432` con DDL `validate` y credenciales seguras de producción inyectadas por variables de entorno.
-> 
-> Esto cumple estrictamente con el principio III de la metodología de los 12 Factores (*Config: Store config in the environment*), garantizando portabilidad y seguridad sin recompilaciones.
+* **Fundamento Arquitectónico:** Las propiedades fijas en código fuente (`src/main/resources/application.properties`) violan el **Factor III de "The Twelve-Factor App" (Config)**. Exigen recompilar, reempaquetar y redesplegar el artefacto binario (.jar) ante cualquier cambio de entorno (como cambiar la IP de la base de datos).
+* **Config Server y Segregación DEV/PROD:**
+  * En **DEV (`pagatu-orden-ms-dev.yml`)**: Se apunta a la base de datos local `localhost:5433`, Hibernate en `ddl-auto: update`, logging en `DEBUG` y exposición de Actuator en endpoints abiertos.
+  * En **PROD (`pagatu-orden-ms-prod.yml`)**: Se consumen variables de entorno seguras (`SPRING_DATASOURCE_PASSWORD`), Hibernate en `validate` (prohibiendo modificaciones automáticas al schema), y puertos aislados en la red interna de Docker.
 
----
+### Pregunta 3: Si detienes una instancia de tu servicio, ¿cómo se entera tu registro de que ya no está disponible, y por qué no es instantáneo?
+* **Mecanismo de Desalojo (Heartbeat & Eviction):**
+  1. **Latidos (Heartbeats):** Cada microservicio cliente envía periódicamente una señal HTTP PUT (`/eureka/apps/{appId}/{instanceId}`) cada `eureka.instance.lease-renewal-interval-in-seconds` (por defecto 30 segundos).
+  2. **Vencimiento de Arrendamiento (Lease Expiration):** Si Eureka no recibe latidos dentro del tiempo límite (`eureka.instance.lease-expiration-duration-in-seconds`, por defecto 90 segundos), marca la instancia como expirada.
+  3. **Tarea de Desalojo (Eviction Timer):** Un hilo demonio periódico en Eureka ejecuta el desalojo formal de la instancia de la memoria del registro.
+* **Por qué no es instantáneo:** En sistemas distribuidos, una pausa en la red o un ciclo de Garbage Collection (GC) prolongado no deben confundirse con la muerte definitiva del nodo. Un desalojo instantáneo causaría **inestabilidad (flapping)** y sobrecargaría el registro ante caídas transitorias.
 
-### Pregunta 3: Si detienes una instancia de tu servicio, ¿cómo se entera tu registro de servicios de que ya no está disponible, y por qué no es instantáneo?
-> **Respuesta Técnica:**
-> El registro de servicios Eureka implementa un mecanismo de arrendamiento (*lease*) y latidos (*heartbeats*):
-> 1. Cada microservicio envía una señal periódica (*heartbeat*) a Eureka cada **30 segundos** indicando que sigue vivo.
-> 2. Si una instancia se detiene abruptamente (por ejemplo, con `Ctrl + C` o caída de proceso), Eureka no la elimina al instante: espera una ventana de expiración (*lease-expiration-duration-in-seconds*, configurada por defecto en **90 segundos**) sin recibir latidos antes de desalojar (*evict*) la instancia del catálogo activo.
-> 3. Adicionalmente, el Gateway y los clientes Eureka mantienen una copia local en caché de las instancias vivas que se refresca cada 30 segundos.
-> 
-> Este retraso es intencional: evita que fluctuaciones transitorias de red o pausas de Garbage Collection expulsen prematuramente instancias saludables del clúster distribuido.
+### Pregunta 4: ¿Por qué la dirección `lb://` no es una dirección real, y qué componente la resuelve?
+* **Naturaleza del Esquema `lb://`:** El prefijo `lb://` (Load Balancer) no es un esquema URI estándar del protocolo de Internet (como `http://` o `https://`). No resuelve contra servidores DNS públicos ni tablas `/etc/hosts`. Es un URI lógico que utiliza el nombre canónico del servicio registrado en Eureka (ejemplo: `lb://PAGATU-ORDEN-MS`).
+* **Componente Resolutor:** Es resuelto por **Spring Cloud LoadBalancer** integrado en **Spring Cloud Gateway** mediante el filtro reactivo `ReactiveLoadBalancerClientFilter`. Este filtro intercepta la solicitud, consulta a la caché local sincronizada con Eureka, obtiene la lista de instancias vivas con IP y puerto, aplica el algoritmo de selección y reescribe la URL final a `http://192.168.1.13:8082/...`.
 
----
-
-### Pregunta 4: ¿Por qué la dirección `lb://` que usa tu Gateway no es una dirección real, y qué componente la resuelve?
-> **Respuesta Técnica:**
-> La dirección `lb://pagatu-orden-ms` no es una dirección IP ni un dominio resoluble mediante DNS tradicional. El prefijo `lb://` es un esquema de protocolo lógico de **Spring Cloud LoadBalancer**.
-> 
-> Cuando una petición entrante coincide con la ruta en `pagatu-gateway`, el componente `Spring Cloud LoadBalancer` intercepta la llamada, extrae el Service ID (`PAGATU-ORDEN-MS`) y consulta a la memoria caché local alimentada por `pagatu-eureka`. Eureka devuelve la lista de instancias físicas disponibles (`IP:puerto`), y el balanceador selecciona una de ellas para reenviar la petición HTTP real mediante Netty/WebClient.
-
----
-
-### Pregunta 5: ¿Qué algoritmo de balanceo de carga usa tu Gateway por defecto, y por qué es suficiente para instancias idénticas sin estado propio?
-> **Respuesta Técnica:**
-> Spring Cloud LoadBalancer utiliza por defecto el algoritmo **Round Robin (Turno Rotativo Equitativo)**.
-> 
-> Este algoritmo es óptimo y suficiente para `pc-orden-ms` porque:
-> 1. **Microservicios Stateless (Sin Estado):** Las instancias no almacenan sesiones ni estado en memoria RAM; todo el estado transaccional reside en la base de datos PostgreSQL compartida.
-> 2. **Instancias Homogéneas:** Ambas réplicas corren con la misma versión de código y sobre la misma capacidad de cómputo.
-> 
-> No se requiere algoritmos complejos basados en persistencia de sesión (*IP Hash*) ni monitoreo de latencia en vivo (*Least Response Time*), lo que minimiza la sobrecarga de procesamiento en el Gateway.
+### Pregunta 5: ¿Qué algoritmo de balanceo usa tu Gateway por defecto, y por qué es suficiente para instancias sin estado?
+* **Algoritmo por Defecto:** **Round Robin** (turno rotativo circular secuencial).
+* **Por qué es suficiente para microservicios Stateless:**
+  1. En una arquitectura sin estado, **ningún nodo almacena memoria de sesión de usuario en memoria RAM local**. Toda la información transaccional y el estado residen en la base de datos compartida (PostgreSQL).
+  2. Cada petición HTTP entrante es químicamente autónoma y autocontenida. Cualquier instancia del pool puede procesar indistintamente la solicitud número 1, la 2 o la 100 sin necesidad de afinidad de sesión (Sticky Sessions), maximizando la distribución equitativa de recursos y el rendimiento.
 
 ---
 
@@ -151,7 +121,7 @@ flowchart TB
 4. **Dashboard de Eureka Activo:**
    * Evidencia visual de `PAGATU-GATEWAY`, `PAGATU-CATALOGO-MS` y las 2 instancias de `PAGATU-ORDEN-MS` en estado `UP`.
 5. **Balanceo de Carga en Tiempo Real:**
-   * Ejecución de 4 peticiones consecutivas a `http://localhost:18080/api/ordenes` evidenciando alternancia de turnos entre el puerto 8082 y el 8083 en los logs de consola.
+   * Ejecución de peticiones consecutivas a `http://localhost:18080/api/ordenes` evidenciando alternancia de turnos entre el puerto 8082 y el 8083 en los logs de consola.
 6. **Tolerancia a Fallos:**
    * Detención de una instancia: El Gateway continúa respondiendo con `200 OK` utilizando la réplica sobreviviente sin interrupción del servicio.
 7. **Identidad del Proyecto Sello (ChaskiPC):**
@@ -173,7 +143,67 @@ flowchart TB
 
 ---
 
-## 5. Rúbrica de Evaluación de la Unidad I (Puntaje Máximo: 20 pts)
+## 5. Bitácora de Despliegue DevOps: Los 7 Desafíos Técnicos en la Migración al Entorno de Laboratorio (DTI-Laboratorio)
+
+Durante la migración y puesta en producción del ecosistema distribuido a los equipos del laboratorio universitario (**DTI-Laboratorio**), se superaron 7 desafíos técnicos clásicos de portabilidad, dependencias y orquestación de microservicios:
+
+### 1. Rutas Absolutas Quemadas (Hardcoded Paths)
+* **Diagnóstico del Fallo:** El script `iniciar_todo.py` original fallaba con error de ruta no encontrada porque apuntaba a carpetas estáticas `C:\Users\USUARIO\Documents\Tarea Eureka\...`. Al cambiar a un equipo con usuario `DTI-Laboratorio` o unidad USB, las rutas quedaban invalidadas.
+* **Causa Raíz:** Acoplamiento rígido de rutas al entorno del desarrollador inicial.
+* **Solución Técnica Definitiva:** Se refactorizó la resolución de rutas utilizando cálculo dinámico relativo:
+  * En Python: `BASE_DIR = os.path.dirname(os.path.abspath(__file__))`
+  * En PowerShell: `$BaseDir = Split-Path -Parent $MyInvocation.MyCommand.Path`
+  El proyecto es ahora 100% agnóstico a la ubicación en disco.
+
+### 2. Ausencia del Intérprete de Python en Máquinas de Laboratorio
+* **Diagnóstico del Fallo:** El archivo lanzador `.bat` se cerraba inmediatamente con el mensaje: `'python' no se reconoce como un comando interno o externo`.
+* **Causa Raíz:** Las imágenes de Windows congeladas en laboratorios habitualmente no incluyen Python en las variables de entorno o no lo tienen instalado.
+* **Solución Técnica Definitiva:** Se implementó una solución dual:
+  1. Instalación automatizada desde consola mediante el gestor oficial de Windows: `winget install Python.Python.3.12`.
+  2. Creación del script nativo [`iniciar_todo.ps1`](file:///C:/Users/USUARIO/Documents/Tarea%20Eureka/iniciar_todo.ps1) que corre directamente sobre PowerShell sin dependencias externas, y actualización de `iniciar_todo.bat` con autodetección inteligente de Python con fallback a PowerShell.
+
+### 3. Conflicto de Versiones de Java (`release version 21 not supported`)
+* **Diagnóstico del Fallo:** Maven fallaba en la compilación de los microservicios arrojando: `Fatal error compiling: error: release version 21 not supported`.
+* **Causa Raíz:** Aunque la máquina de laboratorio tenía instalado el JDK 21 en disco, la variable global del sistema `JAVA_HOME` apuntaba a una versión previa (Java 17).
+* **Solución Técnica Definitiva:**
+  * Corrección persistente del sistema: `setx /M JAVA_HOME "C:\Program Files\Java\jdk-21"`
+  * Detección preventiva en el lanzador: Se incorporó en los scripts un buscador automático de JDK 21 que inyecta `$env:JAVA_HOME` directamente en el contexto de ejecución de cada ventana de PowerShell.
+
+### 4. Conflicto de Sintaxis y Comillas en PowerShell (Instancia 2 de `orden-ms`)
+* **Diagnóstico del Fallo:** Error de Maven: `Unknown lifecycle phase ".run.arguments=--server.port=8083"`.
+* **Causa Raíz:** Al pasar argumentos compuestos como `-Dspring-boot.run.arguments="--server.port=8083"`, el analizador léxico de PowerShell interpretaba las comillas dobles anidadas, fragmentando la cadena antes de entregarla a Maven Wrapper.
+* **Solución Técnica Definitiva:** Se sustituyó el parámetro por la variable de entorno nativa de Spring Boot:
+  `$env:SERVER_PORT = '8083'; .\mvnw.cmd spring-boot:run`
+  Esto elimina por completo la fragilidad de entrecomillado en consolas Windows.
+
+### 5. Config Server Desconectado del Repositorio (`DataSource url is not specified`)
+* **Diagnóstico del Fallo:** `pagatu-orden-ms` fallaba durante el arranque con la excepción `Failed to configure a DataSource: 'url' attribute is not specified`.
+* **Causa Raíz:** En `pagatu-config/src/main/resources/application.yml`, la propiedad `spring.cloud.config.server.native.search-locations` seguía apuntando a la ruta fija de la máquina anterior (`C:/Users/USUARIO/...`). El Config Server arrancaba pero devolvía configuraciones vacías ({}) a los clientes.
+* **Solución Técnica Definitiva:**
+  * Se parametrizó `application.yml` para soportar resolución relativa:
+    `search-locations: ${CONFIG_REPO_PATH:file:../config-repo,file:./config-repo}`
+  * El lanzador inyecta dinámicamente `$env:CONFIG_REPO_PATH = "file:///{BASE_DIR}/config-repo"` en tiempo de arranque, garantizando que el Config Server resuelva siempre las propiedades correctas.
+
+### 6. Servidor de PostgreSQL Apagado (`Connection refused: localhost:5433`)
+* **Diagnóstico del Fallo:** Excepción durante el arranque del microservicio de órdenes: `Connection to localhost:5433 refused`.
+* **Causa Raíz:** Los contenedores Docker de base de datos en la máquina del laboratorio existían pero estaban en estado detenido (`Exited`).
+* **Solución Técnica Definitiva:**
+  * Se creó [`infra/docker-compose-db.yml`](file:///C:/Users/USUARIO/Documents/Tarea%20Eureka/infra/docker-compose-db.yml) con persistencia montada en volumen.
+  * Se creó el script de un solo clic [`iniciar_db.bat`](file:///C:/Users/USUARIO/Documents/Tarea%20Eureka/iniciar_db.bat) que levanta de forma automática el contenedor `chaskipc-db-orden` en el puerto 5433.
+
+### 7. Credenciales y Usuario de Base de Datos (`password authentication failed for user "admin"`)
+* **Diagnóstico del Fallo:** Error de autenticación en PostgreSQL: `password authentication failed for user "admin"`.
+* **Causa Raíz:** En la máquina del laboratorio, el contenedor de PostgreSQL había sido creado con el usuario por defecto `postgres` y clave `password123`, mientras que el proyecto ChaskiPC requiere `admin` con clave `adminpassword` y base de datos `orden_db`.
+* **Solución Técnica Definitiva:**
+  * Se ejecutaron las sentencias DDL/DCL dentro del motor:
+    `CREATE USER admin WITH PASSWORD 'adminpassword';`
+    `CREATE DATABASE orden_db OWNER admin;`
+    `GRANT ALL PRIVILEGES ON DATABASE orden_db TO admin;`
+  * Se parametrizó en `docker-compose-db.yml` con variables `POSTGRES_USER: admin` y `POSTGRES_PASSWORD: adminpassword` para garantizar consistencia idéntica en cualquier clonación futura.
+
+---
+
+## 6. Rúbrica de Evaluación de la Unidad I (Puntaje Máximo: 20 pts)
 
 | Criterio de Evaluación | Nivel Obtenido | Justificación Técnica |
 | :--- | :---: | :--- |

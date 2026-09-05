@@ -1,0 +1,21 @@
+# Infraestructura de Base de Datos PostgreSQL - ChaskiByte Systems
+# Resuelve Problemas 6 y 7 de Laboratorio:
+# - Puerto 5433 expuesto para evitar conflictos con Postgres local (5432)
+# - Credenciales admin / adminpassword preconfiguradas
+# - Base de datos orden_db creada automaticamente
+services:
+  postgres-orden:
+    image: postgres:16-alpine
+    container_name: chaskipc-db-orden
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_DB: orden_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_orden_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_orden_data:

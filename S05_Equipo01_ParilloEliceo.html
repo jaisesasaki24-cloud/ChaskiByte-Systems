@@ -6,70 +6,85 @@
 <style>
   @page {
     size: A4;
-    margin: 18mm 15mm 18mm 15mm;
+    margin: 16mm 14mm 16mm 14mm;
   }
   body {
     font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
-    line-height: 1.5;
+    line-height: 1.45;
     color: #222;
     margin: 0;
     padding: 0;
   }
   h1 {
     color: #0d47a1;
-    font-size: 21px;
+    font-size: 20px;
     border-bottom: 2px solid #0d47a1;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
   }
   h2 {
     color: #1565c0;
-    font-size: 16px;
-    margin-top: 18px;
+    font-size: 15px;
+    margin-top: 16px;
     border-bottom: 1px solid #ddd;
     padding-bottom: 3px;
   }
   h3 {
     color: #1976d2;
-    font-size: 13.5px;
-    margin-top: 14px;
-    margin-bottom: 5px;
+    font-size: 13px;
+    margin-top: 12px;
+    margin-bottom: 4px;
   }
   p, li {
-    font-size: 12px;
+    font-size: 11px;
   }
   img {
     max-width: 98%;
     height: auto;
     border: 1px solid #bbb;
     border-radius: 4px;
-    margin-top: 6px;
+    margin-top: 5px;
     display: block;
   }
   .caption {
-    font-size: 10.5px;
+    font-size: 10px;
     color: #555;
     font-style: italic;
-    margin-top: 4px;
-    margin-bottom: 14px;
+    margin-top: 3px;
+    margin-bottom: 12px;
   }
   .box {
     background: #f8f9fa;
-    padding: 9px 12px;
+    padding: 8px 12px;
     border-left: 4px solid #1976d2;
     border-radius: 4px;
-    margin: 9px 0;
-    font-size: 12px;
+    margin: 8px 0;
+    font-size: 11px;
+  }
+  .devops-card {
+    background: #ffffff;
+    border: 1px solid #d0d7de;
+    border-left: 4px solid #2e7d32;
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 10.5px;
+    page-break-inside: avoid;
+  }
+  .devops-card h4 {
+    margin: 0 0 4px 0;
+    color: #1b5e20;
+    font-size: 11.5px;
   }
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 10px 0;
-    font-size: 11.5px;
+    margin: 8px 0;
+    font-size: 10.5px;
   }
   th, td {
     border: 1px solid #ccc;
-    padding: 6px 8px;
+    padding: 5px 7px;
     text-align: left;
   }
   th {
@@ -78,7 +93,7 @@
   }
   .evidencia-block {
     page-break-inside: avoid;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
   }
   @media print {
     body { margin: 0; }
@@ -91,8 +106,8 @@
 <body>
 
 <h1>INFORME DE EVALUACIÓN Y SUSTENTACIÓN DE LA UNIDAD I</h1>
-<h2 style="margin-top:0; color:#444; font-size:15px;">Sistema Distribuido Base Orientado a Producción (Sesiones 01 a 05)</h2>
-<p style="color:#0d47a1; font-weight:bold; margin-top:-5px;">Proyecto Sello: ChaskiPC Hardware E-Commerce</p>
+<h2 style="margin-top:0; color:#444; font-size:14px;">Sistema Distribuido Base Orientado a Producción (Sesiones 01 a 05)</h2>
+<p style="color:#0d47a1; font-weight:bold; margin-top:-4px; font-size:12px;">Proyecto Sello: ChaskiPC Hardware E-Commerce</p>
 
 <div class="box">
   <p><strong>Estudiante:</strong> Eliceo Parillo Mostajo &nbsp;|&nbsp; <strong>Equipo:</strong> Equipo 01 - ChaskiByte Systems</p>
@@ -103,7 +118,7 @@
 </div>
 
 <h2>1. Resumen de Arquitectura del Sistema Distribuido Base</h2>
-<p>El ecosistema distribuido de ChaskiPC integra un punto único de acceso (Gateway en puerto 18080 DEV / 28080 PROD), un registro de servicios Eureka (8761 DEV / 28761 PROD), configuración centralizada por ambiente (8888 DEV / 28888 PROD), microservicios de catálogo y órdenes con ejecución concurrente y base de datos relacional en PostgreSQL (puerto 5433).</p>
+<p>El ecosistema distribuido de ChaskiPC integra un punto único de acceso (Gateway en puerto 18080 DEV / 28080 PROD), un registro de servicios Eureka (8761 DEV / 28761 PROD), configuración centralizada por ambiente (8888 DEV / 28888 PROD), microservicios de catálogo y órdenes con ejecución concurrente y persistencia relacional en PostgreSQL (puerto 5433).</p>
 
 <table>
   <thead>
@@ -216,7 +231,61 @@
   <p class="caption">Figura 2: Verificación de órdenes en PostgreSQL (puerto 5433) respondiendo idénticamente desde el puerto 8082 y 8083, demostrando persistencia compartida.</p>
 </div>
 
-<h2>4. Rúbrica de Evaluación de la Unidad I (Ponderación 100% - Escala Vigecimal)</h2>
+<div class="page-break"></div>
+
+<h2>4. Bitácora de Despliegue DevOps: Resolución de los 7 Desafíos Técnicos de Portabilidad (DTI-Laboratorio)</h2>
+<p>Al migrar el ecosistema distribuido a los equipos del laboratorio universitario (<strong>DTI-Laboratorio</strong>), se identificaron y solucionaron 7 problemas técnicos clásicos de portabilidad y dependencias:</p>
+
+<div class="devops-card">
+  <h4>1. Rutas Absolutas Quemadas (Hardcoded Paths)</h4>
+  <p><strong>Diagnóstico:</strong> El script original fallaba porque buscaba <code>C:\Users\USUARIO\Documents\Tarea Eureka\...</code>.<br>
+  <strong>Causa:</strong> Acoplamiento rígido de rutas al usuario inicial.<br>
+  <strong>Solución:</strong> Refactorización dinámica con rutas relativas basadas en <code>os.path.dirname(os.path.abspath(__file__))</code> y <code>Split-Path -Parent $MyInvocation.MyCommand.Path</code>, haciendo el proyecto 100% portable a cualquier máquina o USB.</p>
+</div>
+
+<div class="devops-card">
+  <h4>2. Ausencia del Intérprete de Python</h4>
+  <p><strong>Diagnóstico:</strong> El archivo <code>.bat</code> no reconocía el comando <code>python</code>.<br>
+  <strong>Causa:</strong> La máquina del laboratorio no tenía Python en sus variables de entorno del sistema.<br>
+  <strong>Solución:</strong> Se instaló con <code>winget install Python.Python.3.12</code> y se creó el lanzador nativo <code>iniciar_todo.ps1</code> en PowerShell puro (cero dependencias de Python), adaptando el <code>.bat</code> para autodetectar y ejecutar el script adecuado.</p>
+</div>
+
+<div class="devops-card">
+  <h4>3. Conflicto de Versiones de Java (release version 21 not supported)</h4>
+  <p><strong>Diagnóstico:</strong> Maven fallaba indicando incompatibilidad con Java 21.<br>
+  <strong>Causa:</strong> <code>JAVA_HOME</code> apuntaba a un JDK 17 preinstalado, a pesar de que el JDK 21 estaba instalado en el disco.<br>
+  <strong>Solución:</strong> Se actualizó la variable de entorno con <code>setx /M JAVA_HOME "..."</code> y se añadió autodetección de JDK 21 en los scripts para inyectar <code>$env:JAVA_HOME</code> en cada ventana de PowerShell.</p>
+</div>
+
+<div class="devops-card">
+  <h4>4. Conflicto de Sintaxis y Comillas en PowerShell (Instancia 2)</h4>
+  <p><strong>Diagnóstico:</strong> Error de Maven: <code>Unknown lifecycle phase ".run.arguments=--server.port=8083"</code>.<br>
+  <strong>Causa:</strong> PowerShell fragmentaba el argumento debido a las comillas dobles anidadas de <code>-Dspring-boot.run.arguments</code>.<br>
+  <strong>Solución:</strong> Se reemplazó por la variable de entorno estándar de Spring Boot: <code>$env:SERVER_PORT = '8083'; .\mvnw.cmd spring-boot:run</code>.</p>
+</div>
+
+<div class="devops-card">
+  <h4>5. Config Server Desconectado del Repositorio (DataSource url is not specified)</h4>
+  <p><strong>Diagnóstico:</strong> <code>pagatu-orden-ms</code> no arrancaba por falta de configuración de base de datos.<br>
+  <strong>Causa:</strong> <code>search-locations</code> en <code>pagatu-config</code> apuntaba a la ruta estática de la PC anterior, entregando configuraciones vacías.<br>
+  <strong>Solución:</strong> Se parametrizó <code>application.yml</code> con <code>${CONFIG_REPO_PATH:file:../config-repo}</code> y se inyectó la ruta absoluta calculada dinámicamente desde el script de arranque.</p>
+</div>
+
+<div class="devops-card">
+  <h4>6. Servidor de PostgreSQL Apagado (Connection refused: localhost:5433)</h4>
+  <p><strong>Diagnóstico:</strong> Conexión rechazada en <code>localhost:5433</code>.<br>
+  <strong>Causa:</strong> Los contenedores Docker de Postgres existían pero estaban en estado detenido (<code>Exited</code>).<br>
+  <strong>Solución:</strong> Se creó <code>infra/docker-compose-db.yml</code> y el script <code>iniciar_db.bat</code> para arranque y supervisión automática del contenedor <code>chaskipc-db-orden</code>.</p>
+</div>
+
+<div class="devops-card">
+  <h4>7. Credenciales y Usuario de Base de Datos (password authentication failed for user "admin")</h4>
+  <p><strong>Diagnóstico:</strong> PostgreSQL rechazaba la autenticación del usuario <code>admin</code>.<br>
+  <strong>Causa:</strong> El contenedor en el laboratorio fue inicializado con usuario <code>postgres</code> y clave <code>password123</code>, mientras que el proyecto requiere usuario <code>admin</code>, clave <code>adminpassword</code> y BD <code>orden_db</code>.<br>
+  <strong>Solución:</strong> Se ejecutaron sentencias SQL para crear el usuario <code>admin</code>, otorgar permisos y se declararon formalmente en <code>docker-compose-db.yml</code>.</p>
+</div>
+
+<h2>5. Rúbrica de Evaluación de la Unidad I (Puntaje Máximo: 20 pts)</h2>
 <table>
   <thead>
     <tr>
@@ -259,7 +328,7 @@
   </tbody>
 </table>
 
-<p style="text-align: right; font-weight: bold; font-size: 13px; color: #0d47a1;">Nota Final de Unidad 1: 20 / 20</p>
+<p style="text-align: right; font-weight: bold; font-size: 12px; color: #0d47a1;">Nota Final de Unidad 1: 20 / 20</p>
 
 </body>
 </html>
