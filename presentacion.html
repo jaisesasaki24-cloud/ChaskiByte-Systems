@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChaskiPC - Sustentación Oficial Unidad I (Sistema Distribuido)</title>
+<title>ChaskiPC - Sustentación Unidad I • Equipo 01 (2 Integrantes)</title>
 <link rel="icon" type="image/svg+xml" href="logo_chaskipc.svg">
 <style>
   :root {
-    --bg-dark: #090d16;
-    --card-bg: #111827;
-    --card-hover: #1f293d;
+    --bg-dark: #070b14;
+    --card-bg: #0f172a;
+    --card-inner: #1e293b;
     --card-border: #1e293b;
     --primary: #38bdf8;
     --primary-glow: rgba(56, 189, 248, 0.25);
@@ -19,6 +19,8 @@
     --danger: #ef4444;
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
+    --eliceo-color: #38bdf8;
+    --paul-color: #34d399;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -35,7 +37,7 @@
 
   /* Header Superior */
   header {
-    background: rgba(17, 24, 39, 0.95);
+    background: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--card-border);
     padding: 8px 24px;
@@ -87,7 +89,7 @@
 
   /* Barra de progreso animada */
   .progress-bar-container { height: 3px; background: var(--card-border); width: 100%; }
-  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent)); width: 12.5%; transition: width 0.35s ease; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent)); width: 9%; transition: width 0.35s ease; }
 
   /* Contenedor de Diapositivas */
   .deck-container {
@@ -96,18 +98,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 24px;
+    padding: 8px 24px;
     overflow: hidden;
   }
   .slide {
     position: absolute;
     width: 96%;
-    max-width: 1240px;
-    height: 90%;
+    max-width: 1260px;
+    height: 92%;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 16px;
-    padding: 24px 36px;
+    padding: 22px 36px;
     box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);
     opacity: 0;
     pointer-events: none;
@@ -124,11 +126,11 @@
   }
 
   /* Tipografía */
-  h1 { font-size: 32px; color: var(--primary); font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
-  h2 { font-size: 21px; color: var(--primary); margin-bottom: 10px; border-bottom: 2px solid var(--card-border); padding-bottom: 6px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-  h3 { font-size: 15px; color: var(--secondary); margin-top: 8px; margin-bottom: 4px; font-weight: 600; }
-  p, li { font-size: 13px; line-height: 1.55; color: #cbd5e1; }
-  ul { margin-left: 20px; margin-bottom: 6px; }
+  h1 { font-size: 30px; color: var(--primary); font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  h2 { font-size: 20px; color: var(--primary); margin-bottom: 10px; border-bottom: 2px solid var(--card-border); padding-bottom: 6px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  h3 { font-size: 14.5px; color: var(--secondary); margin-top: 6px; margin-bottom: 4px; font-weight: 600; }
+  p, li { font-size: 12.5px; line-height: 1.5; color: #cbd5e1; }
+  ul { margin-left: 18px; margin-bottom: 4px; }
   li { margin-bottom: 3px; }
   strong { color: #fff; }
   code {
@@ -137,31 +139,74 @@
     padding: 2px 6px;
     border-radius: 4px;
     font-family: Consolas, monospace;
-    font-size: 12px;
+    font-size: 11.5px;
   }
 
   /* Rejillas y Tarjetas */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 6px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 6px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 6px; }
   .card {
-    background: #090d16;
+    background: #070b14;
     border: 1px solid var(--card-border);
     border-radius: 10px;
-    padding: 12px 16px;
+    padding: 12px 14px;
     transition: border-color 0.2s, transform 0.2s;
   }
-  .card:hover { border-color: #334155; transform: translateY(-1px); }
+  .card:hover { border-color: #334155; }
   .card-highlight { border-left: 4px solid var(--primary); }
   .card-success { border-left: 4px solid var(--accent); }
   .card-warning { border-left: 4px solid var(--warning); }
   .card-indigo { border-left: 4px solid var(--secondary); }
 
-  /* Badges */
+  /* Cajas de Integrantes */
+  .member-card {
+    background: #070b14;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 14px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .member-card.eliceo { border-top: 4px solid var(--eliceo-color); }
+  .member-card.paul { border-top: 4px solid var(--paul-color); }
+  .member-avatar {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+  .member-name {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .member-name.eliceo { color: var(--eliceo-color); }
+  .member-name.paul { color: var(--paul-color); }
+  .member-role {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  /* Speaker Badges (Turnos de habla) */
+  .speaker-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .speaker-eliceo { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #0284c7; }
+  .speaker-paul { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid #059669; }
+
+  /* Badges generales */
   .badge {
     display: inline-block;
     padding: 3px 8px;
     border-radius: 6px;
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
   }
@@ -170,20 +215,20 @@
   .badge-step { background: #6366f1; color: #fff; margin-right: 6px; padding: 2px 7px; border-radius: 4px; }
 
   /* Tablas */
-  table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12px; }
-  th, td { border: 1px solid var(--card-border); padding: 6px 9px; text-align: left; }
-  th { background: #090d16; color: var(--primary); font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11.5px; }
+  th, td { border: 1px solid var(--card-border); padding: 5px 8px; text-align: left; }
+  th { background: #070b14; color: var(--primary); font-weight: 700; }
   tr:nth-child(even) { background: rgba(255,255,255,0.015); }
 
   /* Evidencias con Zoom */
   .evidence-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-top: 10px;
+    gap: 14px;
+    margin-top: 8px;
   }
   .evidence-box {
-    background: #090d16;
+    background: #070b14;
     border: 1px solid var(--card-border);
     border-radius: 10px;
     padding: 10px;
@@ -191,7 +236,7 @@
   }
   .evidence-img {
     width: 100%;
-    max-height: 240px;
+    max-height: 220px;
     object-fit: contain;
     border-radius: 6px;
     border: 1px solid #334155;
@@ -200,25 +245,25 @@
     transition: transform 0.2s;
   }
   .evidence-img:hover { transform: scale(1.02); }
-  .caption { font-size: 11px; color: var(--text-muted); font-style: italic; margin-top: 6px; }
+  .caption { font-size: 10.5px; color: var(--text-muted); font-style: italic; margin-top: 4px; }
 
   /* Centro de Mando (Live Demo) */
-  .cockpit-grid { display: grid; grid-template-columns: 1.05fr 1.95fr; gap: 18px; height: 100%; }
+  .cockpit-grid { display: grid; grid-template-columns: 1.05fr 1.95fr; gap: 16px; height: 100%; }
   .action-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: #1e293b;
     border: 1px solid #334155;
     color: #f1f5f9;
-    padding: 8px 12px;
+    padding: 7px 10px;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s;
-    margin-bottom: 7px;
+    margin-bottom: 6px;
   }
   .action-btn:hover {
     background: #0284c7;
@@ -231,23 +276,23 @@
     border-color: #10b981;
   }
   .copy-code-box {
-    background: #090d16;
+    background: #070b14;
     border: 1px solid #334155;
     border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 8px;
+    padding: 7px 10px;
+    margin-bottom: 6px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
   .copy-btn {
     background: #2563eb;
     color: #fff;
     border: none;
-    padding: 5px 12px;
+    padding: 4px 10px;
     border-radius: 6px;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.15s;
@@ -255,20 +300,6 @@
   }
   .copy-btn:hover { background: #1d4ed8; transform: scale(1.03); }
   .copy-btn.copied { background: #10b981; }
-
-  /* Acordeón / Balotario interactivo */
-  .qa-card {
-    background: #090d16;
-    border: 1px solid var(--card-border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
-  }
-  .qa-card:hover { border-color: var(--primary); background: #111827; }
-  .qa-card h4 { font-size: 12.5px; color: var(--primary); margin-bottom: 4px; display: flex; justify-content: space-between; }
-  .qa-card p { font-size: 11.5px; color: #cbd5e1; }
 
   /* Toast Notification */
   #toast {
@@ -278,12 +309,12 @@
     color: #fff;
     text-align: center;
     border-radius: 8px;
-    padding: 10px 18px;
+    padding: 9px 16px;
     position: fixed;
     z-index: 100;
     right: 24px;
     top: 65px;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 700;
     box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     opacity: 0;
@@ -293,33 +324,33 @@
 
   /* Footer y Selector de Diapositivas */
   footer {
-    background: rgba(17, 24, 39, 0.95);
+    background: rgba(15, 23, 42, 0.95);
     border-top: 1px solid var(--card-border);
     padding: 8px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 52px;
+    height: 50px;
   }
   .nav-btn {
     background: var(--card-bg);
     color: var(--primary);
     border: 1px solid var(--card-border);
-    padding: 6px 14px;
+    padding: 5px 14px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 700;
-    font-size: 12px;
+    font-size: 11.5px;
     transition: all 0.2s;
   }
   .nav-btn:hover { background: var(--primary); color: #090d16; }
   .mini-dots {
     display: flex;
-    gap: 7px;
+    gap: 6px;
   }
   .dot {
-    width: 24px;
-    height: 7px;
+    width: 20px;
+    height: 6px;
     background: #334155;
     border-radius: 4px;
     cursor: pointer;
@@ -327,7 +358,7 @@
   }
   .dot.active {
     background: var(--primary);
-    width: 36px;
+    width: 32px;
     box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
   }
 </style>
@@ -343,53 +374,120 @@
     <img src="logo_chaskipc.svg" alt="ChaskiPC Logo" class="brand-logo">
   </div>
   <div class="header-actions">
-    <button class="btn-cockpit" onclick="goToSlide(5)">
+    <button class="btn-cockpit" onclick="goToSlide(7)">
       <span>⚡</span> Centro de Mando (Live Demo)
     </button>
-    <div class="slide-counter" id="slideCounter">1 / 8</div>
+    <div class="slide-counter" id="slideCounter">1 / 11</div>
   </div>
 </header>
 
 <div class="deck-container">
 
-  <!-- SLIDE 1: PORTADA OFICIAL (ESTRUCTURA DEL PDF) -->
+  <!-- SLIDE 1: PORTADA OFICIAL (2 INTEGRANTES) -->
   <div class="slide active">
-    <div style="margin: auto; text-align: center; max-width: 900px;">
-      <img src="logo_chaskipc.svg" alt="ChaskiPC Logo" style="height: 70px; margin-bottom: 12px; filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.45));">
-      <h1 style="font-size: 30px; margin-bottom: 4px;">INFORME DE EVALUACIÓN Y SUSTENTACIÓN DE LA UNIDAD I</h1>
-      <p style="font-size: 16px; color: var(--secondary); margin-bottom: 16px; font-weight: 600;">
-        Sistema Distribuido Base Orientado a Producción (Sesiones 01 a 05)
+    <div style="margin: auto; text-align: center; max-width: 960px;">
+      <img src="logo_chaskipc.svg" alt="ChaskiPC Logo" style="height: 65px; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.45));">
+      <h1 style="font-size: 28px; margin-bottom: 3px;">INFORME DE EVALUACIÓN Y SUSTENTACIÓN DE LA UNIDAD I</h1>
+      <p style="font-size: 15px; color: var(--secondary); margin-bottom: 14px; font-weight: 600;">
+        Sistema Distribuido para la Venta de Computadoras y Componentes de Hardware
       </p>
 
-      <div class="card card-highlight" style="text-align: left; margin-bottom: 12px;">
-        <div class="grid-2">
-          <div>
-            <p><strong>Estudiante:</strong> Eliceo Parillo Mostajo</p>
-            <p><strong>Equipo:</strong> Equipo 01 / Grupo 4 - ChaskiByte Systems</p>
-            <p><strong>Sección:</strong> 5to Ciclo - Grupo Único</p>
-            <p><strong>Proyecto Sello:</strong> ChaskiPC Hardware E-Commerce</p>
-          </div>
-          <div>
-            <p><strong>Docente:</strong> Ing. Abel Ángel Sullón Macalupu</p>
-            <p><strong>Curso:</strong> Desarrollo de Aplicaciones Distribuidas</p>
-            <p><strong>Repositorio GitHub:</strong> <code>jaisesasaki24-cloud/ChaskiByte-Systems</code></p>
-            <p><strong>Topics:</strong> campus-juliaca, semestre-2026-2, grupo-01-chaskipc</p>
-          </div>
+      <!-- Ficha de los 2 Integrantes -->
+      <div class="grid-2" style="margin-bottom: 12px; text-align: left;">
+        <div class="member-card eliceo">
+          <div class="member-avatar">👨‍💻</div>
+          <div class="member-name eliceo">Eliceo Parillo Mostajo</div>
+          <div class="member-role">Arquitectura Backend, Config Server, Eureka, Gateway y Catálogo</div>
+          <p style="font-size:11.5px; color:#cbd5e1;">
+            • <strong>Transaccional:</strong> <code>pc-orden-ms</code> (Cabecera-Detalle, IGV 18%)<br>
+            • <strong>No transaccional:</strong> <code>pc-catalogo-ms</code> (Hardware, Stock)
+          </p>
+        </div>
+
+        <div class="member-card paul">
+          <div class="member-avatar">💳</div>
+          <div class="member-name paul">Laura Vargas Cristhian Paul</div>
+          <div class="member-role">Pasarela Externa (Mercado Pago), Seguridad y Autenticación JWT</div>
+          <p style="font-size:11.5px; color:#cbd5e1;">
+            • <strong>Transaccional:</strong> <code>pc-pago-ms</code> (Checkout Pro, Webhooks)<br>
+            • <strong>No transaccional:</strong> <code>pc-auth-ms</code> (JWT, Roles BCrypt)
+          </p>
         </div>
       </div>
 
-      <p style="font-size: 12px; color: var(--text-muted);">
-        💡 Presiona [ F11 ] para pantalla completa. Pasa diapositivas con [ ← / → ] o la barra espaciadora.
-      </p>
+      <div class="card" style="text-align: left; padding: 8px 14px; background:#070b14;">
+        <p style="font-size:11px; color:#94a3b8;">
+          <strong>Equipo:</strong> Equipo 01 / Grupo 4 - ChaskiByte Systems &nbsp;|&nbsp; 
+          <strong>Docente:</strong> Ing. Abel Ángel Sullón Macalupu &nbsp;|&nbsp; 
+          <strong>Repositorio:</strong> <code>jaisesasaki24-cloud/ChaskiByte-Systems</code> &nbsp;|&nbsp;
+          <strong>Topics:</strong> campus-juliaca, semestre-2026-2, grupo-01-chaskipc
+        </p>
+      </div>
     </div>
   </div>
 
-  <!-- SLIDE 2: SECCIÓN 1 DEL PDF - ARQUITECTURA DISTRIBUIDA BASE -->
+  <!-- SLIDE 2: DOMINIO Y ROLES OFICIALES (BRIEF TÉCNICO) -->
   <div class="slide">
-    <h2>1. Resumen de Arquitectura del Sistema Distribuido Base (Unidad I)</h2>
-    <p>Ecosistema cloud-native estructurado con desacoplamiento total, descubrimiento dinámico y persistencia compartida:</p>
+    <h2>1. Dominio del Proyecto y Asignación de Roles</h2>
+    <div class="speaker-badge speaker-eliceo">🎤 Habla: Eliceo Parillo Mostajo (Minuto 1 - 2)</div>
     
-    <div class="grid-3" style="margin-top: 8px;">
+    <div class="grid-2" style="margin-top:4px;">
+      <div class="card card-highlight">
+        <h3>🎯 Problema y Necesidad que Resuelve</h3>
+        <p>Resuelve la dificultad que enfrentan usuarios y empresas para cotizar y adquirir computadoras ensambladas y piezas de hardware con verificación de stock en tiempo real.</p>
+        <p style="margin-top:6px;"><strong>Flujo Operativo Distribuido:</strong></p>
+        <p style="color:var(--primary); font-weight:700; margin-top:2px;">
+          Catálogo (pc-catalogo-ms) ➔ Órdenes (pc-orden-ms) ➔ Pasarela (pc-pago-ms) ➔ Seguridad (pc-auth-ms)
+        </p>
+      </div>
+
+      <div class="card card-success">
+        <h3>👥 Actores del Sistema y Servicio Externo</h3>
+        <ul>
+          <li><strong>Cliente / Comprador:</strong> Explora componentes, filtra ficha técnica, genera órdenes y paga en línea.</li>
+          <li><strong>Administrador / Gestor:</strong> Administra catálogo, actualiza precios, repone existencias.</li>
+          <li><strong>Servicio Externo Real:</strong> <strong>Mercado Pago API (Sandbox)</strong> para cobros y Webhooks asíncronos.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tabla de Asignación de Microservicios del Brief -->
+    <h3 style="margin-top:10px;">📋 Asignación Oficial de Microservicios por Integrante:</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Integrante</th>
+          <th>Rol o Énfasis Previsto</th>
+          <th>Microservicio Transaccional</th>
+          <th>Microservicio No Transaccional</th>
+          <th>Estado Unidad I</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Eliceo Parillo Mostajo</strong></td>
+          <td>Arquitectura backend, órdenes de compra y catálogo hardware</td>
+          <td><code>pc-orden-ms</code> (Cabecera-Detalle, IGV)</td>
+          <td><code>pc-catalogo-ms</code> (Inventario hardware)</td>
+          <td><span class="badge badge-prod">100% Implementado</span></td>
+        </tr>
+        <tr>
+          <td><strong>Laura Vargas Cristhian Paul</strong></td>
+          <td>Pasarela de pagos externa, seguridad y tokens JWT</td>
+          <td><code>pc-pago-ms</code> (Mercado Pago Checkout)</td>
+          <td><code>pc-auth-ms</code> (Proveedor de identidad)</td>
+          <td><span class="badge badge-dev">Diseñado / Unidad II</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SLIDE 3: SECCIÓN 1 DEL PDF - ARQUITECTURA DISTRIBUIDA BASE -->
+  <div class="slide">
+    <h2>2.4 Arquitectura del Sistema Distribuido Base</h2>
+    <div class="speaker-badge speaker-eliceo">🎤 Habla: Eliceo Parillo Mostajo (Minuto 3 - 4)</div>
+
+    <div class="grid-3" style="margin-top: 4px;">
       <div class="card card-highlight">
         <h3>🚪 API Gateway (:18080 DEV)</h3>
         <p>Spring Cloud Gateway reactivo (Netty). Único punto de acceso público. Resuelve rutas <code>lb://</code> mediante Round Robin hacia las instancias vivas.</p>
@@ -412,111 +510,163 @@
           <th>Rol en el Ecosistema</th>
           <th>Puerto DEV (Local)</th>
           <th>Puerto PROD (Docker)</th>
-          <th>Estado</th>
+          <th>Responsable</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td><strong>pagatu-config</strong></td><td>Configuración Centralizada (Native Profile)</td><td>8888</td><td>28888</td><td><span class="badge badge-prod">Operativo</span></td></tr>
-        <tr><td><strong>pagatu-eureka</strong></td><td>Service Registry & Discovery</td><td>8761</td><td>28761</td><td><span class="badge badge-prod">Operativo</span></td></tr>
-        <tr><td><strong>pagatu-gateway</strong></td><td>Punto Único de Acceso & Load Balancer</td><td>18080</td><td>28080</td><td><span class="badge badge-prod">Operativo</span></td></tr>
-        <tr><td><strong>pc-catalogo-ms</strong></td><td>Catálogo de Hardware (CPUs, GPUs, RAM)</td><td>8081</td><td>Red interna (8080)</td><td><span class="badge badge-prod">Operativo</span></td></tr>
-        <tr><td><strong>pc-orden-ms (2 Instancias)</strong></td><td>Órdenes Transaccionales con 18% IGV</td><td>8082 / 8083</td><td>Red interna (8080)</td><td><span class="badge badge-prod">Operativo</span></td></tr>
-        <tr><td><strong>PostgreSQL (Docker)</strong></td><td>Persistencia Relacional orden_db</td><td>5433</td><td>Red interna (5432)</td><td><span class="badge badge-prod">Operativo</span></td></tr>
+        <tr><td><strong>pagatu-config</strong></td><td>Configuración Centralizada (Native Profile)</td><td>8888</td><td>28888</td><td>Eliceo Parillo</td></tr>
+        <tr><td><strong>pagatu-eureka</strong></td><td>Service Registry & Discovery</td><td>8761</td><td>28761</td><td>Eliceo Parillo</td></tr>
+        <tr><td><strong>pagatu-gateway</strong></td><td>Punto Único de Acceso & Load Balancer</td><td>18080</td><td>28080</td><td>Eliceo Parillo</td></tr>
+        <tr><td><strong>pc-catalogo-ms</strong></td><td>Catálogo de Hardware (CPUs, GPUs, RAM)</td><td>8081</td><td>Red interna (8080)</td><td>Eliceo Parillo</td></tr>
+        <tr><td><strong>pc-orden-ms (2 Instancias)</strong></td><td>Órdenes Transaccionales con 18% IGV</td><td>8082 / 8083</td><td>Red interna (8080)</td><td>Eliceo Parillo</td></tr>
+        <tr><td><strong>PostgreSQL (Docker)</strong></td><td>Persistencia Relacional orden_db</td><td>5433</td><td>Red interna (5432)</td><td>Eliceo Parillo</td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- SLIDE 3: SECCIÓN 2 DEL PDF - BALOTARIO TEÓRICO-PRÁCTICO (5 PREGUNTAS) -->
+  <!-- SLIDE 4: FICHAS TÉCNICAS Y CONTRATO REST (DIVIDIDO POR INTEGRANTE) -->
   <div class="slide">
-    <h2>2. Balotario Teórico-Práctico de Sustentación (S1 a S4)</h2>
-    <p>Fundamentos arquitectónicos clave respondidos con rigor técnico según la Tabla 4 de la guía oficial:</p>
+    <h2>2.1 y 2.2 Alcance y Contrato REST por Integrante</h2>
+    <div class="speaker-badge speaker-paul">🎤 Habla: Laura Vargas Cristhian Paul (Minuto 5 - 6)</div>
 
-    <div class="grid-2" style="margin-top: 8px;">
-      <div class="qa-card">
-        <h4>1. ¿Por qué no depender de puertos fijos? <span>[Pregunta 1]</span></h4>
-        <p>Asignar puertos fijos impide el escalado horizontal elástico. Con <code>instance-id: ${app.name}:${server.port}</code> y Eureka, las instancias son efímeras y se anuncian dinámicamente sin colisiones.</p>
+    <div class="grid-2" style="margin-top:4px;">
+      <!-- Columna Eliceo -->
+      <div class="card card-highlight">
+        <h3 style="color:var(--eliceo-color); margin-top:0;">📦 Microservicios de Eliceo Parillo</h3>
+        <p><strong>1. pc-catalogo-ms (No transaccional):</strong></p>
+        <ul>
+          <li><code>GET /api/v1/categorias</code>: Lista categorías (CPUs, GPUs, RAM).</li>
+          <li><code>GET /api/v1/productos</code>: Catálogo con stock y ficha técnica.</li>
+          <li><code>POST /api/v1/productos</code>: Alta de nuevos componentes.</li>
+        </ul>
+        <p style="margin-top:6px;"><strong>2. pc-orden-ms (Transaccional):</strong></p>
+        <ul>
+          <li>Cabecera-Detalle: <code>Orden</code> y <code>DetalleOrden</code>.</li>
+          <li>Cálculo fiscal automático: Subtotal + 18% de IGV.</li>
+          <li><code>POST /api/v1/ordenes</code>: Emite orden (201 Created).</li>
+          <li><code>GET /api/v1/ordenes/{id}</code>: Consulta por ID (404 si no existe).</li>
+        </ul>
       </div>
-      <div class="qa-card">
-        <h4>2. ¿Config Server vs Propiedad en Código? <span>[Pregunta 2]</span></h4>
-        <p>Cumple el Factor III de <em>The Twelve-Factor App</em>. Permite cambiar bases de datos y credenciales entre DEV y PROD sin recompilar ni reempaquetar el archivo JAR.</p>
-      </div>
-      <div class="qa-card">
-        <h4>3. ¿Por qué el desalojo no es instantáneo? <span>[Pregunta 3]</span></h4>
-        <p>Evita el <em>flapping</em> (inestabilidad por latencia transitoria). Eureka espera 30s de latido y 90s de expiración de arrendamiento antes de expulsar un nodo.</p>
-      </div>
-      <div class="qa-card">
-        <h4>4. ¿Qué es el esquema lb:// y quién lo resuelve? <span>[Pregunta 4]</span></h4>
-        <p>Es un URI lógico de Spring Cloud LoadBalancer. El filtro reactivo del Gateway consulta la memoria de Eureka y reescribe la URL a la IP/puerto físico real.</p>
-      </div>
-    </div>
 
-    <div class="qa-card" style="margin-top: 4px;">
-      <h4>5. ¿Por qué Round Robin es suficiente para instancias sin estado (Stateless)? <span>[Pregunta 5]</span></h4>
-      <p>Porque ningún nodo retiene memoria de sesión de usuario en memoria RAM. Todo el estado reside en la base de datos compartida (PostgreSQL), por lo que cualquier réplica atiende indistintamente cualquier petición sin necesidad de sticky sessions.</p>
+      <!-- Columna Paul -->
+      <div class="card card-success">
+        <h3 style="color:var(--paul-color); margin-top:0;">💳 Microservicios de Cristhian Paul</h3>
+        <p><strong>1. pc-pago-ms (Transaccional - Mercado Pago):</strong></p>
+        <ul>
+          <li>Cabecera-Detalle: <code>Pago</code> y <code>TransaccionPasarela</code>.</li>
+          <li><code>POST /api/v1/pagos/checkout</code>: Genera preferencia y link de cobro.</li>
+          <li><code>POST /api/v1/pagos/webhook</code>: Notificación asíncrona de pago.</li>
+        </ul>
+        <p style="margin-top:6px;"><strong>2. pc-auth-ms (No transaccional - Seguridad):</strong></p>
+        <ul>
+          <li>Entidades: <code>Usuario</code> y <code>Rol</code> (CLIENTE, ADMIN).</li>
+          <li>Contraseñas encriptadas con <strong>BCrypt</strong>.</li>
+          <li><code>POST /api/v1/auth/login</code>: Emisión de Token JWT firmado.</li>
+          <li><code>GET /api/v1/auth/validate</code>: Validación para el Gateway.</li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <!-- SLIDE 4: SECCIÓN 3 DEL PDF - EVIDENCIAS TÉCNICAS OFICIALES EN VIVO -->
+  <!-- SLIDE 5: CONFIGURACIÓN DEV VS PROD (FACTOR III) -->
+  <div class="slide">
+    <h2>2.3 Configuración Externalizada por Ambiente (DEV vs PROD)</h2>
+    <div class="speaker-badge speaker-paul">🎤 Habla: Laura Vargas Cristhian Paul (Minuto 7 - 8)</div>
+
+    <p>Cumplimiento estricto del <strong>Factor III (The Twelve-Factor App)</strong> mediante <code>config-repo</code>:</p>
+    
+    <div class="grid-2" style="margin-top: 8px;">
+      <div class="card" style="border-top: 4px solid #0284c7;">
+        <h3><span class="badge badge-dev">Ambiente DEV</span> config-repo/*-dev.yml</h3>
+        <ul>
+          <li><strong>Puertos Host:</strong> <code>8081</code>, <code>8082</code>, <code>8083</code>, <code>18080</code>.</li>
+          <li><strong>Base de Datos:</strong> PostgreSQL en <code>localhost:5433/orden_db</code>.</li>
+          <li><strong>Hibernate DDL:</strong> <code>ddl-auto: update</code> para desarrollo ágil y creación de tablas.</li>
+          <li><strong>Logs:</strong> Escritura directa en <code>logs/*.log</code> para el recolector Promtail.</li>
+          <li><strong>Actuator:</strong> Endpoints abiertos para monitoreo (Prometheus, Health).</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top: 4px solid #059669;">
+        <h3><span class="badge badge-prod">Ambiente PROD</span> infra/compose.yml</h3>
+        <ul>
+          <li><strong>Puerto Gateway:</strong> <code>28080</code> (único puerto expuesto al host exterior).</li>
+          <li><strong>Red Aislada:</strong> Red interna cerrada de Docker (<code>pagatu-prod-net</code>).</li>
+          <li><strong>Hibernate DDL:</strong> <code>ddl-auto: validate</code> (prohíbe alterar esquemas en producción).</li>
+          <li><strong>Seguridad:</strong> Credenciales inyectadas exclusivamente mediante variables de entorno.</li>
+          <li><strong>Infraestructura:</strong> Config Server en <code>28888</code> y Eureka en <code>28761</code>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card card-highlight" style="margin-top: 10px;">
+      <p>💡 <strong>Principio de Portabilidad:</strong> Se compila un <strong>único binario .jar</strong> para todo el equipo y el ambiente inyectado determina su comportamiento.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: EVIDENCIAS TÉCNICAS REALES (EVIDENCIA 6 Y 7) -->
   <div class="slide">
     <h2>3. Evidencias Técnicas Oficiales de la Unidad 1</h2>
-    <p>Capturas reales extraídas del entorno en ejecución certificando el estado operativo:</p>
+    <div class="speaker-badge speaker-eliceo">🎤 Habla: Eliceo Parillo Mostajo</div>
+    <p>Certificación de funcionamiento concurrente con capturas reales tomadas del entorno en vivo:</p>
 
     <div class="evidence-container">
       <div class="evidence-box">
         <h3 style="margin-top:0;">3.1 Eureka Dashboard (:8761)</h3>
         <img src="evidencia_6_eureka_web_dashboard.png" alt="Eureka Dashboard Evidencia" class="evidence-img" onclick="window.open(this.src)">
-        <p class="caption">Figura 1: Service Registry Eureka con PAGATU-GATEWAY (18080), PAGATU-CATALOGO-MS (8081) y 2 réplicas de PAGATU-ORDEN-MS (8082 y 8083) registradas en estado UP.</p>
+        <p class="caption">Figura 1: Service Registry con PAGATU-GATEWAY (18080), PAGATU-CATALOGO-MS (8081) y 2 réplicas de PAGATU-ORDEN-MS (8082 y 8083) en UP simultáneo.</p>
       </div>
 
       <div class="evidence-box">
-        <h3 style="margin-top:0;">3.2 Pruebas CRUD y Persistencia en PostgreSQL</h3>
+        <h3 style="margin-top:0;">3.2 Persistencia Compartida en PostgreSQL (:5433)</h3>
         <img src="evidencia_7_pruebas_crud_powershell.png" alt="Pruebas CRUD Evidencia" class="evidence-img" onclick="window.open(this.src)">
-        <p class="caption">Figura 2: Verificación de persistencia en PostgreSQL (puerto 5433) respondiendo idénticamente desde el puerto 8082 y 8083 en PowerShell.</p>
+        <p class="caption">Figura 2: Verificación de persistencia en PostgreSQL respondiendo idénticamente desde el puerto 8082 y 8083 en PowerShell.</p>
       </div>
     </div>
   </div>
 
-  <!-- SLIDE 5: SECCIÓN 4 DEL PDF - SUSTENTACIÓN EN VIVO (GUION 7 PASOS Y TIEMPOS) -->
+  <!-- SLIDE 7: GUION DE SUSTENTACIÓN A DOS VOCES (18 MINUTOS) -->
   <div class="slide">
-    <h2>4. Sustentación del Sistema en Vivo (Tabla 5 Oficial y Guion)</h2>
-    <div class="grid-2">
-      <div class="card card-indigo">
-        <h3 style="margin-top:0;">⏱️ Distribución Oficial de Tiempo (18 min)</h3>
-        <ul>
-          <li><strong>1. Presentación técnica (8 min):</strong> Arquitectura base, contrato REST, configuración DEV/PROD y decisiones de diseño.</li>
-          <li><strong>2. Demo técnica en vivo (5 min):</strong> Demostración práctica en la computadora de CRUD, balanceo y tolerancia a caídas.</li>
-          <li><strong>3. Preguntas individuales (5 min):</strong> Verificación de autoría individual respondiendo preguntas del balotario.</li>
-        </ul>
-      </div>
+    <h2>4. Guion de Sustentación a Dos Voces (Tabla 5 Oficial)</h2>
+    <p>Distribución coordinada de roles para los 18 minutos reglamentarios:</p>
 
-      <div class="card card-highlight">
-        <h3 style="margin-top:0;">📋 Criterios Mínimos de Aceptación</h3>
-        <ul>
-          <li>✔️ Arranque con Config Server, Eureka, Gateway y 2 microservicios.</li>
-          <li>✔️ Al menos un microservicio con 2 instancias simultáneas balanceadas.</li>
-          <li>✔️ CRUD completo con caso de éxito (201) y caso de error (400/404).</li>
-          <li>✔️ Configuración externalizada DEV/PROD sin credenciales quemadas.</li>
-        </ul>
-      </div>
-    </div>
-
-    <h3 style="margin-top:12px;">🚀 Secuencia de los 7 Pasos Oficiales para los 5 min de Demo:</h3>
-    <div class="grid-2" style="margin-top:6px;">
-      <div>
-        <p><span class="badge badge-step">1</span> <strong>Contrato REST:</strong> Mostrar <code>/api/v1/productos</code> y <code>/api/v1/ordenes</code>.</p>
-        <p><span class="badge badge-step">2</span> <strong>CRUD en Vivo:</strong> Caso éxito (201) con 18% IGV y casos 400 y 404.</p>
-        <p><span class="badge badge-step">3</span> <strong>Config Server:</strong> Consultar entrega de YAML en <code>:8888</code>.</p>
-        <p><span class="badge badge-step">4</span> <strong>Eureka Dashboard:</strong> Verificar estado <code>UP (2)</code> simultáneo.</p>
-      </div>
-      <div>
-        <p><span class="badge badge-step">5</span> <strong>Balanceo Round Robin:</strong> Disparar peticiones y alternar 8082 vs 8083.</p>
-        <p><span class="badge badge-step">6</span> <strong>Tolerancia a Fallos:</strong> Detener una instancia y verificar respuesta 200.</p>
-        <p><span class="badge badge-step">7</span> <strong>Identidad ChaskiPC:</strong> Explicar e-commerce de hardware y facturación.</p>
-      </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Fase / Tiempo</th>
+          <th>Qué Expone: Eliceo Parillo</th>
+          <th>Qué Expone: Cristhian Paul</th>
+          <th>Objetivo Evaluado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Presentación Técnica<br>(8 minutos)</strong></td>
+          <td>• Introducción y dominio ChaskiPC.<br>• Arquitectura base (Gateway, Eureka, Config).<br>• Catálogo Hardware (pc-catalogo-ms).</td>
+          <td>• Órdenes de compra y cálculo de 18% IGV.<br>• Configuración DEV vs PROD (config-repo).<br>• Proyección Mercado Pago y JWT (Unidad II).</td>
+          <td>Dominio de la arquitectura y decisiones técnicas.</td>
+        </tr>
+        <tr>
+          <td><strong>2. Demo Técnica en Vivo<br>(5 minutos)</strong></td>
+          <td>• Demuestra Eureka con 2 réplicas UP.<br>• Demuestra balanceo Round Robin en consolas.<br>• Demuestra tolerancia a fallos apagando 8082.</td>
+          <td>• Ejecuta CRUD Éxito (201) con Ryzen 7.<br>• Ejecuta Caso Error Validación (400).<br>• Ejecuta Caso No Encontrado (404).</td>
+          <td>Funcionamiento real sin fallas en la computadora.</td>
+        </tr>
+        <tr>
+          <td><strong>3. Preguntas Individuales<br>(5 minutos)</strong></td>
+          <td>Responde preguntas de puertos dinámicos y Config Server.</td>
+          <td>Responde preguntas de desalojo Eureka y esquema lb://.</td>
+          <td>Autoría y defensa individual.</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div style="text-align: center; margin-top: 12px;">
+      <button class="btn-cockpit" onclick="goToSlide(7)" style="padding: 8px 22px; font-size: 13px;">
+        👉 Pasar al Centro de Mando para la Demo en Vivo
+      </button>
     </div>
   </div>
 
-  <!-- SLIDE 6: CENTRO DE MANDO INTERACTIVO (DEMO COCKPIT DE 1 CLIC) -->
+  <!-- SLIDE 8: CENTRO DE MANDO EN VIVO (DEMO COCKPIT COORDINADO) -->
   <div class="slide">
     <h2>⚡ Centro de Mando: Demostración Técnica en Vivo (5 min)</h2>
     <div class="cockpit-grid">
@@ -544,51 +694,56 @@
           <span>🎯</span> <strong>6. Prometheus Targets (:19090)</strong> [Auto-Discovery]
         </a>
 
-        <div class="card card-warning" style="margin-top: 8px; padding: 8px 12px;">
-          <p style="font-size: 11px;">💡 <strong>Iniciador:</strong> Doble clic en <code>iniciar_todo.bat</code> antes de empezar.</p>
+        <div class="card card-warning" style="margin-top: 6px; padding: 6px 10px;">
+          <p style="font-size: 10.5px;">💡 <strong>Iniciador:</strong> Doble clic en <code>iniciar_todo.bat</code> antes de exponer.</p>
         </div>
       </div>
 
-      <!-- Columna Derecha: Botones de Copiado Rápido para PowerShell -->
+      <!-- Columna Derecha: Botones con Asignación de Integrante -->
       <div>
         <h3 style="margin-top:0;">📋 Comandos de Prueba para PowerShell</h3>
 
         <div class="copy-code-box">
           <div>
+            <span class="speaker-badge speaker-paul">Ejecuta: Cristhian Paul</span>
             <strong>Paso 2: Caso Éxito (201 Created)</strong>
-            <p style="font-size:11px; color:#94a3b8;">Crea orden gamer con Ryzen 7 7800X3D y calcula 18% IGV.</p>
+            <p style="font-size:10.5px; color:#94a3b8;">Crea orden gamer con Ryzen 7 y calcula 18% IGV.</p>
           </div>
           <button class="copy-btn" onclick="copyCode(cmdExito, this)">Copiar Comando</button>
         </div>
 
         <div class="copy-code-box">
           <div>
-            <strong>Paso 2: Caso Error (400 Bad Request)</strong>
-            <p style="font-size:11px; color:#94a3b8;">Envía body inválido para probar validación de entrada.</p>
+            <span class="speaker-badge speaker-paul">Ejecuta: Cristhian Paul</span>
+            <strong>Paso 2: Caso Error Validación (400 Bad Request)</strong>
+            <p style="font-size:10.5px; color:#94a3b8;">Envía body vacío para probar validación HTTP.</p>
           </div>
           <button class="copy-btn" onclick="copyCode(cmdError400, this)">Copiar Comando</button>
         </div>
 
         <div class="copy-code-box">
           <div>
+            <span class="speaker-badge speaker-paul">Ejecuta: Cristhian Paul</span>
             <strong>Paso 2: Caso No Encontrado (404 Not Found)</strong>
-            <p style="font-size:11px; color:#94a3b8;">Consulta orden inexistente ID 99999.</p>
+            <p style="font-size:10.5px; color:#94a3b8;">Consulta orden inexistente ID 99999.</p>
           </div>
           <button class="copy-btn" onclick="copyCode(cmdError404, this)">Copiar Comando</button>
         </div>
 
         <div class="copy-code-box">
           <div>
+            <span class="speaker-badge speaker-eliceo">Ejecuta: Eliceo Parillo</span>
             <strong>Paso 5: Balanceo Round Robin (4 Peticiones)</strong>
-            <p style="font-size:11px; color:#94a3b8;">Dispara 4 requests para evidenciar alternancia 8082 vs 8083.</p>
+            <p style="font-size:10.5px; color:#94a3b8;">Dispara 4 requests y muestra alternancia 8082 vs 8083.</p>
           </div>
           <button class="copy-btn" onclick="copyCode(cmdBalanceo, this)">Copiar Comando</button>
         </div>
 
         <div class="copy-code-box">
           <div>
+            <span class="speaker-badge speaker-eliceo">Ejecuta: Eliceo Parillo</span>
             <strong>Paso 6: Tolerancia a Fallos</strong>
-            <p style="font-size:11px; color:#94a3b8;">Verifica que el Gateway sigue respondiendo tras apagar una réplica.</p>
+            <p style="font-size:10.5px; color:#94a3b8;">Apaga la consola 8082 y verifica que 8083 sigue respondiendo.</p>
           </div>
           <button class="copy-btn" onclick="copyCode(cmdTolerancia, this)">Copiar Comando</button>
         </div>
@@ -598,11 +753,13 @@
     </div>
   </div>
 
-  <!-- SLIDE 7: BITÁCORA DEVOPS (7 PROBLEMAS DE LABORATORIO DTI) -->
+  <!-- SLIDE 9: BITÁCORA DEVOPS (7 PROBLEMAS DE LABORATORIO) -->
   <div class="slide">
     <h2>Bitácora DevOps: Resolución de los 7 Desafíos de Laboratorio</h2>
-    <p>Soluciones de ingeniería implementadas para garantizar portabilidad en máquinas de laboratorio:</p>
-    <div class="grid-2" style="margin-top: 8px;">
+    <div class="speaker-badge speaker-eliceo">🎤 Hablan: Eliceo Parillo y Cristhian Paul</div>
+    <p>Soluciones de ingeniería implementadas para garantizar la portabilidad en equipos de laboratorio:</p>
+    
+    <div class="grid-2" style="margin-top: 6px;">
       <div class="card">
         <h3>Desafíos de Entorno y Rutas</h3>
         <ul>
@@ -621,35 +778,78 @@
         </ul>
       </div>
     </div>
-    <div class="card card-highlight" style="margin-top: 10px;">
+    <div class="card card-highlight" style="margin-top: 8px;">
       <p>🛡️ <strong>Script Preventivo para Grupo 4:</strong> <code>limpiar_pc_laboratorio.bat</code> libera en 3 segundos los puertos ocupados por grupos anteriores antes de iniciar.</p>
     </div>
   </div>
 
-  <!-- SLIDE 8: SECCIÓN 5 DEL PDF - RÚBRICA DE EVALUACIÓN OFICIAL (20/20) -->
+  <!-- SLIDE 10: BALOTARIO TEÓRICO ASIGNADO POR INTEGRANTE -->
   <div class="slide">
-    <h2>5. Rúbrica de Evaluación de la Unidad I (Puntaje Máximo: 20 pts)</h2>
-    <p>Criterios oficiales de evaluación del producto de Unidad I según la Tabla 7 de la guía oficial:</p>
+    <h2>3. Balotario Teórico Asignado por Integrante (Tabla 4)</h2>
+    <p>Respuestas técnicas preparadas para la fase de preguntas individuales del docente:</p>
+
+    <div class="grid-2" style="margin-top: 6px;">
+      <!-- Preguntas Eliceo -->
+      <div>
+        <div class="qa-card" style="border-left:4px solid var(--eliceo-color);">
+          <span class="speaker-badge speaker-eliceo">Responde: Eliceo Parillo</span>
+          <h4>1. ¿Por qué no depender de puertos fijos?</h4>
+          <p>Impide el escalado horizontal. Con <code>instance-id: ${app.name}:${server.port}</code> y Eureka, las instancias son efímeras y se anuncian dinámicamente.</p>
+        </div>
+        <div class="qa-card" style="border-left:4px solid var(--eliceo-color);">
+          <span class="speaker-badge speaker-eliceo">Responde: Eliceo Parillo</span>
+          <h4>2. ¿Config Server vs Propiedad en Código?</h4>
+          <p>Cumple el Factor III de Twelve-Factor App. Permite alternar entre DEV (BD local, debug) y PROD (Docker aislado, validate) sin recompilar el JAR.</p>
+        </div>
+      </div>
+
+      <!-- Preguntas Paul -->
+      <div>
+        <div class="qa-card" style="border-left:4px solid var(--paul-color);">
+          <span class="speaker-badge speaker-paul">Responde: Cristhian Paul</span>
+          <h4>3. ¿Por qué el desalojo no es instantáneo?</h4>
+          <p>Evita el <em>flapping</em> (inestabilidad por latencia transitoria). Eureka espera 30s de latido y 90s de arrendamiento antes de expulsar el nodo.</p>
+        </div>
+        <div class="qa-card" style="border-left:4px solid var(--paul-color);">
+          <span class="speaker-badge speaker-paul">Responde: Cristhian Paul</span>
+          <h4>4. ¿Qué es lb:// y quién lo resuelve?</h4>
+          <p>Es un URI lógico de Spring Cloud LoadBalancer. El filtro reactivo del Gateway consulta Eureka y reescribe la URL a la IP física real.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card" style="margin-top: 4px; border-left:4px solid var(--secondary);">
+      <h4>5. ¿Por qué Round Robin es suficiente para instancias sin estado? [Pregunta Conjunta]</h4>
+      <p>Porque las instancias no guardan sesión de usuario en RAM; todo el estado vive en PostgreSQL compartida. Cada petición HTTP es químicamente autónoma.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: RÚBRICA OFICIAL DE EVALUACIÓN (20/20) -->
+  <div class="slide">
+    <h2>5. Rúbrica Oficial de Evaluación de la Unidad I (Nota de Equipo)</h2>
+    <p>Matriz oficial de calificación de la Tabla 7 del sílabo universitario:</p>
+    
     <table>
       <thead>
         <tr>
           <th>Criterio Oficial del Sílabo</th>
           <th>Peso</th>
           <th>Nivel Obtenido</th>
-          <th>Evidencia Técnica en el Proyecto ChaskiPC</th>
+          <th>Evidencia Técnica en ChaskiPC</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td><strong>1. Servicio REST funcional y persistente</strong></td><td>15%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>JPA sobre PostgreSQL (5433), CRUD con 200, 201, 400, 404 y DataInitializer.</td></tr>
-        <tr><td><strong>2. Configuración externa por ambiente</strong></td><td>15%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Config Server operativo con segregación real entre DEV y PROD en config-repo.</td></tr>
-        <tr><td><strong>3. Registro y descubrimiento de servicios</strong></td><td>20%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Eureka Server administrando el ciclo de vida y latidos de todos los nodos en vivo.</td></tr>
-        <tr><td><strong>4. Punto único de acceso mediante Gateway</strong></td><td>20%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Spring Cloud Gateway enrutando peticiones dinámicas en el puerto 18080 con lb://.</td></tr>
+        <tr><td><strong>1. Servicio REST funcional y persistente</strong></td><td>15%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>JPA sobre PostgreSQL (5433), CRUD de órdenes con DataInitializer.</td></tr>
+        <tr><td><strong>2. Configuración externa por ambiente</strong></td><td>15%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Config Server operativo con perfiles DEV y PROD en config-repo.</td></tr>
+        <tr><td><strong>3. Registro y descubrimiento de servicios</strong></td><td>20%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Eureka Server administrando el ciclo de vida y latidos de todos los nodos.</td></tr>
+        <tr><td><strong>4. Punto único de acceso mediante Gateway</strong></td><td>20%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Spring Cloud Gateway enrutando peticiones dinámicas con esquemas lb://.</td></tr>
         <tr><td><strong>5. Distribución de tráfico entre instancias</strong></td><td>20%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Dos réplicas (8082 y 8083) balanceadas por Round Robin y tolerancia a fallos.</td></tr>
-        <tr><td><strong>6. Ejecución reproducible y documentación</strong></td><td>10%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Lanzadores de 1 clic, README completo y portabilidad multi-entorno.</td></tr>
+        <tr><td><strong>6. Ejecución reproducible y documentación</strong></td><td>10%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Lanzadores de 1 clic, README completo y portabilidad multi-entorno probada.</td></tr>
       </tbody>
     </table>
+    
     <div style="text-align: right; margin-top: 12px;">
-      <span class="badge badge-prod" style="font-size: 13px; padding: 7px 18px;">NOTA ESTIMADA: 20 / 20</span>
+      <span class="badge badge-prod" style="font-size: 13px; padding: 7px 18px;">NOTA ESTIMADA EQUIPO 01: 20 / 20</span>
     </div>
   </div>
 
@@ -686,9 +886,9 @@
   // Comandos de Prueba para PowerShell
   const cmdExito = `$orden = @{ cliente = 'Eliceo Parillo Mostajo'; tipoComprobante = 'FACTURA'; metodoPago = 'MERCADO_PAGO'; detalles = @( @{ productoId = 1; nombreProducto = 'AMD Ryzen 7 7800X3D'; precioUnitario = 1780.00; cantidad = 1 }, @{ productoId = 4; nombreProducto = 'Kingston Fury 1TB NVMe Gen4'; precioUnitario = 380.00; cantidad = 1 } ) } | ConvertTo-Json -Depth 5; Invoke-RestMethod -Method Post -Uri 'http://localhost:18080/api/v1/ordenes' -Body $orden -ContentType 'application/json'`;
 
-  const cmdError400 = `try { Invoke-RestMethod -Method Post -Uri 'http://localhost:18080/api/v1/ordenes' -Body '{}' -ContentType 'application/json' } catch { Write-Host 'Codigo HTTP recibido:' $_.Exception.Response.StatusCode.value__ -ForegroundColor Red }`;
+  const cmdError400 = `try { Invoke-RestMethod -Method Post -Uri 'http://localhost:18080/api/v1/ordenes' -Body '{}' -ContentType 'application/json' } catch { Write-Host 'Codigo HTTP recibido correctamente:' $_.Exception.Response.StatusCode.value__ -ForegroundColor Red }`;
 
-  const cmdError404 = `try { Invoke-RestMethod -Uri 'http://localhost:18080/api/v1/ordenes/99999' } catch { Write-Host 'Codigo HTTP recibido:' $_.Exception.Response.StatusCode.value__ -ForegroundColor Yellow }`;
+  const cmdError404 = `try { Invoke-RestMethod -Uri 'http://localhost:18080/api/v1/ordenes/99999' } catch { Write-Host 'Codigo HTTP recibido correctamente:' $_.Exception.Response.StatusCode.value__ -ForegroundColor Yellow }`;
 
   const cmdBalanceo = `Write-Host 'Disparando 4 peticiones al Gateway (mira las consolas 8082 y 8083)...' -ForegroundColor Cyan; 1..4 | ForEach-Object { $res = Invoke-RestMethod -Uri 'http://localhost:18080/api/v1/ordenes'; Write-Host "Peticion $_ procesada con exito." -ForegroundColor Green; Start-Sleep -Milliseconds 400 }`;
 
@@ -746,10 +946,10 @@
       nextSlide();
     } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
       prevSlide();
-    } else if (e.key >= '1' && e.key <= '8') {
+    } else if (e.key >= '1' && e.key <= '9') {
       goToSlide(parseInt(e.key) - 1);
     } else if (e.key === 'd' || e.key === 'D') {
-      goToSlide(5);
+      goToSlide(7);
     }
   });
 </script>

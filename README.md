@@ -234,9 +234,9 @@ Al trasladar el ecosistema a las máquinas de laboratorio universitario (**DTI-L
 
 ---
 
-## 🖥️ 7. Materiales de Sustentación y Presentación (Sesión 05)
+## 🖥️ 7. Materiales de Sustentación y Presentación a Dos Voces (Sesión 05)
 
-* 🌐 **[`presentacion.html`](presentacion.html)**: **Presentación Web Interactiva tipo PowerPoint** (F11 para pantalla completa) con el **Centro de Mando de Demostración en Vivo** (enlaces directos a Eureka, Gateway, Config Server y botones para copiar comandos de prueba de 1 clic).
-* 📊 **[`presentacion.pptx`](presentacion.pptx)**: Diapositivas nativas en **Microsoft PowerPoint (16:9)** listas para exponer o entregar en el aula virtual.
-* 📖 **[`PRESENTACION.md`](PRESENTACION.md)**: Guion oficial de diapositivas en Markdown formateado para proyección directa desde GitHub.
-* 📑 **[`S05_Equipo01_ParilloEliceo.pdf`](S05_Equipo01_ParilloEliceo.pdf)**: Informe técnico formal de evaluación con balotario y rúbrica resueltos.
+* 🌐 **[`presentacion.html`](presentacion.html)**: **Presentación Web Interactiva tipo PowerPoint a Dos Voces** (F11 para pantalla completa) con el **Centro de Mando de Demostración en Vivo** (enlaces directos a Eureka, Gateway, Config Server y botones de copiado rápido con comandos asignados por expositor).
+* 📊 **[`presentacion.pptx`](presentacion.pptx)**: Diapositivas nativas en **Microsoft PowerPoint (16:9)** con las 11 láminas completas y roles desglosados para **Eliceo Parillo Mostajo** y **Laura Vargas Cristhian Paul**.
+* 📖 **[`PRESENTACION.md`](PRESENTACION.md)**: Guion oficial de sustentación a dos voces con desglose de 18 minutos (8 min presentación técnica, 5 min demo en vivo, 5 min balotario de preguntas).
+* 📑 **[`S05_Equipo01_ParilloEliceo.pdf`](S05_Equipo01_ParilloEliceo.pdf)**: Informe técnico formal de evaluación con balotario y rúbrica de 20 puntos resueltos.
