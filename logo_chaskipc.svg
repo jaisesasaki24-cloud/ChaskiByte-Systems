@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gradCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="gradEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="gradIndigo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#4f46e5" />
+    </linearGradient>
+    <linearGradient id="shieldBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Emblema / Icono Hexagonal -->
+  <g transform="translate(10, 10)">
+    <!-- Hexágono base -->
+    <polygon points="50,2 93,26 93,74 50,98 7,74 7,26" fill="url(#shieldBg)" stroke="url(#gradCyan)" stroke-width="3" />
+    
+    <!-- Pistas de circuito microchip -->
+    <path d="M50,15 L50,28 M25,40 L35,45 M75,40 L65,45 M35,70 L50,80 M65,70 L50,80" stroke="#334155" stroke-width="2" stroke-linecap="round" />
+    
+    <!-- Microprocesador central (CPU Die) -->
+    <rect x="34" y="34" width="32" height="32" rx="4" fill="#090d16" stroke="url(#gradEmerald)" stroke-width="2" />
+    
+    <!-- Rayo de velocidad Chaski (Alado) -->
+    <path d="M54,20 L38,50 L48,50 L44,80 L62,45 L50,45 Z" fill="url(#gradCyan)" filter="url(#glow)" />
+    
+    <!-- Núcleo brillante -->
+    <circle cx="50" cy="50" r="3" fill="#ffffff" />
+  </g>
+
+  <!-- Tipografía de Marca: CHASKIPC -->
+  <g transform="translate(125, 20)">
+    <text x="0" y="48" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="44" font-weight="900" letter-spacing="1.5" fill="#f8fafc">
+      CHASKI<tspan fill="url(#gradCyan)">PC</tspan>
+    </text>
+    
+    <!-- Subtítulo de Proyecto y Equipo -->
+    <text x="2" y="74" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="700" letter-spacing="3" fill="#94a3b8">
+      HARDWARE E-COMMERCE <tspan fill="url(#gradEmerald)">•</tspan> CHASKIBYTE SYSTEMS
+    </text>
+
+    <!-- Línea tecnológica decorativa -->
+    <line x1="2" y1="84" x2="330" y2="84" stroke="url(#gradCyan)" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="335" cy="84" r="3.5" fill="#34d399" />
+  </g>
+</svg>
