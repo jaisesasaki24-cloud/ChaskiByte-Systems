@@ -212,14 +212,14 @@ Invoke-RestMethod -Method Post -Uri "http://localhost:18080/api/v1/ordenes" -Bod
 
 ## 📑 6. Entregables Académicos Oficiales
 * 📄 [**`BRIEF_TECNICO.md`**](BRIEF_TECNICO.md): Ficha técnica oficial del proyecto sello ChaskiPC.
+* 📄 [**`S01_Equipo01_ParilloEliceo.pdf`**](pagatu-orden-ms/S01_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 01 (Construcción del Microservicio Base, persistencia inicial y escalado horizontal).
 * 📄 [**`S03_Equipo01_ParilloEliceo.pdf`**](S03_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 03 (Eureka Server, Múltiples Instancias, Observabilidad).
 * 📄 [**`S04_Equipo01_ParilloEliceo.pdf`**](S04_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 04 (API Gateway, Rutas `lb://` y Balanceo de Carga).
 * 📄 [**`S05_Equipo01_ParilloEliceo.pdf`**](S05_Equipo01_ParilloEliceo.pdf): **Informe Oficial de Evaluación y Sustentación de la Unidad I** (Balotario de defensa teórico-práctica resuelto y rúbrica de 20 pts).
 
-
 ---
 
-## 🛠️ 6. Bitácora de Despliegue DevOps: Resolución de los 7 Desafíos Técnicos de Portabilidad (DTI-Laboratorio)
+## 🛠️ 7. Bitácora de Despliegue DevOps: Resolución de los 7 Desafíos Técnicos de Portabilidad (DTI-Laboratorio)
 
 Al trasladar el ecosistema a las máquinas de laboratorio universitario (**DTI-Laboratorio**), se superaron 7 problemas técnicos clásicos de portabilidad y dependencias en microservicios:
 
@@ -245,7 +245,7 @@ Al trasladar el ecosistema a las máquinas de laboratorio universitario (**DTI-L
 
 ---
 
-## 🖥️ 7. Materiales de Sustentación y Presentación a Dos Voces (Sesión 05)
+## 🖥️ 8. Materiales de Sustentación y Presentación a Dos Voces (Sesión 05)
 
 * 🌐 **[`presentacion.html`](presentacion.html)**: **Presentación Web Interactiva tipo PowerPoint a Dos Voces** (F11 para pantalla completa) con el **Centro de Mando de Demostración en Vivo** (enlaces directos a Eureka, Gateway, Config Server y botones de copiado rápido con comandos asignados por expositor).
 * 📊 **[`presentacion.pptx`](presentacion.pptx)**: Diapositivas nativas en **Microsoft PowerPoint (16:9)** con las 11 láminas completas y roles desglosados para **Eliceo Parillo Mostajo** y **Laura Vargas Cristhian Paul**.

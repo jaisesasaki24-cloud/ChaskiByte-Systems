@@ -1,7 +1,7 @@
 # Actividad Autónoma: Replicación de Microservicio (orden-ms)
 
 **Estudiante:** Eliceo Parillo Mostajo  
-**Equipo:** ##
+**Equipo:** Equipo 01 - ChaskiByte Systems
 
 ---
 
