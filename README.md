@@ -230,3 +230,13 @@ Al trasladar el ecosistema a las máquinas de laboratorio universitario (**DTI-L
 * **`iniciar_todo.bat`**: Doble clic para arrancar el ecosistema completo (auto-inicia Docker, verifica Java 21 y abre los 5 microservicios en terminales independientes).
 * **`iniciar_todo.ps1`**: Lanzador 100% nativo de PowerShell sin necesidad de Python.
 * **`iniciar_todo.py`**: Lanzador en Python con rutas dinámicas relativas.
+* **`limpiar_pc_laboratorio.bat`**: Script preventivo para liberar puertos y matar procesos huérfanos antes de exponer en la PC de laboratorio.
+
+---
+
+## 🖥️ 7. Materiales de Sustentación y Presentación (Sesión 05)
+
+* 🌐 **[`presentacion.html`](presentacion.html)**: **Presentación Web Interactiva tipo PowerPoint** (F11 para pantalla completa) con el **Centro de Mando de Demostración en Vivo** (enlaces directos a Eureka, Gateway, Config Server y botones para copiar comandos de prueba de 1 clic).
+* 📊 **[`presentacion.pptx`](presentacion.pptx)**: Diapositivas nativas en **Microsoft PowerPoint (16:9)** listas para exponer o entregar en el aula virtual.
+* 📖 **[`PRESENTACION.md`](PRESENTACION.md)**: Guion oficial de diapositivas en Markdown formateado para proyección directa desde GitHub.
+* 📑 **[`S05_Equipo01_ParilloEliceo.pdf`](S05_Equipo01_ParilloEliceo.pdf)**: Informe técnico formal de evaluación con balotario y rúbrica resueltos.

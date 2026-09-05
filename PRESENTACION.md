@@ -63,16 +63,67 @@
 ---
 
 ## 📑 Diapositiva 5: Punto 4 - Secuencia de Sustentación en Vivo (7 Pasos)
-1. **Contrato REST:** Mostrar Swagger / endpoints a través del Gateway (`http://localhost:18080`).
-2. **Ejecución CRUD en Vivo:**
-   * Caso Éxito (201): Crear orden con hardware e IGV automático.
-   * Caso Error (400): Enviar JSON sin cliente.
-   * Caso No Encontrado (404): Consultar `/api/v1/ordenes/99999`.
-3. **Config Server:** Consultar `http://localhost:8888/pagatu-orden-ms/dev`.
-4. **Eureka Dashboard:** Visualizar `UP (2)` en `http://localhost:8761`.
-5. **Balanceo Round-Robin:** Ejecutar peticiones consecutivas y evidenciar alternancia entre puerto 8082 y 8083.
-6. **Tolerancia a Fallos:** Matar la instancia 8082; el Gateway sigue respondiendo sin error desde la 8083.
-7. **Identidad ChaskiPC:** Mostrar reglas de stock y facturación de hardware.
+
+### 🚀 Enlaces Directos en Vivo:
+* **Eureka Dashboard:** [http://localhost:8761](http://localhost:8761)
+* **API Gateway (Órdenes):** [http://localhost:18080/api/v1/ordenes](http://localhost:18080/api/v1/ordenes)
+* **API Gateway (Productos):** [http://localhost:18080/api/v1/productos](http://localhost:18080/api/v1/productos)
+* **Config Server DEV:** [http://localhost:8888/pagatu-orden-ms/dev](http://localhost:8888/pagatu-orden-ms/dev)
+* **Grafana Dashboard:** [http://localhost:13000](http://localhost:13000) (admin / admin)
+* **Prometheus Targets:** [http://localhost:19090/targets](http://localhost:19090/targets)
+
+### 📋 Comandos de Prueba para PowerShell:
+
+#### 1. Caso Éxito (201 Created) - Crear Orden con 18% IGV:
+```powershell
+$orden = @{
+    cliente = "Eliceo Parillo Mostajo"
+    tipoComprobante = "FACTURA"
+    metodoPago = "MERCADO_PAGO"
+    detalles = @(
+        @{ productoId = 1; nombreProducto = "AMD Ryzen 7 7800X3D"; precioUnitario = 1780.00; cantidad = 1 },
+        @{ productoId = 4; nombreProducto = "Kingston Fury 1TB NVMe Gen4"; precioUnitario = 380.00; cantidad = 1 }
+    )
+} | ConvertTo-Json -Depth 5
+
+Invoke-RestMethod -Method Post -Uri "http://localhost:18080/api/v1/ordenes" -Body $orden -ContentType "application/json"
+```
+
+#### 2. Caso Validación Fallida (400 Bad Request):
+```powershell
+try {
+    Invoke-RestMethod -Method Post -Uri "http://localhost:18080/api/v1/ordenes" -Body "{}" -ContentType "application/json"
+} catch {
+    Write-Host "Código HTTP capturado:" $_.Exception.Response.StatusCode.value__ -ForegroundColor Red
+}
+```
+
+#### 3. Caso Recurso Inexistente (404 Not Found):
+```powershell
+try {
+    Invoke-RestMethod -Uri "http://localhost:18080/api/v1/ordenes/99999"
+} catch {
+    Write-Host "Código HTTP capturado:" $_.Exception.Response.StatusCode.value__ -ForegroundColor Yellow
+}
+```
+
+#### 4. Prueba de Balanceo Round-Robin (4 Peticiones al Gateway):
+```powershell
+Write-Host "Disparando 4 peticiones al Gateway (revisa consolas 8082 y 8083)..." -ForegroundColor Cyan
+1..4 | ForEach-Object {
+    $r = Invoke-RestMethod -Uri "http://localhost:18080/api/v1/ordenes"
+    Write-Host "Petición $_ procesada con éxito por una réplica." -ForegroundColor Green
+    Start-Sleep -Milliseconds 400
+}
+```
+
+#### 5. Prueba de Tolerancia a Fallos:
+```powershell
+# Apaga la consola de la instancia 8082 y ejecuta:
+Invoke-RestMethod -Uri "http://localhost:18080/api/v1/ordenes"
+# El Gateway responderá inmediatamente desde la 8083 sin error.
+```
+
 
 ---
 
