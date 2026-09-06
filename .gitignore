@@ -34,3 +34,8 @@ test_screen.png
 # Python cache
 __pycache__/
 *.pyc
+
+# Local environment overrides
+overrides/*.env
+!overrides/*.sample
+!overrides/*.example

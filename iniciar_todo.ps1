@@ -36,12 +36,12 @@ try {
 
 # 3. Microservicios de Negocio e Infraestructura
 $Commands = @(
-    @{ Title = "1. CONFIG-SERVER [Puerto 8888]"; Dir = "$BaseDir\pagatu-config"; Cmd = "$JavaEnv`$env:CONFIG_REPO_PATH = '$ConfigRepoUri'; .\mvnw.cmd spring-boot:run"; Wait = 8 },
-    @{ Title = "2. EUREKA-SERVER [Puerto 8761]"; Dir = "$BaseDir\pagatu-eureka"; Cmd = "$JavaEnv.\mvnw.cmd spring-boot:run"; Wait = 6 },
-    @{ Title = "3. CATALOGO-MS [Puerto 8081]"; Dir = "$BaseDir\pagatu-catalogo-ms"; Cmd = "$JavaEnv.\mvnw.cmd spring-boot:run"; Wait = 4 },
-    @{ Title = "4. ORDEN-MS (Instancia 1) [Puerto 8082]"; Dir = "$BaseDir\pagatu-orden-ms"; Cmd = "$JavaEnv.\mvnw.cmd spring-boot:run"; Wait = 5 },
-    @{ Title = "5. ORDEN-MS (Instancia 2) [Puerto 8083]"; Dir = "$BaseDir\pagatu-orden-ms"; Cmd = "$JavaEnv`$env:SERVER_PORT = '8083'; .\mvnw.cmd spring-boot:run"; Wait = 4 },
-    @{ Title = "6. API-GATEWAY [Puerto 18080]"; Dir = "$BaseDir\pagatu-gateway"; Cmd = "$JavaEnv.\mvnw.cmd spring-boot:run"; Wait = 3 },
+    @{ Title = "1. CONFIG-SERVER [Puerto 8888]"; Dir = "$BaseDir\infra\pagatu-config"; Cmd = "$JavaEnv`$env:CONFIG_REPO_PATH = '$ConfigRepoUri'; .\mvnw.cmd spring-boot:run"; Wait = 8 },
+    @{ Title = "2. EUREKA-SERVER [Puerto 8761]"; Dir = "$BaseDir\infra\pagatu-eureka"; Cmd = "$JavaEnv.\mvnw.cmd spring-boot:run"; Wait = 6 },
+    @{ Title = "3. CATALOGO-MS [Puerto 8081]"; Dir = "$BaseDir\services\pagatu-catalogo-ms"; Cmd = "$JavaEnv.\mvnw.cmd spring-boot:run"; Wait = 4 },
+    @{ Title = "4. ORDEN-MS (Instancia 1) [Puerto 8082]"; Dir = "$BaseDir\services\pagatu-orden-ms"; Cmd = "$JavaEnv.\mvnw.cmd spring-boot:run"; Wait = 5 },
+    @{ Title = "5. ORDEN-MS (Instancia 2) [Puerto 8083]"; Dir = "$BaseDir\services\pagatu-orden-ms"; Cmd = "$JavaEnv`$env:SERVER_PORT = '8083'; .\mvnw.cmd spring-boot:run"; Wait = 4 },
+    @{ Title = "6. API-GATEWAY [Puerto 18080]"; Dir = "$BaseDir\infra\pagatu-gateway"; Cmd = "$JavaEnv.\mvnw.cmd spring-boot:run"; Wait = 3 },
     @{ Title = "7. MONITOR Y CONSOLA DE PRUEBAS"; Dir = "$BaseDir"; Cmd = 'Write-Host "=== CHASKIPC: ECOSISTEMA INICIADO EXITOSAMENTE ===" -ForegroundColor Cyan; Write-Host "Servicios y Dashboards Disponibles:" -ForegroundColor Yellow; Write-Host "  - API Gateway:    http://localhost:18080/api/v1/ordenes" -ForegroundColor White; Write-Host "  - Eureka Server:  http://localhost:8761" -ForegroundColor White; Write-Host "  - Grafana Visual: http://localhost:13000 (admin / admin)" -ForegroundColor Green; Write-Host "  - Prometheus:     http://localhost:19090" -ForegroundColor Green; Write-Host "  - Loki Logs:      http://localhost:13100" -ForegroundColor Green; Write-Host "Comandos de prueba:" -ForegroundColor Yellow; Write-Host "  Invoke-RestMethod -Uri http://localhost:18080/api/v1/productos" -ForegroundColor Gray; Write-Host "  Invoke-RestMethod -Uri http://localhost:18080/api/v1/ordenes" -ForegroundColor Gray'; Wait = 0 }
 )
 

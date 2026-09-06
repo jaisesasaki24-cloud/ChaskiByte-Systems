@@ -64,37 +64,37 @@ print("-----------------------------------------------------------------")
 commands = [
     {
         "title": "1. CONFIG-SERVER [Puerto 8888]",
-        "dir": os.path.join(BASE_DIR, "pagatu-config"),
+        "dir": os.path.join(BASE_DIR, "infra", "pagatu-config"),
         "cmd": f'{java_env_setup}$env:CONFIG_REPO_PATH = "{CONFIG_REPO_URI}"; .\\mvnw.cmd spring-boot:run',
         "wait": 8
     },
     {
         "title": "2. EUREKA-SERVER [Puerto 8761]",
-        "dir": os.path.join(BASE_DIR, "pagatu-eureka"),
+        "dir": os.path.join(BASE_DIR, "infra", "pagatu-eureka"),
         "cmd": f"{java_env_setup}.\\mvnw.cmd spring-boot:run",
         "wait": 6
     },
     {
         "title": "3. CATALOGO-MS [Puerto 8081]",
-        "dir": os.path.join(BASE_DIR, "pagatu-catalogo-ms"),
+        "dir": os.path.join(BASE_DIR, "services", "pagatu-catalogo-ms"),
         "cmd": f"{java_env_setup}.\\mvnw.cmd spring-boot:run",
         "wait": 4
     },
     {
         "title": "4. ORDEN-MS (Instancia 1) [Puerto 8082]",
-        "dir": os.path.join(BASE_DIR, "pagatu-orden-ms"),
+        "dir": os.path.join(BASE_DIR, "services", "pagatu-orden-ms"),
         "cmd": f"{java_env_setup}.\\mvnw.cmd spring-boot:run",
         "wait": 5
     },
     {
         "title": "5. ORDEN-MS (Instancia 2) [Puerto 8083]",
-        "dir": os.path.join(BASE_DIR, "pagatu-orden-ms"),
+        "dir": os.path.join(BASE_DIR, "services", "pagatu-orden-ms"),
         "cmd": f"{java_env_setup}$env:SERVER_PORT = '8083'; .\\mvnw.cmd spring-boot:run",
         "wait": 4
     },
     {
         "title": "6. API-GATEWAY [Puerto 18080]",
-        "dir": os.path.join(BASE_DIR, "pagatu-gateway"),
+        "dir": os.path.join(BASE_DIR, "infra", "pagatu-gateway"),
         "cmd": f"{java_env_setup}.\\mvnw.cmd spring-boot:run",
         "wait": 3
     },

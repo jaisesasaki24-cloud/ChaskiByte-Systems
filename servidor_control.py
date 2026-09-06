@@ -13,7 +13,7 @@ import urllib.error
 import concurrent.futures
 
 PORT = 5050
-BASE_DIR = r"C:\Users\USUARIO\Documents\Tarea Eureka"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def check_tcp_port(port, host="127.0.0.1", timeout=0.2):
     try:

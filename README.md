@@ -148,25 +148,37 @@ ChaskiByte-Systems/
 │   ├── pagatu-orden-ms-dev.yml      # DB PostgreSQL y Eureka Client
 │   ├── pagatu-catalogo-ms-dev.yml   # Catálogo JPA y Eureka Client
 │   └── ...
-├── pagatu-config/                   # Spring Cloud Config Server (Puerto 8888)
-├── pagatu-eureka/                   # Netflix Eureka Service Discovery (Puerto 8761)
-├── pagatu-gateway/                  # Spring Cloud Gateway no bloqueante (Puerto 18080)
-├── pagatu-catalogo-ms/              # Catálogo ChaskiPC: Categorías y Productos (Puerto 8081)
-├── pagatu-orden-ms/                 # Órdenes ChaskiPC: Cabecera-Detalle e IGV (Puertos 8082, 8083)
+├── services/                        # Microservicios de dominio / negocio
+│   ├── pagatu-catalogo-ms/          # Catálogo ChaskiPC: Categorías y Productos (:8081)
+│   ├── pagatu-orden-ms/             # Órdenes ChaskiPC: Cabecera-Detalle e IGV (:8082, :8083)
+│   └── pagatu-cliente-ms/           # Clientes y perfil de comprador (:8084)
+├── infra/                           # Servidores de infraestructura Spring Cloud y Docker
+│   ├── pagatu-config/               # Spring Cloud Config Server (:8888)
+│   ├── pagatu-eureka/               # Netflix Eureka Service Discovery (:8761)
+│   ├── pagatu-gateway/              # Spring Cloud Gateway no bloqueante (:18080)
+│   ├── docker-compose-db.yml        # PostgreSQL :5433 en contenedor
+│   └── compose.yml                  # Docker Compose de Producción Local (Red pagatu-prod-net)
 ├── obs/                             # Docker Compose de Observabilidad (Prometheus, Grafana, Loki)
 │   ├── compose-dev.yml
 │   ├── prometheus/
 │   └── grafana/
-├── infra/                           # Docker Compose de Producción Local (Red pagatu-prod-net)
-│   └── compose.yml
-├── BRIEF_TECNICO.md                 # Documento técnico oficial del proyecto sello ChaskiPC
-├── S03_Equipo01_ParilloEliceo.pdf   # Informe de Sesión 03 (Eureka & Múltiples Instancias)
-├── S04_Equipo01_ParilloEliceo.pdf   # Informe de Sesión 04 (API Gateway & Balanceo de Carga)
-├── S05_Equipo01_ParilloEliceo.pdf   # Informe Oficial de Evaluación y Cierre de la Unidad I
+├── docs/                            # Documentación integral, guías y entregables académicos
+│   ├── entregables/                 # Informes PDF, HTML y Markdown (S01, S03, S04, S05)
+│   ├── guias/                       # Guías de laboratorio y sesiones (S03, S04, S05)
+│   └── tecnico/                     # Ficha técnica oficial (BRIEF_TECNICO.md) y guion (PRESENTACION.md)
+├── overrides/                       # Variables de entorno y configuraciones locales
+│   ├── README.md
+│   └── dev-overrides.env.sample
 ├── iniciar_db.bat                   # Script de 1 clic para arrancar PostgreSQL (Puerto 5433)
+├── iniciar_infra_completa.bat       # Levanta PostgreSQL + Prometheus + Grafana + Loki en 1 clic
+├── iniciar_observabilidad.bat       # Levanta stack de observabilidad
 ├── iniciar_todo.bat                 # Lanzador universal Windows (autodetecta Python o PowerShell)
 ├── iniciar_todo.ps1                 # Lanzador nativo en PowerShell puro (cero dependencias)
 ├── iniciar_todo.py                  # Lanzador en Python con rutas relativas dinámicas
+├── limpiar_pc_laboratorio.bat       # Limpieza preventiva de puertos y procesos
+├── presentacion.html                # Presentación interactiva y Centro de Mando en vivo (:5050)
+├── presentacion.pptx                # Diapositivas PowerPoint 16:9 oficiales
+├── servidor_control.py              # Backend local API REST para Centro de Mando
 └── README.md
 ```
 
@@ -181,12 +193,10 @@ ChaskiByte-Systems/
 ### Paso 1: Levantar Bases de Datos y Observabilidad
 ```powershell
 # Levantar PostgreSQL
-cd "pagatu-orden-ms"
-docker compose -f compose-dev.yml up -d
+docker compose -f "infra/docker-compose-db.yml" up -d
 
 # Levantar Observabilidad (Prometheus + Grafana + Loki)
-cd "../obs"
-docker compose -f compose-dev.yml up -d
+docker compose -f "obs/compose-dev.yml" up -d
 ```
 
 ### Paso 2: Ejecutar los Servicios de Infraestructura y Negocio
@@ -194,23 +204,23 @@ Puedes hacer doble clic en `iniciar_todo.bat` o abrir terminales independientes 
 
 ```powershell
 # 1. Config Server (Puerto 8888)
-cd "pagatu-config"
+cd "infra/pagatu-config"
 .\mvnw.cmd spring-boot:run
 
 # 2. Eureka Server (Puerto 8761)
-cd "pagatu-eureka"
+cd "infra/pagatu-eureka"
 .\mvnw.cmd spring-boot:run
 
 # 3. API Gateway - Punto Único de Acceso (Puerto 18080)
-cd "pagatu-gateway"
+cd "infra/pagatu-gateway"
 .\mvnw.cmd spring-boot:run
 
 # 4. Catálogo de Hardware (Puerto 8081)
-cd "pagatu-catalogo-ms"
+cd "services/pagatu-catalogo-ms"
 .\mvnw.cmd spring-boot:run
 
 # 5. Órdenes ChaskiPC - Instancia 1 (Puerto 8082)
-cd "pagatu-orden-ms"
+cd "services/pagatu-orden-ms"
 .\mvnw.cmd spring-boot:run
 
 # 6. Órdenes ChaskiPC - Instancia 2 (Puerto 8083)
@@ -258,11 +268,11 @@ Invoke-RestMethod -Method Post -Uri "http://localhost:18080/api/v1/ordenes" -Bod
 ---
 
 ## 📑 6. Entregables Académicos Oficiales
-* 📄 [**`BRIEF_TECNICO.md`**](BRIEF_TECNICO.md): Ficha técnica oficial del proyecto sello ChaskiPC.
-* 📄 [**`S01_Equipo01_ParilloEliceo.pdf`**](pagatu-orden-ms/S01_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 01 (Construcción del Microservicio Base, persistencia inicial y escalado horizontal).
-* 📄 [**`S03_Equipo01_ParilloEliceo.pdf`**](S03_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 03 (Eureka Server, Múltiples Instancias, Observabilidad).
-* 📄 [**`S04_Equipo01_ParilloEliceo.pdf`**](S04_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 04 (API Gateway, Rutas `lb://` y Balanceo de Carga).
-* 📄 [**`S05_Equipo01_ParilloEliceo.pdf`**](S05_Equipo01_ParilloEliceo.pdf): **Informe Oficial de Evaluación y Sustentación de la Unidad I** (Balotario de defensa teórico-práctica resuelto y rúbrica de 20 pts).
+* 📄 [**`docs/tecnico/BRIEF_TECNICO.md`**](docs/tecnico/BRIEF_TECNICO.md): Ficha técnica oficial del proyecto sello ChaskiPC.
+* 📄 [**`services/pagatu-orden-ms/S01_Equipo01_ParilloEliceo.pdf`**](services/pagatu-orden-ms/S01_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 01 (Construcción del Microservicio Base, persistencia inicial y escalado horizontal).
+* 📄 [**`docs/entregables/S03_Equipo01_ParilloEliceo.pdf`**](docs/entregables/S03_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 03 (Eureka Server, Múltiples Instancias, Observabilidad).
+* 📄 [**`docs/entregables/S04_Equipo01_ParilloEliceo.pdf`**](docs/entregables/S04_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 04 (API Gateway, Rutas `lb://` y Balanceo de Carga).
+* 📄 [**`docs/entregables/S05_Equipo01_ParilloEliceo.pdf`**](docs/entregables/S05_Equipo01_ParilloEliceo.pdf): **Informe Oficial de Evaluación y Sustentación de la Unidad I** (Balotario de defensa teórico-práctica resuelto y rúbrica de 20 pts).
 
 ---
 
@@ -296,5 +306,5 @@ Al trasladar el ecosistema a las máquinas de laboratorio universitario (**DTI-L
 
 * 🌐 **[`presentacion.html`](presentacion.html)**: **Presentación Web Interactiva tipo PowerPoint a Dos Voces** (F11 para pantalla completa) con el **Centro de Mando de Demostración en Vivo** (enlaces directos a Eureka, Gateway, Config Server y botones de copiado rápido con comandos asignados por expositor).
 * 📊 **[`presentacion.pptx`](presentacion.pptx)**: Diapositivas nativas en **Microsoft PowerPoint (16:9)** con las 11 láminas completas y roles desglosados para **Eliceo Parillo Mostajo** y **Laura Vargas Cristhian Paul**.
-* 📖 **[`PRESENTACION.md`](PRESENTACION.md)**: Guion oficial de sustentación a dos voces con desglose de 18 minutos (8 min presentación técnica, 5 min demo en vivo, 5 min balotario de preguntas).
-* 📑 **[`S05_Equipo01_ParilloEliceo.pdf`](S05_Equipo01_ParilloEliceo.pdf)**: Informe técnico formal de evaluación con balotario y rúbrica de 20 puntos resueltos.
+* 📖 **[`docs/tecnico/PRESENTACION.md`](docs/tecnico/PRESENTACION.md)**: Guion oficial de sustentación a dos voces con desglose de 18 minutos (8 min presentación técnica, 5 min demo en vivo, 5 min balotario de preguntas).
+* 📑 **[`docs/entregables/S05_Equipo01_ParilloEliceo.pdf`](docs/entregables/S05_Equipo01_ParilloEliceo.pdf)**: Informe técnico formal de evaluación con balotario y rúbrica de 20 puntos resueltos.
