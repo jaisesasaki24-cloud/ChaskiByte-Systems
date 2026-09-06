@@ -2011,6 +2011,9 @@
     let currentSlide = parseInt(localStorage.getItem("chaskipc_active_slide")) || 0;
     const slides = document.querySelectorAll(".slide-page");
     const totalSlides = slides.length;
+    if (isNaN(currentSlide) || currentSlide < 0 || currentSlide >= totalSlides) {
+      currentSlide = 0;
+    }
 
     // Evidence Captures Database
     const EVIDENCIAS = [
@@ -2047,7 +2050,7 @@
         title: "05. pc-orden-ms Instancia 2 (:8083)",
         desc: "Segunda réplica transaccional activa para demostración de balanceo de carga Round-Robin.",
         url: "http://localhost:8083/api/v1/ordenes/instancia",
-        cmd: 'cd "C:\\Users\\USUARIO\\Documents\\Tarea Eureka\\services\\pagatu-orden-ms" ; $env:SERVER_PORT = '8083' ; .\\mvnw.cmd spring-boot:run'
+        cmd: 'cd "C:\\Users\\USUARIO\\Documents\\Tarea Eureka\\services\\pagatu-orden-ms" ; $env:SERVER_PORT = \'8083\' ; .\\mvnw.cmd spring-boot:run'
       },
       {
         file: "evidencia_6_eureka_web_dashboard.png",
@@ -2061,7 +2064,7 @@
         title: "07. Pruebas CRUD en PowerShell (Gateway :18080)",
         desc: "Peticiones POST y GET exitosas con HTTP 201 Created y cálculo exacto de subtotal e IGV.",
         url: "http://localhost:18080/api/v1/ordenes",
-        cmd: 'Invoke-RestMethod -Uri "http://localhost:18080/api/v1/ordenes" -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"cliente":"Gamer Pro S05","tipoComprobante":"FACTURA","metodoPago":"TARJETA","detalles":[{"productoId":1,"nombreProducto":"AMD Ryzen 7 7800X3D","precioUnitario":1780.00,"cantidad":1}]}''
+        cmd: 'Invoke-RestMethod -Uri "http://localhost:18080/api/v1/ordenes" -Method POST -Headers @{"Content-Type"="application/json"} -Body \'{"cliente":"Gamer Pro S05","tipoComprobante":"FACTURA","metodoPago":"TARJETA","detalles":[{"productoId":1,"nombreProducto":"AMD Ryzen 7 7800X3D","precioUnitario":1780.00,"cantidad":1}]}\''
       }
     ];
 
