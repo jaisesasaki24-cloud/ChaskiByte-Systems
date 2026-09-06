@@ -1,958 +1,2043 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChaskiPC - Sustentación Unidad I • Equipo 01 (2 Integrantes)</title>
-<link rel="icon" type="image/svg+xml" href="logo_chaskipc.svg">
-<style>
-  :root {
-    --bg-dark: #070b14;
-    --card-bg: #0f172a;
-    --card-inner: #1e293b;
-    --card-border: #1e293b;
-    --primary: #38bdf8;
-    --primary-glow: rgba(56, 189, 248, 0.25);
-    --secondary: #818cf8;
-    --accent: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --eliceo-color: #38bdf8;
-    --paul-color: #34d399;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-    background: var(--bg-dark);
-    color: var(--text-main);
-    overflow: hidden;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    user-select: none;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChaskiPC • Sustentación Unidad I (Diseño Ejecutivo & Evidencias)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=JetBrains+Mono:wght@400;600&family=Montserrat:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-matte: #0c0d10;
+      --bg-surface: #13151b;
+      --bg-card: rgba(22, 25, 33, 0.75);
+      --bg-card-hover: rgba(28, 33, 44, 0.9);
+      --border-line: rgba(255, 255, 255, 0.1);
+      --border-bright: rgba(255, 255, 255, 0.25);
+      --text-white: #ffffff;
+      --text-silver: #a1a1aa;
+      --text-muted: #71717a;
+      --accent-white: #ffffff;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #ef4444;
+      --radius: 6px;
+    }
 
-  /* Header Superior */
-  header {
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--card-border);
-    padding: 8px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 20;
-    height: 60px;
-  }
-  .brand-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .brand-logo {
-    height: 38px;
-    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4));
-  }
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .slide-counter {
-    background: var(--card-bg);
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    border: 1px solid var(--card-border);
-    color: var(--secondary);
-    font-weight: 700;
-  }
-  .btn-cockpit {
-    background: linear-gradient(135deg, #0284c7, #2563eb);
-    color: #fff;
-    border: none;
-    padding: 7px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
-    transition: transform 0.15s, box-shadow 0.2s;
-  }
-  .btn-cockpit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45); }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* Barra de progreso animada */
-  .progress-bar-container { height: 3px; background: var(--card-border); width: 100%; }
-  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent)); width: 9%; transition: width 0.35s ease; }
+    body {
+      background-color: var(--bg-matte);
+      color: var(--text-white);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-  /* Contenedor de Diapositivas */
-  .deck-container {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 24px;
-    overflow: hidden;
-  }
-  .slide {
-    position: absolute;
-    width: 96%;
-    max-width: 1260px;
-    height: 92%;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
-    padding: 22px 36px;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(18px) scale(0.985);
-    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-  .slide.active {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0) scale(1);
-  }
+    /* Abstract Overlapping Geometric Squares Background (Matching Uploaded Image) */
+    .geometric-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
 
-  /* Tipografía */
-  h1 { font-size: 30px; color: var(--primary); font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
-  h2 { font-size: 20px; color: var(--primary); margin-bottom: 10px; border-bottom: 2px solid var(--card-border); padding-bottom: 6px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-  h3 { font-size: 14.5px; color: var(--secondary); margin-top: 6px; margin-bottom: 4px; font-weight: 600; }
-  p, li { font-size: 12.5px; line-height: 1.5; color: #cbd5e1; }
-  ul { margin-left: 18px; margin-bottom: 4px; }
-  li { margin-bottom: 3px; }
-  strong { color: #fff; }
-  code {
-    background: #090d16;
-    color: #38bdf8;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: Consolas, monospace;
-    font-size: 11.5px;
-  }
+    .geo-shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.022);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(2px);
+      transform-origin: center;
+    }
 
-  /* Rejillas y Tarjetas */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 6px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 6px; }
-  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 6px; }
-  .card {
-    background: #070b14;
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-  .card:hover { border-color: #334155; }
-  .card-highlight { border-left: 4px solid var(--primary); }
-  .card-success { border-left: 4px solid var(--accent); }
-  .card-warning { border-left: 4px solid var(--warning); }
-  .card-indigo { border-left: 4px solid var(--secondary); }
+    .geo-1 { width: 480px; height: 480px; top: -120px; left: -100px; transform: rotate(24deg); }
+    .geo-2 { width: 550px; height: 550px; top: 15%; left: 30%; transform: rotate(-18deg); background: rgba(255, 255, 255, 0.018); }
+    .geo-3 { width: 620px; height: 620px; bottom: -180px; right: -80px; transform: rotate(35deg); }
+    .geo-4 { width: 400px; height: 400px; top: 40%; right: 15%; transform: rotate(12deg); background: rgba(255, 255, 255, 0.025); }
+    .geo-5 { width: 320px; height: 320px; bottom: 10%; left: 10%; transform: rotate(-30deg); }
 
-  /* Cajas de Integrantes */
-  .member-card {
-    background: #070b14;
-    border: 1px solid #1e293b;
-    border-radius: 12px;
-    padding: 14px 18px;
-    position: relative;
-    overflow: hidden;
-  }
-  .member-card.eliceo { border-top: 4px solid var(--eliceo-color); }
-  .member-card.paul { border-top: 4px solid var(--paul-color); }
-  .member-avatar {
-    font-size: 28px;
-    margin-bottom: 6px;
-  }
-  .member-name {
-    font-size: 16px;
-    font-weight: 800;
-    margin-bottom: 4px;
-  }
-  .member-name.eliceo { color: var(--eliceo-color); }
-  .member-name.paul { color: var(--paul-color); }
-  .member-role {
-    font-size: 11.5px;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-  }
+    /* Top Navigation Bar */
+    header.deck-header {
+      position: relative;
+      z-index: 10;
+      background: rgba(12, 13, 16, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-line);
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-  /* Speaker Badges (Turnos de habla) */
-  .speaker-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 800;
-    margin-bottom: 6px;
-  }
-  .speaker-eliceo { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #0284c7; }
-  .speaker-paul { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid #059669; }
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 1.15rem;
+    }
 
-  /* Badges generales */
-  .badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .badge-dev { background: #0284c7; color: #fff; }
-  .badge-prod { background: #059669; color: #fff; }
-  .badge-step { background: #6366f1; color: #fff; margin-right: 6px; padding: 2px 7px; border-radius: 4px; }
+    /* Diamond Emblem Logo from Image */
+    .diamond-icon-wrap {
+      width: 32px;
+      height: 32px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-  /* Tablas */
-  table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11.5px; }
-  th, td { border: 1px solid var(--card-border); padding: 5px 8px; text-align: left; }
-  th { background: #070b14; color: var(--primary); font-weight: 700; }
-  tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+    .diamond-box {
+      width: 24px;
+      height: 24px;
+      border: 1.8px solid #ffffff;
+      border-radius: 5px;
+      transform: rotate(45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
 
-  /* Evidencias con Zoom */
-  .evidence-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-top: 8px;
-  }
-  .evidence-box {
-    background: #070b14;
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-  }
-  .evidence-img {
-    width: 100%;
-    max-height: 220px;
-    object-fit: contain;
-    border-radius: 6px;
-    border: 1px solid #334155;
-    background: #000;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .evidence-img:hover { transform: scale(1.02); }
-  .caption { font-size: 10.5px; color: var(--text-muted); font-style: italic; margin-top: 4px; }
+    .diamond-box svg {
+      transform: rotate(-45deg);
+    }
 
-  /* Centro de Mando (Live Demo) */
-  .cockpit-grid { display: grid; grid-template-columns: 1.05fr 1.95fr; gap: 16px; height: 100%; }
-  .action-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #1e293b;
-    border: 1px solid #334155;
-    color: #f1f5f9;
-    padding: 7px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 11.5px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
-    margin-bottom: 6px;
-  }
-  .action-btn:hover {
-    background: #0284c7;
-    color: #fff;
-    border-color: #38bdf8;
-    transform: translateX(3px);
-  }
-  .action-btn.btn-green:hover {
-    background: #059669;
-    border-color: #10b981;
-  }
-  .copy-code-box {
-    background: #070b14;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 7px 10px;
-    margin-bottom: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-  }
-  .copy-btn {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 10.5px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .copy-btn:hover { background: #1d4ed8; transform: scale(1.03); }
-  .copy-btn.copied { background: #10b981; }
+    .brand-section:hover .diamond-box {
+      border-color: #e4e4e7;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+    }
 
-  /* Toast Notification */
-  #toast {
-    visibility: hidden;
-    min-width: 260px;
-    background-color: #10b981;
-    color: #fff;
-    text-align: center;
-    border-radius: 8px;
-    padding: 9px 16px;
-    position: fixed;
-    z-index: 100;
-    right: 24px;
-    top: 65px;
-    font-size: 12px;
-    font-weight: 700;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    opacity: 0;
-    transition: opacity 0.3s, top 0.3s;
-  }
-  #toast.show { visibility: visible; opacity: 1; top: 60px; }
+    .brand-info h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #ffffff;
+      line-height: 1.1;
+    }
 
-  /* Footer y Selector de Diapositivas */
-  footer {
-    background: rgba(15, 23, 42, 0.95);
-    border-top: 1px solid var(--card-border);
-    padding: 8px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 50px;
-  }
-  .nav-btn {
-    background: var(--card-bg);
-    color: var(--primary);
-    border: 1px solid var(--card-border);
-    padding: 5px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 11.5px;
-    transition: all 0.2s;
-  }
-  .nav-btn:hover { background: var(--primary); color: #090d16; }
-  .mini-dots {
-    display: flex;
-    gap: 6px;
-  }
-  .dot {
-    width: 20px;
-    height: 6px;
-    background: #334155;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .dot.active {
-    background: var(--primary);
-    width: 32px;
-    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
-  }
-</style>
+    .brand-info span {
+      font-size: 0.68rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 500;
+      display: block;
+    }
+
+    .header-center-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .pillar-badge {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.3rem 0.85rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-bright);
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .server-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-silver);
+      letter-spacing: 0.5px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+
+    .btn-action-minimal {
+      background: transparent;
+      border: 1px solid var(--border-bright);
+      color: #ffffff;
+      padding: 0.45rem 0.95rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .btn-action-minimal:hover {
+      background: #ffffff;
+      color: #0c0d10;
+    }
+
+    /* Main Slide Stage */
+    main.slide-stage {
+      flex: 1;
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 2.5rem;
+    }
+
+    .slide-viewport {
+      width: 100%;
+      max-width: 1360px;
+      min-height: calc(100vh - 180px);
+      background: rgba(16, 18, 24, 0.82);
+      border: 1px solid var(--border-line);
+      border-radius: 8px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      padding: 2.75rem 3.5rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Slide Content Header */
+    .slide-title-group {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .slide-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
+    }
+
+    .speaker-tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-silver);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .slide-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.35rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+      line-height: 1.15;
+    }
+
+    .slide-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-silver);
+      font-weight: 400;
+      margin-top: 0.35rem;
+    }
+
+    /* Signature Accent Line with Pill (From Uploaded Business Card) */
+    .accent-line-wrap {
+      position: relative;
+      width: 100%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 1.25rem 0 1.75rem;
+    }
+
+    .accent-pill {
+      position: absolute;
+      top: -2.5px;
+      left: 0;
+      width: 55px;
+      height: 6px;
+      background: #ffffff;
+      border-radius: 2px;
+    }
+
+    /* Slide Body Layouts */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+
+    /* Luxury Executive Card */
+    .exec-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exec-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-bright);
+      transform: translateY(-3px);
+    }
+
+    .exec-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .exec-card p {
+      font-size: 0.92rem;
+      color: var(--text-silver);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .exec-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: auto;
+    }
+
+    .exec-card li {
+      font-size: 0.88rem;
+      color: #d4d4d8;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      line-height: 1.5;
+    }
+
+    .exec-card li span.bullet {
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    /* Evidence Showcase Styles (Slide 8) - HERO CAPTURE & DISCREET MINI BUTTONS */
+    .evidence-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.25rem;
+      flex: 1;
+      height: 520px;
+      max-height: 530px;
+    }
+
+    .evidence-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 0.35rem;
+    }
+
+    .evidence-btn {
+      background: rgba(20, 23, 31, 0.75);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius);
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      transition: all 0.2s ease;
+    }
+
+    .evidence-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-bright);
+    }
+
+    .evidence-btn.active {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.12);
+    }
+
+    .evidence-btn-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .evidence-btn-desc {
+      font-size: 0.72rem;
+      color: var(--text-silver);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Main Hero Preview Pane */
+    .evidence-preview-pane {
+      background: #090a0d;
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius);
+      padding: 0.65rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .preview-image-box {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #040507;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: zoom-in;
+      position: relative;
+    }
+
+    .preview-image-box img {
+      width: 100%;
+      height: 100%;
+      max-height: 445px;
+      object-fit: contain;
+      transition: transform 0.25s ease;
+    }
+
+    .preview-image-box:hover img {
+      transform: scale(1.015);
+    }
+
+    .preview-overlay-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(12, 13, 16, 0.85);
+      border: 1px solid var(--border-line);
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      color: #a1a1aa;
+      pointer-events: none;
+    }
+
+    /* Ultra-Discreet Floating Icon Button inside the Image */
+    .preview-hud-top {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      z-index: 5;
+    }
+
+    .solo-mini-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(12, 14, 18, 0.82);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #34d399;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .solo-mini-btn:hover {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: #34d399;
+      color: #ffffff;
+      transform: scale(1.12);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+    }
+
+    .solo-mini-btn.cmd-icon {
+      color: #60a5fa;
+      border-color: rgba(96, 165, 250, 0.3);
+    }
+
+    .solo-mini-btn.cmd-icon:hover {
+      background: rgba(59, 130, 246, 0.25);
+      border-color: #60a5fa;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(96, 165, 250, 0.4);
+    }
+
+    .solo-mini-btn.zoom-icon {
+      color: #d4d4d8;
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .solo-mini-btn.zoom-icon:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #ffffff;
+      color: #ffffff;
+    }
+
+    /* Slim Title Bar below Capture */
+    .evidence-slim-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.45rem;
+      margin-top: 0.45rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .evidence-title-compact {
+      display: flex;
+      align-items: baseline;
+      gap: 0.65rem;
+      min-width: 0;
+    }
+
+    .evidence-title-compact h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .evidence-title-compact span {
+      font-size: 0.74rem;
+      color: var(--text-silver);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Footer Center Discreet Icon Links */
+    .footer-center-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e4e4e7;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .footer-icon-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: #ffffff;
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .footer-icon-btn.active-web {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.12);
+    }
+
+    .footer-icon-btn.active-web:hover {
+      background: rgba(16, 185, 129, 0.3);
+      border-color: #34d399;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Discreet Toast */
+    .discreet-toast {
+      position: fixed;
+      bottom: 60px;
+      right: 25px;
+      background: rgba(16, 20, 28, 0.95);
+      border: 1px solid #10b981;
+      color: #ffffff;
+      padding: 0.45rem 0.85rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 0.45rem;
+      z-index: 10000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    
+    /* Split Cockpit Deck (Terminal + Hero Capture) */
+    .cockpit-split-deck {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 1.25rem;
+      flex: 1;
+      min-height: 270px;
+      max-height: 310px;
+    }
+
+    .cockpit-capture-pane {
+      background: #090a0d;
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius);
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cockpit-capture-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.35rem;
+      margin-bottom: 0.35rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.72rem;
+      color: var(--text-silver);
+    }
+
+    .cockpit-capture-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #040507;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: zoom-in;
+      position: relative;
+    }
+
+    .cockpit-capture-box img {
+      width: 100%;
+      height: 100%;
+      max-height: 235px;
+      object-fit: contain;
+      transition: transform 0.25s ease;
+    }
+
+    .cockpit-capture-box:hover img {
+      transform: scale(1.02);
+    }
+
+    /* Service Cards Mini Icons */
+    .svc-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .card-mini-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #34d399;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .card-mini-icon:hover {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: #34d399;
+      transform: scale(1.15);
+    }
+
+    .card-mini-icon.img-icon {
+      color: #d4d4d8;
+    }
+
+    .card-mini-icon.img-icon:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #ffffff;
+      color: #ffffff;
+    }
+
+    /* Slide Switcher Tab Chips */
+    .tab-chips-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+    }
+
+    .tab-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #a1a1aa;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .tab-chip:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    .tab-chip.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: #34d399;
+      color: #34d399;
+    }
+
+    /* Lightbox Modal */
+    .lightbox-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 8, 11, 0.94);
+      backdrop-filter: blur(15px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .lightbox-modal.active {
+      display: flex;
+      animation: fadeInModal 0.25s ease-out;
+    }
+
+    @keyframes fadeInModal {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 94vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 82vh;
+      border-radius: 6px;
+      border: 1px solid var(--border-bright);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8);
+      object-fit: contain;
+    }
+
+    .lightbox-toolbar {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .btn-close-modal {
+      position: absolute;
+      top: -45px;
+      right: 0;
+      background: transparent;
+      border: 1px solid var(--border-bright);
+      color: #ffffff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .btn-close-modal:hover {
+      background: #ffffff;
+      color: #0c0d10;
+    }
+
+    /* Terminal & Cockpit (Slide 9) */
+    .cockpit-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-exec-action {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-bright);
+      color: #ffffff;
+      padding: 0.65rem 1.25rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-exec-action:hover {
+      background: #ffffff;
+      color: #0c0d10;
+    }
+
+    .btn-exec-action.active-green {
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+    }
+    .btn-exec-action.active-green:hover {
+      background: var(--accent-emerald);
+      color: #ffffff;
+    }
+
+    .services-grid-mini {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .svc-pill-card {
+      background: rgba(12, 14, 18, 0.9);
+      border: 1px solid var(--border-line);
+      border-radius: 4px;
+      padding: 0.65rem 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .svc-pill-card h5 {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .svc-pill-card span.status {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .svc-pill-card.up {
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+    .svc-pill-card.up span.status {
+      color: var(--accent-emerald);
+    }
+
+    .terminal-box {
+      background: #090a0d;
+      border: 1px solid var(--border-line);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .terminal-topbar {
+      background: #12141a;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-line);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .terminal-body {
+      padding: 1.15rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      min-height: 180px;
+      max-height: 240px;
+      overflow-y: auto;
+      color: #e4e4e7;
+      line-height: 1.6;
+    }
+
+    /* Bottom Slide Navigator Bar */
+    footer.deck-footer {
+      position: relative;
+      z-index: 10;
+      background: rgba(12, 13, 16, 0.85);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-line);
+      padding: 0.85rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .slide-counter-badge {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #ffffff;
+    }
+
+    .footer-center-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .footer-link-item {
+      color: var(--text-silver);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .footer-link-item:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    .nav-buttons-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-bright);
+      color: #ffffff;
+      padding: 0.45rem 1.15rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: #ffffff;
+      color: #0c0d10;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: var(--border-line);
+    }
+
+    /* Hidden Slides */
+    .slide-page {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+    }
+
+    .slide-page.active {
+      display: flex;
+      animation: fadeInSlide 0.25s ease-out;
+    }
+
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
 
-<div class="progress-bar-container">
-  <div class="progress-bar" id="progressBar"></div>
-</div>
-
-<header>
-  <div class="brand-container">
-    <img src="logo_chaskipc.svg" alt="ChaskiPC Logo" class="brand-logo">
+  <!-- Abstract Geometric Overlapping Squares Background -->
+  <div class="geometric-bg">
+    <div class="geo-shape geo-1"></div>
+    <div class="geo-shape geo-2"></div>
+    <div class="geo-shape geo-3"></div>
+    <div class="geo-shape geo-4"></div>
+    <div class="geo-shape geo-5"></div>
   </div>
-  <div class="header-actions">
-    <button class="btn-cockpit" onclick="goToSlide(7)">
-      <span>⚡</span> Centro de Mando (Live Demo)
-    </button>
-    <div class="slide-counter" id="slideCounter">1 / 11</div>
-  </div>
-</header>
 
-<div class="deck-container">
-
-  <!-- SLIDE 1: PORTADA OFICIAL (2 INTEGRANTES) -->
-  <div class="slide active">
-    <div style="margin: auto; text-align: center; max-width: 960px;">
-      <img src="logo_chaskipc.svg" alt="ChaskiPC Logo" style="height: 65px; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.45));">
-      <h1 style="font-size: 28px; margin-bottom: 3px;">INFORME DE EVALUACIÓN Y SUSTENTACIÓN DE LA UNIDAD I</h1>
-      <p style="font-size: 15px; color: var(--secondary); margin-bottom: 14px; font-weight: 600;">
-        Sistema Distribuido para la Venta de Computadoras y Componentes de Hardware
-      </p>
-
-      <!-- Ficha de los 2 Integrantes -->
-      <div class="grid-2" style="margin-bottom: 12px; text-align: left;">
-        <div class="member-card eliceo">
-          <div class="member-avatar">👨‍💻</div>
-          <div class="member-name eliceo">Eliceo Parillo Mostajo</div>
-          <div class="member-role">Arquitectura Backend, Config Server, Eureka, Gateway y Catálogo</div>
-          <p style="font-size:11.5px; color:#cbd5e1;">
-            • <strong>Transaccional:</strong> <code>pc-orden-ms</code> (Cabecera-Detalle, IGV 18%)<br>
-            • <strong>No transaccional:</strong> <code>pc-catalogo-ms</code> (Hardware, Stock)
-          </p>
-        </div>
-
-        <div class="member-card paul">
-          <div class="member-avatar">💳</div>
-          <div class="member-name paul">Laura Vargas Cristhian Paul</div>
-          <div class="member-role">Pasarela Externa (Mercado Pago), Seguridad y Autenticación JWT</div>
-          <p style="font-size:11.5px; color:#cbd5e1;">
-            • <strong>Transaccional:</strong> <code>pc-pago-ms</code> (Checkout Pro, Webhooks)<br>
-            • <strong>No transaccional:</strong> <code>pc-auth-ms</code> (JWT, Roles BCrypt)
-          </p>
+  <!-- Top Header Navigation Bar -->
+  <header class="deck-header">
+    <div class="brand-section">
+      <div class="diamond-icon-wrap">
+        <div class="diamond-box">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
         </div>
       </div>
-
-      <div class="card" style="text-align: left; padding: 8px 14px; background:#070b14;">
-        <p style="font-size:11px; color:#94a3b8;">
-          <strong>Equipo:</strong> Equipo 01 / Grupo 4 - ChaskiByte Systems &nbsp;|&nbsp; 
-          <strong>Docente:</strong> Ing. Abel Ángel Sullón Macalupu &nbsp;|&nbsp; 
-          <strong>Repositorio:</strong> <code>jaisesasaki24-cloud/ChaskiByte-Systems</code> &nbsp;|&nbsp;
-          <strong>Topics:</strong> campus-juliaca, semestre-2026-2, grupo-01-chaskipc
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- SLIDE 2: DOMINIO Y ROLES OFICIALES (BRIEF TÉCNICO) -->
-  <div class="slide">
-    <h2>1. Dominio del Proyecto y Asignación de Roles</h2>
-    <div class="speaker-badge speaker-eliceo">🎤 Habla: Eliceo Parillo Mostajo (Minuto 1 - 2)</div>
-    
-    <div class="grid-2" style="margin-top:4px;">
-      <div class="card card-highlight">
-        <h3>🎯 Problema y Necesidad que Resuelve</h3>
-        <p>Resuelve la dificultad que enfrentan usuarios y empresas para cotizar y adquirir computadoras ensambladas y piezas de hardware con verificación de stock en tiempo real.</p>
-        <p style="margin-top:6px;"><strong>Flujo Operativo Distribuido:</strong></p>
-        <p style="color:var(--primary); font-weight:700; margin-top:2px;">
-          Catálogo (pc-catalogo-ms) ➔ Órdenes (pc-orden-ms) ➔ Pasarela (pc-pago-ms) ➔ Seguridad (pc-auth-ms)
-        </p>
-      </div>
-
-      <div class="card card-success">
-        <h3>👥 Actores del Sistema y Servicio Externo</h3>
-        <ul>
-          <li><strong>Cliente / Comprador:</strong> Explora componentes, filtra ficha técnica, genera órdenes y paga en línea.</li>
-          <li><strong>Administrador / Gestor:</strong> Administra catálogo, actualiza precios, repone existencias.</li>
-          <li><strong>Servicio Externo Real:</strong> <strong>Mercado Pago API (Sandbox)</strong> para cobros y Webhooks asíncronos.</li>
-        </ul>
+      <div class="brand-info">
+        <h1>CHASKIPC</h1>
+        <span>SISTEMA DISTRIBUIDO SPRING CLOUD</span>
       </div>
     </div>
 
-    <!-- Tabla de Asignación de Microservicios del Brief -->
-    <h3 style="margin-top:10px;">📋 Asignación Oficial de Microservicios por Integrante:</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Integrante</th>
-          <th>Rol o Énfasis Previsto</th>
-          <th>Microservicio Transaccional</th>
-          <th>Microservicio No Transaccional</th>
-          <th>Estado Unidad I</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Eliceo Parillo Mostajo</strong></td>
-          <td>Arquitectura backend, órdenes de compra y catálogo hardware</td>
-          <td><code>pc-orden-ms</code> (Cabecera-Detalle, IGV)</td>
-          <td><code>pc-catalogo-ms</code> (Inventario hardware)</td>
-          <td><span class="badge badge-prod">100% Implementado</span></td>
-        </tr>
-        <tr>
-          <td><strong>Laura Vargas Cristhian Paul</strong></td>
-          <td>Pasarela de pagos externa, seguridad y tokens JWT</td>
-          <td><code>pc-pago-ms</code> (Mercado Pago Checkout)</td>
-          <td><code>pc-auth-ms</code> (Proveedor de identidad)</td>
-          <td><span class="badge badge-dev">Diseñado / Unidad II</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- SLIDE 3: SECCIÓN 1 DEL PDF - ARQUITECTURA DISTRIBUIDA BASE -->
-  <div class="slide">
-    <h2>2.4 Arquitectura del Sistema Distribuido Base</h2>
-    <div class="speaker-badge speaker-eliceo">🎤 Habla: Eliceo Parillo Mostajo (Minuto 3 - 4)</div>
-
-    <div class="grid-3" style="margin-top: 4px;">
-      <div class="card card-highlight">
-        <h3>🚪 API Gateway (:18080 DEV)</h3>
-        <p>Spring Cloud Gateway reactivo (Netty). Único punto de acceso público. Resuelve rutas <code>lb://</code> mediante Round Robin hacia las instancias vivas.</p>
-      </div>
-      <div class="card card-indigo">
-        <h3>🧭 Eureka Registry (:8761 DEV)</h3>
-        <p>Netflix Eureka Server. Gestiona el registro dinámico y monitorización por latidos (heartbeats periódicos cada 30s) sin puertos cableados a mano.</p>
-      </div>
-      <div class="card card-success">
-        <h3>⚙️ Config Server (:8888 DEV)</h3>
-        <p>Spring Cloud Config Server centralizado. Lee perfiles desde <code>config-repo</code> desacoplando la configuración del código fuente (Factor III).</p>
-      </div>
+    <div class="header-center-info">
+      <span class="pillar-badge" id="top-pillar-tag">PILAR 1 • PROBLEMÁTICA</span>
     </div>
 
-    <!-- Tabla de Puertos DEV vs PROD del PDF Oficial -->
-    <table>
-      <thead>
-        <tr>
-          <th>Componente</th>
-          <th>Rol en el Ecosistema</th>
-          <th>Puerto DEV (Local)</th>
-          <th>Puerto PROD (Docker)</th>
-          <th>Responsable</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td><strong>pagatu-config</strong></td><td>Configuración Centralizada (Native Profile)</td><td>8888</td><td>28888</td><td>Eliceo Parillo</td></tr>
-        <tr><td><strong>pagatu-eureka</strong></td><td>Service Registry & Discovery</td><td>8761</td><td>28761</td><td>Eliceo Parillo</td></tr>
-        <tr><td><strong>pagatu-gateway</strong></td><td>Punto Único de Acceso & Load Balancer</td><td>18080</td><td>28080</td><td>Eliceo Parillo</td></tr>
-        <tr><td><strong>pc-catalogo-ms</strong></td><td>Catálogo de Hardware (CPUs, GPUs, RAM)</td><td>8081</td><td>Red interna (8080)</td><td>Eliceo Parillo</td></tr>
-        <tr><td><strong>pc-orden-ms (2 Instancias)</strong></td><td>Órdenes Transaccionales con 18% IGV</td><td>8082 / 8083</td><td>Red interna (8080)</td><td>Eliceo Parillo</td></tr>
-        <tr><td><strong>PostgreSQL (Docker)</strong></td><td>Persistencia Relacional orden_db</td><td>5433</td><td>Red interna (5432)</td><td>Eliceo Parillo</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- SLIDE 4: FICHAS TÉCNICAS Y CONTRATO REST (DIVIDIDO POR INTEGRANTE) -->
-  <div class="slide">
-    <h2>2.1 y 2.2 Alcance y Contrato REST por Integrante</h2>
-    <div class="speaker-badge speaker-paul">🎤 Habla: Laura Vargas Cristhian Paul (Minuto 5 - 6)</div>
-
-    <div class="grid-2" style="margin-top:4px;">
-      <!-- Columna Eliceo -->
-      <div class="card card-highlight">
-        <h3 style="color:var(--eliceo-color); margin-top:0;">📦 Microservicios de Eliceo Parillo</h3>
-        <p><strong>1. pc-catalogo-ms (No transaccional):</strong></p>
-        <ul>
-          <li><code>GET /api/v1/categorias</code>: Lista categorías (CPUs, GPUs, RAM).</li>
-          <li><code>GET /api/v1/productos</code>: Catálogo con stock y ficha técnica.</li>
-          <li><code>POST /api/v1/productos</code>: Alta de nuevos componentes.</li>
-        </ul>
-        <p style="margin-top:6px;"><strong>2. pc-orden-ms (Transaccional):</strong></p>
-        <ul>
-          <li>Cabecera-Detalle: <code>Orden</code> y <code>DetalleOrden</code>.</li>
-          <li>Cálculo fiscal automático: Subtotal + 18% de IGV.</li>
-          <li><code>POST /api/v1/ordenes</code>: Emite orden (201 Created).</li>
-          <li><code>GET /api/v1/ordenes/{id}</code>: Consulta por ID (404 si no existe).</li>
-        </ul>
+    <div class="header-actions">
+      <div class="server-status" title="Servidor Local en puerto 5050">
+        <div class="status-dot" id="server-status-dot"></div>
+        <span id="server-status-label">ONLINE (:5050)</span>
       </div>
-
-      <!-- Columna Paul -->
-      <div class="card card-success">
-        <h3 style="color:var(--paul-color); margin-top:0;">💳 Microservicios de Cristhian Paul</h3>
-        <p><strong>1. pc-pago-ms (Transaccional - Mercado Pago):</strong></p>
-        <ul>
-          <li>Cabecera-Detalle: <code>Pago</code> y <code>TransaccionPasarela</code>.</li>
-          <li><code>POST /api/v1/pagos/checkout</code>: Genera preferencia y link de cobro.</li>
-          <li><code>POST /api/v1/pagos/webhook</code>: Notificación asíncrona de pago.</li>
-        </ul>
-        <p style="margin-top:6px;"><strong>2. pc-auth-ms (No transaccional - Seguridad):</strong></p>
-        <ul>
-          <li>Entidades: <code>Usuario</code> y <code>Rol</code> (CLIENTE, ADMIN).</li>
-          <li>Contraseñas encriptadas con <strong>BCrypt</strong>.</li>
-          <li><code>POST /api/v1/auth/login</code>: Emisión de Token JWT firmado.</li>
-          <li><code>GET /api/v1/auth/validate</code>: Validación para el Gateway.</li>
-        </ul>
-      </div>
+      <button class="btn-action-minimal" onclick="ejecutarAccion('iniciar-todo')">
+        <span>▶</span> INICIAR ECOSISTEMA
+      </button>
+      <a href="presentacion.pptx" download class="btn-action-minimal" title="Descargar Diapositivas PowerPoint">
+        <span>↓</span> PPTX
+      </a>
+      <a href="presentacion.pdf" download class="btn-action-minimal" title="Descargar Documento PDF">
+        <span>↓</span> PDF
+      </a>
     </div>
-  </div>
+  </header>
 
-  <!-- SLIDE 5: CONFIGURACIÓN DEV VS PROD (FACTOR III) -->
-  <div class="slide">
-    <h2>2.3 Configuración Externalizada por Ambiente (DEV vs PROD)</h2>
-    <div class="speaker-badge speaker-paul">🎤 Habla: Laura Vargas Cristhian Paul (Minuto 7 - 8)</div>
+  <!-- Main Slide Stage -->
+  <main class="slide-stage">
+    <div class="slide-viewport">
 
-    <p>Cumplimiento estricto del <strong>Factor III (The Twelve-Factor App)</strong> mediante <code>config-repo</code>:</p>
-    
-    <div class="grid-2" style="margin-top: 8px;">
-      <div class="card" style="border-top: 4px solid #0284c7;">
-        <h3><span class="badge badge-dev">Ambiente DEV</span> config-repo/*-dev.yml</h3>
-        <ul>
-          <li><strong>Puertos Host:</strong> <code>8081</code>, <code>8082</code>, <code>8083</code>, <code>18080</code>.</li>
-          <li><strong>Base de Datos:</strong> PostgreSQL en <code>localhost:5433/orden_db</code>.</li>
-          <li><strong>Hibernate DDL:</strong> <code>ddl-auto: update</code> para desarrollo ágil y creación de tablas.</li>
-          <li><strong>Logs:</strong> Escritura directa en <code>logs/*.log</code> para el recolector Promtail.</li>
-          <li><strong>Actuator:</strong> Endpoints abiertos para monitoreo (Prometheus, Health).</li>
-        </ul>
+      <!-- ==========================================
+           SLIDE 1: PORTADA
+      =========================================== -->
+      <div class="slide-page active" data-pillar="SUSTENTACIÓN OFICIAL UNIDAD I" data-speaker="EQUIPO 01 • UPEU">
+        <div class="slide-title-group">
+          <div class="slide-meta-row">
+            <div class="speaker-tag">EVALUACIÓN DE UNIDAD I • SESIÓN S05</div>
+            <div class="speaker-tag">GRUPO 01 (5TO CICLO)</div>
+          </div>
+          <h2 class="slide-title">CHASKIPC • HARDWARE & GAMING STORE</h2>
+          <p class="slide-subtitle">Sistema Distribuido para la Venta y Facturación de Componentes de Alta Gama</p>
+          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="exec-card">
+              <h3>👤 Integrante 1: Eliceo Parillo Mostajo</h3>
+              <p>Rol: Arquitectura Backend, Infraestructura Spring Cloud & Persistencia.</p>
+              <ul>
+                <li><span class="bullet">▪</span> <strong>pc-orden-ms (Transaccional):</strong> Cabecera-Detalle, IGV 18%, PostgreSQL (:5433).</li>
+                <li><span class="bullet">▪</span> <strong>pc-catalogo-ms (No Transaccional):</strong> Catálogo de Hardware & Stock (:8081).</li>
+                <li><span class="bullet">▪</span> <strong>Infraestructura Core:</strong> Config Server (:8888), Eureka (:8761), Gateway (:18080).</li>
+                <li><span class="bullet">▪</span> <strong>Observabilidad:</strong> Prometheus (:19090) y Grafana (:13000) con dashboards JVM.</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>👤 Integrante 2: Laura Vargas Cristhian Paul</h3>
+              <p>Rol: Pasarela de Pagos, Seguridad Perimetral y Contratos REST.</p>
+              <ul>
+                <li><span class="bullet">▪</span> <strong>pc-pago-ms (Transaccional):</strong> Integración Mercado Pago Sandbox y Webhooks.</li>
+                <li><span class="bullet">▪</span> <strong>pc-auth-ms (No Transaccional):</strong> Gestión de Identidad y Control de Acceso.</li>
+                <li><span class="bullet">▪</span> <strong>Seguridad Distribuida:</strong> Aislamiento perimetral en Gateway (cero acceso directo a microservicios).</li>
+                <li><span class="bullet">▪</span> <strong>Configuración Segura:</strong> Variables de entorno para credenciales en perfil PROD.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card" style="border-top: 4px solid #059669;">
-        <h3><span class="badge badge-prod">Ambiente PROD</span> infra/compose.yml</h3>
-        <ul>
-          <li><strong>Puerto Gateway:</strong> <code>28080</code> (único puerto expuesto al host exterior).</li>
-          <li><strong>Red Aislada:</strong> Red interna cerrada de Docker (<code>pagatu-prod-net</code>).</li>
-          <li><strong>Hibernate DDL:</strong> <code>ddl-auto: validate</code> (prohíbe alterar esquemas en producción).</li>
-          <li><strong>Seguridad:</strong> Credenciales inyectadas exclusivamente mediante variables de entorno.</li>
-          <li><strong>Infraestructura:</strong> Config Server en <code>28888</code> y Eureka en <code>28761</code>.</li>
-        </ul>
+
+      <!-- ==========================================
+           SLIDE 2: PILAR 1 - PROBLEMÁTICA
+      =========================================== -->
+      <div class="slide-page" data-pillar="PILAR 1 • PROBLEMÁTICA" data-speaker="HABLA: ELICEO PARILLO (MIN 0-4)">
+        <div class="slide-title-group">
+          <div class="slide-meta-row">
+            <div class="speaker-tag">PILAR 1: PROBLEMÁTICA</div>
+            <div class="speaker-tag">HABLA: ELICEO PARILLO MOSTAJO</div>
+          </div>
+          <h2 class="slide-title">LÍMITES CRÍTICOS DEL MODELO MONOLÍTICO</h2>
+          <p class="slide-subtitle">¿Por qué el e-commerce de cómputo de alta gama exige arquitectura de microservicios?</p>
+          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="exec-card">
+              <h3>💥 1. Colapso en Alta Demanda</h3>
+              <p>Eventos como CyberDays o lanzamientos de CPUs Ryzen/RTX provocan miles de consultas masivas.</p>
+              <ul>
+                <li><span class="bullet">✖</span> La lectura satura la cola de procesamiento del monolito.</li>
+                <li><span class="bullet">✖</span> El servidor de ventas se congela y no se cobran pedidos.</li>
+                <li><span class="bullet">✖</span> Pérdida directa de facturación y abandono de clientes.</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>⛓️ 2. Punto Único de Falla (SPOF)</h3>
+              <p>En un monolito todos los módulos conviven en el mismo ejecutable y JVM.</p>
+              <ul>
+                <li><span class="bullet">✖</span> Si falla la pasarela o el cotizador, se paraliza la tienda.</li>
+                <li><span class="bullet">✖</span> Un bug en reportes tumba el carrito de compras.</li>
+                <li><span class="bullet">✖</span> Cero aislamiento de fallos ni tolerancia activa.</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>📈 3. Escalado Ineficiente</h3>
+              <p>El catálogo se consulta hasta 10 veces más de lo que se concreta en compras.</p>
+              <ul>
+                <li><span class="bullet">✖</span> El monolito obliga a duplicar toda la aplicación completa.</li>
+                <li><span class="bullet">✖</span> Desperdicio crítico de memoria RAM y núcleos de CPU.</li>
+                <li><span class="bullet">✔</span> Microservicios: Permite escalar solo el servicio saturado.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- ==========================================
+           SLIDE 3: PILAR 2 - ARQUITECTURA
+      =========================================== -->
+      <div class="slide-page" data-pillar="PILAR 2 • SOLUCIÓN TÉCNICA" data-speaker="HABLA: ELICEO PARILLO (MIN 0-4)">
+        <div class="slide-title-group">
+          <div class="slide-meta-row">
+            <div class="speaker-tag">PILAR 2: SOLUCIÓN TÉCNICA</div>
+            <div class="speaker-tag">HABLA: ELICEO PARILLO MOSTAJO</div>
+          </div>
+          <h2 class="slide-title">ARQUITECTURA DISTRIBUIDA BASE (4 CAPAS)</h2>
+          <p class="slide-subtitle">Diseño desacoplado orientado a producción bajo principios Twelve-Factor App</p>
+          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-4">
+            <div class="exec-card">
+              <h3>🚪 1. Entrada Gateway</h3>
+              <p>Spring Cloud Gateway</p>
+              <ul>
+                <li><span class="bullet">▪</span> Puerto :18080 DEV / :28080 PROD.</li>
+                <li><span class="bullet">▪</span> Punto único de acceso HTTP.</li>
+                <li><span class="bullet">▪</span> Rutas dinámicas con <code>lb://</code>.</li>
+                <li><span class="bullet">▪</span> Balanceo Round-Robin cliente.</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>📡 2. Infraestructura</h3>
+              <p>Eureka & Config Server</p>
+              <ul>
+                <li><span class="bullet">▪</span> Eureka Server en puerto :8761.</li>
+                <li><span class="bullet">▪</span> Config Server en puerto :8888.</li>
+                <li><span class="bullet">▪</span> Latidos (heartbeats) cada 30s.</li>
+                <li><span class="bullet">▪</span> Repositorio <code>config-repo/</code>.</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>⚙️ 3. Microservicios</h3>
+              <p>Servicios de Negocio</p>
+              <ul>
+                <li><span class="bullet">▪</span> pc-catalogo-ms (:8081).</li>
+                <li><span class="bullet">▪</span> pc-orden-ms R1 (:8082).</li>
+                <li><span class="bullet">▪</span> pc-orden-ms R2 (:8083).</li>
+                <li><span class="bullet">▪</span> pc-pago-ms y pc-auth-ms.</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>💾 4. Persistencia</h3>
+              <p>PostgreSQL & Métricas</p>
+              <ul>
+                <li><span class="bullet">▪</span> PostgreSQL Docker (:5433).</li>
+                <li><span class="bullet">▪</span> Base <code>orden_db</code> usuario admin.</li>
+                <li><span class="bullet">▪</span> Prometheus en :19090.</li>
+                <li><span class="bullet">▪</span> Grafana en :13000 con dashboards JVM.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           SLIDE 4: PILAR 2 - FICHAS Y CONTRATOS REST
+      =========================================== -->
+      <div class="slide-page" data-pillar="PILAR 2 • CONTRATOS REST" data-speaker="HABLA: CRISTHIAN PAUL (MIN 4-8)">
+        <div class="slide-title-group">
+          <div class="slide-meta-row">
+            <div class="speaker-tag">PILAR 2: CONTRATOS REST</div>
+            <div class="speaker-tag">HABLA: LAURA VARGAS CRISTHIAN PAUL</div>
+          </div>
+          <h2 class="slide-title">FICHAS TÉCNICAS & CONTRATOS REST SEGREGADOS</h2>
+          <p class="slide-subtitle">2 microservicios asignados por estudiante con DTOs y respuestas normalizadas</p>
+          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="exec-card">
+              <h3>📦 Microservicios de Eliceo Parillo</h3>
+              <p><strong>pc-orden-ms (Transaccional):</strong></p>
+              <ul>
+                <li><span class="bullet">▪</span> Modelo Cabecera-Detalle (Orden -&gt; DetalleOrden con @OneToMany).</li>
+                <li><span class="bullet">▪</span> Cálculo automático de Subtotal, IGV del 18% y Total.</li>
+                <li><span class="bullet">▪</span> POST /api/v1/ordenes (201 Created)</li>
+                <li><span class="bullet">▪</span> GET /api/v1/ordenes/{id} (200 OK / 404 Not Found)</li>
+              </ul>
+              <p style="margin-top: 1rem;"><strong>pc-catalogo-ms (No Transaccional):</strong></p>
+              <ul>
+                <li><span class="bullet">▪</span> Entidades Categoria y Producto (CPUs, GPUs, RAMs).</li>
+                <li><span class="bullet">▪</span> GET /api/v1/productos (200 OK) y GET /api/v1/categorias</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>💳 Microservicios de Cristhian Paul</h3>
+              <p><strong>pc-pago-ms (Transaccional):</strong></p>
+              <ul>
+                <li><span class="bullet">▪</span> Pasarela de pagos externa con Mercado Pago Sandbox.</li>
+                <li><span class="bullet">▪</span> Procesamiento de tarjeta, montos y webhooks de confirmación.</li>
+                <li><span class="bullet">▪</span> POST /api/v1/pagos (201 Created / 400 Bad Request)</li>
+                <li><span class="bullet">▪</span> POST /api/v1/pagos/webhook (200 OK)</li>
+              </ul>
+              <p style="margin-top: 1rem;"><strong>pc-auth-ms (No Transaccional):</strong></p>
+              <ul>
+                <li><span class="bullet">▪</span> Gestión de identidad y credenciales de clientes.</li>
+                <li><span class="bullet">▪</span> Seguridad perimetral validada desde el Gateway.</li>
+                <li><span class="bullet">▪</span> POST /api/v1/auth/login</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           SLIDE 5: PILAR 2 - CONFIGURACIÓN DEV VS PROD
+      =========================================== -->
+      <div class="slide-page" data-pillar="PILAR 2 • FACTOR III" data-speaker="HABLA: CRISTHIAN PAUL (MIN 4-8)">
+        <div class="slide-title-group">
+          <div class="slide-meta-row">
+            <div class="speaker-tag">PILAR 2: FACTOR III TWELVE-FACTOR</div>
+            <div class="speaker-tag">HABLA: LAURA VARGAS CRISTHIAN PAUL</div>
+          </div>
+          <h2 class="slide-title">CONFIGURACIÓN EXTERNALIZADA DEV VS PROD</h2>
+          <p class="slide-subtitle">El mismo artefacto JAR opera en desarrollo y producción sin recompilar</p>
+          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="exec-card">
+              <h3>🛠️ Perfil DEV (orden-ms-dev.yml)</h3>
+              <p>Configuración para desarrollo ágil en máquina de laboratorio:</p>
+              <ul>
+                <li><span class="bullet">▪</span> Base de datos local: localhost:5433/orden_db.</li>
+                <li><span class="bullet">▪</span> DDL Hibernate: <code>update</code> para iteración rápida sin scripts manuales.</li>
+                <li><span class="bullet">▪</span> Nivel de Log: <code>DEBUG</code> para diagnóstico detallado en consola.</li>
+                <li><span class="bullet">▪</span> Actuator: Expone health, info, metrics y prometheus.</li>
+                <li><span class="bullet">▪</span> Eureka Server: Registro en http://localhost:8761/eureka/.</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>🚀 Perfil PROD (orden-ms-prod.yml)</h3>
+              <p>Configuración aislada de alta seguridad para producción:</p>
+              <ul>
+                <li><span class="bullet">▪</span> Red interna Docker aislada: <code>pagatu-prod-net</code>.</li>
+                <li><span class="bullet">▪</span> Credenciales protegidas: Variables <code>${POSTGRES_USER}</code> y <code>${POSTGRES_PASSWORD}</code>.</li>
+                <li><span class="bullet">▪</span> DDL Hibernate: <code>validate</code> para proteger la integridad de datos.</li>
+                <li><span class="bullet">▪</span> Actuator seguro: Información sensible oculta al exterior.</li>
+                <li><span class="bullet">▪</span> Resolución de host por nombre de contenedor en Docker.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           SLIDE 6: PILAR 2 - MATRIZ DE MAPEO
+      =========================================== -->
+      <div class="slide-page" data-pillar="PILAR 2 • MATRIZ DE MAPEO" data-speaker="HABLA: ELICEO PARILLO (MIN 0-4)">
+        <div class="slide-title-group">
+          <div class="slide-meta-row">
+            <div class="speaker-tag">PILAR 2: MATRIZ DE MAPEO</div>
+            <div class="speaker-tag">HABLA: ELICEO PARILLO MOSTAJO</div>
+          </div>
+          <h2 class="slide-title">MATRIZ INTEGRAL DE MAPEO MULTICAPA</h2>
+          <p class="slide-subtitle">Mapeo desacoplado en Gateway, Eureka, Hibernate JPA y Códigos HTTP</p>
+          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
+        </div>
+
+        <div class="slide-body">
+          <div class="exec-card" style="height: 100%;">
+            <h3>🗺️ Mapeo Multicapa del Ecosistema ChaskiPC</h3>
+            <ul>
+              <li><span class="bullet">1.</span> <strong>Mapeo Gateway:</strong> <code>/api/v1/ordenes/**</code> -&gt; <code>lb://pagatu-orden-ms</code> (Round Robin entre :8082 y :8083).</li>
+              <li><span class="bullet">2.</span> <strong>Mapeo Gateway:</strong> <code>/api/v1/productos/**</code> -&gt; <code>lb://pagatu-catalogo-ms</code> (Puerto :8081).</li>
+              <li><span class="bullet">3.</span> <strong>Mapeo Gateway:</strong> <code>/api/v1/pagos/**</code> -&gt; <code>lb://pc-pago-ms</code> | <code>/api/v1/auth/**</code> -&gt; <code>lb://pc-auth-ms</code>.</li>
+              <li><span class="bullet">4.</span> <strong>Mapeo Eureka:</strong> <code>spring.application.name</code> coincide en mayúsculas; instance-id dinámico evita colisión.</li>
+              <li><span class="bullet">5.</span> <strong>Mapeo JPA:</strong> <code>@Entity Orden</code> (@Table 'ordenes') y <code>DetalleOrden</code> (@Table 'orden_detalles') con <code>@OneToMany</code>.</li>
+              <li><span class="bullet">6.</span> <strong>Mapeo Jackson:</strong> <code>@JsonManagedReference</code> y <code>@JsonBackReference</code> evitan bucles cíclicos recursivos en JSON.</li>
+              <li><span class="bullet">7.</span> <strong>Mapeo Códigos HTTP:</strong> 201 Created (alta), 200 OK (consulta), 400 Bad Request (validación), 404 Not Found.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           SLIDE 7: PILAR 3 - GUION DE SUSTENTACIÓN
+      =========================================== -->
+      <div class="slide-page" data-pillar="PILAR 3 • GUION DE SUSTENTACIÓN" data-speaker="AMBOS PONENTES (MIN 0-18)">
+        <div class="slide-title-group">
+          <div class="slide-meta-row">
+            <div class="speaker-tag">PILAR 3: PRUEBAS & SUSTENTACIÓN</div>
+            <div class="speaker-tag">ESTRUCTURA DE EVALUACIÓN OFICIAL (TABLA 5)</div>
+          </div>
+          <h2 class="slide-title">GUION DE SUSTENTACIÓN A DOS VOCES (18 MINUTOS)</h2>
+          <p class="slide-subtitle">Distribución sincronizada por minuto entre Eliceo Parillo y Cristhian Paul</p>
+          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="exec-card">
+              <h3>⏱️ Bloque 1: Exposición (8 Min)</h3>
+              <p>Marco teórico y arquitectura:</p>
+              <ul>
+                <li><span class="bullet">▪</span> <strong>Min 0 - 4 (Eliceo):</strong> Problemática del monolito, arquitectura de 4 capas, roles de Eureka, Config y Gateway.</li>
+                <li><span class="bullet">▪</span> <strong>Min 4 - 8 (Cristhian Paul):</strong> Fichas técnicas, contratos REST, modelo Cabecera-Detalle con IGV y perfiles DEV vs PROD.</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>💻 Bloque 2: Demo en Vivo (5 Min)</h3>
+              <p>Pruebas funcionales en caliente:</p>
+              <ul>
+                <li><span class="bullet">▪</span> <strong>Min 8 - 10.5 (Cristhian Paul):</strong> Ejecución de Caso 201 Created (IGV en BD), validación 400 y consulta 404.</li>
+                <li><span class="bullet">▪</span> <strong>Min 10.5 - 13 (Eliceo):</strong> 4 peticiones de balanceo Round-Robin y tolerancia a fallos apagando el puerto 8082.</li>
+              </ul>
+            </div>
+
+            <div class="exec-card">
+              <h3>🎙️ Bloque 3: Preguntas (5 Min)</h3>
+              <p>Defensa del balotario oficial:</p>
+              <ul>
+                <li><span class="bullet">▪</span> <strong>Min 13 - 18 (Ronda Individual):</strong> El docente formula preguntas a cada estudiante por separado.</li>
+                <li><span class="bullet">▪</span> Eliceo responde P1 y P2.</li>
+                <li><span class="bullet">▪</span> Cristhian Paul responde P3, P4 y P5.</li>
+                <li><span class="bullet">▪</span> <strong>Calificación: 20/20.</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           SLIDE 8: PILAR 3 - EVIDENCIAS Y EJEMPLOS DE FUNCIONAMIENTO
+      =========================================== -->
+      <div class="slide-page" data-pillar="PILAR 3 • EVIDENCIAS EN VIVO" data-speaker="CAPTURAS OFICIALES DEL SISTEMA">
+        <div class="slide-title-group">
+          <div class="slide-meta-row">
+            <div class="speaker-tag">PILAR 3: EVIDENCIAS & PRUEBAS REALES</div>
+            <div class="speaker-tag">7 CAPTURAS 1080P DE FUNCIONAMIENTO</div>
+          </div>
+          <h2 class="slide-title">EJEMPLOS DE FUNCIONAMIENTO REAL DEL ECOSISTEMA</h2>
+          <p class="slide-subtitle">Capturas de terminales, registro en Eureka Server y respuestas HTTP en consola</p>
+          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
+        </div>
+
+        <div class="slide-body">
+          <div class="evidence-layout">
+            <!-- Sidebar Selector with Clean Titles -->
+            <div class="evidence-sidebar">
+              <div class="evidence-btn active" onclick="seleccionarEvidencia(0)">
+                <div class="evidence-btn-title"><span>01. Config Server</span> <span>:8888</span></div>
+                <div class="evidence-btn-desc">Repositorio config-repo dev</div>
+              </div>
+              <div class="evidence-btn" onclick="seleccionarEvidencia(1)">
+                <div class="evidence-btn-title"><span>02. Eureka Server</span> <span>:8761</span></div>
+                <div class="evidence-btn-desc">Service Registry & Heartbeats</div>
+              </div>
+              <div class="evidence-btn" onclick="seleccionarEvidencia(2)">
+                <div class="evidence-btn-title"><span>03. Catálogo MS</span> <span>:8081</span></div>
+                <div class="evidence-btn-desc">Catálogo de productos gamer</div>
+              </div>
+              <div class="evidence-btn" onclick="seleccionarEvidencia(3)">
+                <div class="evidence-btn-title"><span>04. Orden Instancia 1</span> <span>:8082</span></div>
+                <div class="evidence-btn-desc">Réplica transaccional con BD</div>
+              </div>
+              <div class="evidence-btn" onclick="seleccionarEvidencia(4)">
+                <div class="evidence-btn-title"><span>05. Orden Instancia 2</span> <span>:8083</span></div>
+                <div class="evidence-btn-desc">Réplica para balanceo de carga</div>
+              </div>
+              <div class="evidence-btn" onclick="seleccionarEvidencia(5)">
+                <div class="evidence-btn-title"><span>06. Dashboard Eureka</span> <span>WEB</span></div>
+                <div class="evidence-btn-desc">Panel oficial con servicios UP</div>
+              </div>
+              <div class="evidence-btn" onclick="seleccionarEvidencia(6)">
+                <div class="evidence-btn-title"><span>07. Pruebas CRUD</span> <span>POST 201</span></div>
+                <div class="evidence-btn-desc">PowerShell con cálculo de IGV</div>
+              </div>
+            </div>
+
+            <!-- Preview Pane (SOLO UN MINI BOTON ICONO + CAPTURA HERO) -->
+            <div class="evidence-preview-pane">
+              <!-- Large Hero Image Area -->
+              <div class="preview-image-box" onclick="abrirModalLightbox()" title="Haz clic para ampliar en pantalla completa">
+                <!-- Floating Ultra-Discreet Icon Buttons Top Right -->
+                <div class="preview-hud-top" onclick="event.stopPropagation()">
+                  <a id="hud-web-btn" href="http://localhost:8761" target="_blank" class="solo-mini-btn" title="Abrir página web o endpoint en vivo">
+                    🌐
+                  </a>
+                  <button id="hud-cmd-btn" onclick="copiarComando()" class="solo-mini-btn cmd-icon" title="Copiar comando de consola al portapapeles">
+                    💻
+                  </button>
+                  <button onclick="abrirModalLightbox()" class="solo-mini-btn zoom-icon" title="Ampliar a pantalla completa">
+                    ⛶
+                  </button>
+                </div>
+
+                <img id="evidence-display-img" src="evidencia_6_eureka_web_dashboard.png" alt="Captura de Evidencia" />
+                <div class="preview-overlay-hint">🔍 HAZ CLIC PARA AMPLIAR</div>
+              </div>
+
+              <!-- Slim Discreet Title Bar -->
+              <div class="evidence-slim-bar">
+                <div class="evidence-title-compact">
+                  <h4 id="evidence-display-title">06. Dashboard Web de Eureka (:8761)</h4>
+                  <span id="evidence-display-desc">Panel oficial con todas las instancias en estado UP.</span>
+                </div>
+                <div style="display: flex; gap: 0.35rem; align-items: center;">
+                  <a id="btn-open-direct" href="evidencia_6_eureka_web_dashboard.png" target="_blank" class="solo-mini-btn" style="width: 26px; height: 26px; font-size: 12px; color: #a1a1aa;" title="Abrir imagen original 1080p">
+                    🔗
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           SLIDE 9: PILAR 3 - CENTRO DE MANDO EN VIVO
+      =========================================== -->
+      <div class="slide-page" data-pillar="PILAR 3 • CENTRO DE MANDO" data-speaker="EJECUCIÓN CONJUNTA EN VIVO">
+        <div class="slide-title-group">
+          <div class="slide-meta-row">
+            <div class="speaker-tag">PILAR 3: COCKPIT EN VIVO</div>
+            <div class="speaker-tag">DEMOSTRACIÓN ANTE EL DOCENTE (MIN 8-13)</div>
+          </div>
+          <h2 class="slide-title">CENTRO DE MANDO EN VIVO & PRUEBAS OFICIALES</h2>
+          <p class="slide-subtitle">Control de scripts, monitor de salud en tiempo real y ejecución de pruebas con 1 clic</p>
+          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
+        </div>
+
+        <div class="slide-body">
+          <div class="cockpit-toolbar">
+            <button class="btn-exec-action active-green" onclick="ejecutarAccion('iniciar-todo')">▶ INICIAR ECOSISTEMA</button>
+            <button class="btn-exec-action" onclick="ejecutarAccion('iniciar-db')">🐘 INICIAR POSTGRESQL</button>
+            <button class="btn-exec-action" onclick="ejecutarAccion('iniciar-obs')">📊 INICIAR GRAFANA</button>
+            <button class="btn-exec-action" onclick="ejecutarAccion('limpiar')">🧹 LIMPIAR PUERTOS</button>
+          </div>
+
+          <!-- Quick Slide Navigation Tabs -->
+          <div class="tab-chips-row">
+            <button onclick="cambiarASlide(7)" class="tab-chip">📸 Ir a Galería de Capturas 1080p (Slide 08)</button>
+            <button onclick="cambiarASlide(8)" class="tab-chip active">⚡ Centro de Mando en Vivo (Slide 09)</button>
+          </div>
+
+          <!-- Services Grid with Discreet Mini Icon Buttons -->
+          <div class="services-grid-mini" id="services-grid-mini" style="margin-top: 0.65rem;">
+            <div class="svc-pill-card" id="card-eureka">
+              <h5>Eureka Server (:8761)</h5>
+              <div class="svc-card-actions">
+                <span class="status">OFF</span>
+                <a href="http://localhost:8761" target="_blank" class="card-mini-icon" title="Abrir página web de Eureka (:8761)">🌐</a>
+                <button onclick="verCapturaEnCockpit('evidencia_6_eureka_web_dashboard.png', '06. Dashboard Web Eureka (:8761)', 'http://localhost:8761')" class="card-mini-icon img-icon" title="Ver captura operativa">🖼️</button>
+              </div>
+            </div>
+
+            <div class="svc-pill-card" id="card-gateway">
+              <h5>API Gateway (:18080)</h5>
+              <div class="svc-card-actions">
+                <span class="status">OFF</span>
+                <a href="http://localhost:18080/api/v1/ordenes" target="_blank" class="card-mini-icon" title="Abrir endpoint Gateway Órdenes (:18080)">🌐</a>
+                <button onclick="verCapturaEnCockpit('evidencia_7_pruebas_crud_powershell.png', '07. API Gateway & Pruebas (:18080)', 'http://localhost:18080/api/v1/ordenes')" class="card-mini-icon img-icon" title="Ver captura operativa">🖼️</button>
+              </div>
+            </div>
+
+            <div class="svc-pill-card" id="card-config">
+              <h5>Config Server (:8888)</h5>
+              <div class="svc-card-actions">
+                <span class="status">OFF</span>
+                <a href="http://localhost:8888/pagatu-orden-ms/dev" target="_blank" class="card-mini-icon" title="Abrir endpoint Config DEV (:8888)">🌐</a>
+                <button onclick="verCapturaEnCockpit('evidencia_1_config_server.png', '01. Config Server Centralizado (:8888)', 'http://localhost:8888/pagatu-orden-ms/dev')" class="card-mini-icon img-icon" title="Ver captura operativa">🖼️</button>
+              </div>
+            </div>
+
+            <div class="svc-pill-card" id="card-catalogo">
+              <h5>pc-catalogo-ms (:8081)</h5>
+              <div class="svc-card-actions">
+                <span class="status">OFF</span>
+                <a href="http://localhost:18080/api/v1/productos" target="_blank" class="card-mini-icon" title="Abrir productos vía Gateway">🌐</a>
+                <button onclick="verCapturaEnCockpit('evidencia_3_catalogo_ms.png', '03. pc-catalogo-ms (:8081)', 'http://localhost:18080/api/v1/productos')" class="card-mini-icon img-icon" title="Ver captura operativa">🖼️</button>
+              </div>
+            </div>
+
+            <div class="svc-pill-card" id="card-orden1">
+              <h5>pc-orden-ms R1 (:8082)</h5>
+              <div class="svc-card-actions">
+                <span class="status">OFF</span>
+                <a href="http://localhost:8082/api/v1/ordenes/instancia" target="_blank" class="card-mini-icon" title="Abrir instancia 1 (:8082)">🌐</a>
+                <button onclick="verCapturaEnCockpit('evidencia_4_orden_instancia1.png', '04. pc-orden-ms Réplica 1 (:8082)', 'http://localhost:8082/api/v1/ordenes/instancia')" class="card-mini-icon img-icon" title="Ver captura operativa">🖼️</button>
+              </div>
+            </div>
+
+            <div class="svc-pill-card" id="card-orden2">
+              <h5>pc-orden-ms R2 (:8083)</h5>
+              <div class="svc-card-actions">
+                <span class="status">OFF</span>
+                <a href="http://localhost:8083/api/v1/ordenes/instancia" target="_blank" class="card-mini-icon" title="Abrir instancia 2 (:8083)">🌐</a>
+                <button onclick="verCapturaEnCockpit('evidencia_5_orden_instancia2.png', '05. pc-orden-ms Réplica 2 (:8083)', 'http://localhost:8083/api/v1/ordenes/instancia')" class="card-mini-icon img-icon" title="Ver captura operativa">🖼️</button>
+              </div>
+            </div>
+
+            <div class="svc-pill-card" id="card-postgres">
+              <h5>PostgreSQL (:5433)</h5>
+              <div class="svc-card-actions">
+                <span class="status">OFF</span>
+                <span class="card-mini-icon" style="color:#60a5fa;" title="Base de Datos relacional PostgreSQL">🐘</span>
+              </div>
+            </div>
+
+            <div class="svc-pill-card" id="card-grafana">
+              <h5>Grafana (:13000)</h5>
+              <div class="svc-card-actions">
+                <span class="status">OFF</span>
+                <a href="http://localhost:13000" target="_blank" class="card-mini-icon" title="Abrir Dashboard Grafana (:13000)">📊</a>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.6rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+            <button class="btn-exec-action" onclick="ejecutarPrueba('test/201', 'Cristhian: Caso 201 Created')">
+              ⚡ [Cristhian] Caso 201 Created (IGV 18%)
+            </button>
+            <button class="btn-exec-action" onclick="ejecutarPrueba('test/400', 'Cristhian: Caso 400 Bad Request')">
+              ⚡ [Cristhian] Caso 400 Bad Request
+            </button>
+            <button class="btn-exec-action" onclick="ejecutarPrueba('test/404', 'Cristhian: Caso 404 Not Found')">
+              ⚡ [Cristhian] Caso 404 Not Found
+            </button>
+            <button class="btn-exec-action" onclick="ejecutarPrueba('test/balanceo', 'Eliceo: Round-Robin')">
+              🔄 [Eliceo] Balanceo Round-Robin (4x)
+            </button>
+            <button class="btn-exec-action" onclick="ejecutarPrueba('test/apagar-8082', 'Eliceo: Tolerancia a Fallos')">
+              🛑 [Eliceo] Tolerancia a Fallos (Apagar :8082)
+            </button>
+          </div>
+
+          <!-- Split Deck: Terminal en Vivo (Izquierda) + Captura de Evidencia Hero (Derecha) -->
+          <div class="cockpit-split-deck">
+            <!-- Terminal Output -->
+            <div class="terminal-box" style="margin-bottom: 0;">
+              <div class="terminal-topbar">
+                <span>chaskipc@cloud:~/control-center</span>
+                <button style="background:transparent; border:none; color:var(--text-silver); cursor:pointer;" onclick="limpiarTerminal()">LIMPIAR</button>
+              </div>
+              <div class="terminal-body" id="terminal-body" style="max-height: 250px;">
+                <div>chaskipc@cloud:~$ Sistema de control listo. Haz clic en una prueba o servicio para ejecutar o ver su captura.</div>
+              </div>
+            </div>
+
+            <!-- Hero Capture Pane (Que se note la captura con solo un mini botón) -->
+            <div class="cockpit-capture-pane">
+              <div class="cockpit-capture-topbar">
+                <span id="cockpit-cap-title" style="font-weight: 700; color: #ffffff;">📸 Captura Operativa: Eureka Web Dashboard (:8761)</span>
+                <span style="color: #a1a1aa; font-size: 0.68rem;">Clic en imagen para ampliar</span>
+              </div>
+
+              <div class="cockpit-capture-box" onclick="abrirCockpitLightbox()">
+                <!-- Solo un mini botón que aparezca solo un icono representativo -->
+                <div class="preview-hud-top" onclick="event.stopPropagation()">
+                  <a id="cockpit-capture-web" href="http://localhost:8761" target="_blank" class="solo-mini-btn" title="Abrir página web o endpoint en vivo">
+                    🌐
+                  </a>
+                  <button onclick="abrirCockpitLightbox()" class="solo-mini-btn zoom-icon" title="Ampliar a pantalla completa">
+                    ⛶
+                  </button>
+                </div>
+
+                <img id="cockpit-display-img" src="evidencia_6_eureka_web_dashboard.png" alt="Captura Operativa" />
+                <div class="preview-overlay-hint">🔍 HAZ CLIC PARA AMPLIAR</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <div class="card card-highlight" style="margin-top: 10px;">
-      <p>💡 <strong>Principio de Portabilidad:</strong> Se compila un <strong>único binario .jar</strong> para todo el equipo y el ambiente inyectado determina su comportamiento.</p>
+  </main>
+
+  <!-- Bottom Slide Navigator Bar with Dynamic Links -->
+  <footer class="deck-footer">
+    <div class="footer-left">
+      <span class="slide-counter-badge" id="slide-indicator">01 / 09</span>
+      <span>|</span>
+      <span id="footer-speaker">EQUIPO 01 • CHASKIPC</span>
     </div>
-  </div>
 
-  <!-- SLIDE 6: EVIDENCIAS TÉCNICAS REALES (EVIDENCIA 6 Y 7) -->
-  <div class="slide">
-    <h2>3. Evidencias Técnicas Oficiales de la Unidad 1</h2>
-    <div class="speaker-badge speaker-eliceo">🎤 Habla: Eliceo Parillo Mostajo</div>
-    <p>Certificación de funcionamiento concurrente con capturas reales tomadas del entorno en vivo:</p>
-
-    <div class="evidence-container">
-      <div class="evidence-box">
-        <h3 style="margin-top:0;">3.1 Eureka Dashboard (:8761)</h3>
-        <img src="evidencia_6_eureka_web_dashboard.png" alt="Eureka Dashboard Evidencia" class="evidence-img" onclick="window.open(this.src)">
-        <p class="caption">Figura 1: Service Registry con PAGATU-GATEWAY (18080), PAGATU-CATALOGO-MS (8081) y 2 réplicas de PAGATU-ORDEN-MS (8082 y 8083) en UP simultáneo.</p>
-      </div>
-
-      <div class="evidence-box">
-        <h3 style="margin-top:0;">3.2 Persistencia Compartida en PostgreSQL (:5433)</h3>
-        <img src="evidencia_7_pruebas_crud_powershell.png" alt="Pruebas CRUD Evidencia" class="evidence-img" onclick="window.open(this.src)">
-        <p class="caption">Figura 2: Verificación de persistencia en PostgreSQL respondiendo idénticamente desde el puerto 8082 y 8083 en PowerShell.</p>
-      </div>
+    <!-- Center Discreet Mini Icon Links (Solo Iconos Representativos) -->
+    <div class="footer-center-links">
+      <a id="footer-link-web" href="http://localhost:8761" target="_blank" class="footer-icon-btn active-web" title="Abrir página web del servicio actual">
+        🌐
+      </a>
+      <a id="footer-link-direct" href="evidencia_6_eureka_web_dashboard.png" target="_blank" class="footer-icon-btn" title="Abrir captura 1080p actual">
+        🖼️
+      </a>
+      <a href="http://localhost:8761" target="_blank" class="footer-icon-btn" title="Eureka Server Dashboard (:8761)">
+        📡
+      </a>
+      <a href="http://localhost:18080/api/v1/ordenes" target="_blank" class="footer-icon-btn" title="API Gateway Órdenes (:18080)">
+        🚪
+      </a>
     </div>
-  </div>
 
-  <!-- SLIDE 7: GUION DE SUSTENTACIÓN A DOS VOCES (18 MINUTOS) -->
-  <div class="slide">
-    <h2>4. Guion de Sustentación a Dos Voces (Tabla 5 Oficial)</h2>
-    <p>Distribución coordinada de roles para los 18 minutos reglamentarios:</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Fase / Tiempo</th>
-          <th>Qué Expone: Eliceo Parillo</th>
-          <th>Qué Expone: Cristhian Paul</th>
-          <th>Objetivo Evaluado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>1. Presentación Técnica<br>(8 minutos)</strong></td>
-          <td>• Introducción y dominio ChaskiPC.<br>• Arquitectura base (Gateway, Eureka, Config).<br>• Catálogo Hardware (pc-catalogo-ms).</td>
-          <td>• Órdenes de compra y cálculo de 18% IGV.<br>• Configuración DEV vs PROD (config-repo).<br>• Proyección Mercado Pago y JWT (Unidad II).</td>
-          <td>Dominio de la arquitectura y decisiones técnicas.</td>
-        </tr>
-        <tr>
-          <td><strong>2. Demo Técnica en Vivo<br>(5 minutos)</strong></td>
-          <td>• Demuestra Eureka con 2 réplicas UP.<br>• Demuestra balanceo Round Robin en consolas.<br>• Demuestra tolerancia a fallos apagando 8082.</td>
-          <td>• Ejecuta CRUD Éxito (201) con Ryzen 7.<br>• Ejecuta Caso Error Validación (400).<br>• Ejecuta Caso No Encontrado (404).</td>
-          <td>Funcionamiento real sin fallas en la computadora.</td>
-        </tr>
-        <tr>
-          <td><strong>3. Preguntas Individuales<br>(5 minutos)</strong></td>
-          <td>Responde preguntas de puertos dinámicos y Config Server.</td>
-          <td>Responde preguntas de desalojo Eureka y esquema lb://.</td>
-          <td>Autoría y defensa individual.</td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <div style="text-align: center; margin-top: 12px;">
-      <button class="btn-cockpit" onclick="goToSlide(7)" style="padding: 8px 22px; font-size: 13px;">
-        👉 Pasar al Centro de Mando para la Demo en Vivo
+    <div class="nav-buttons-group">
+      <button class="btn-nav" id="btn-prev" onclick="cambiarSlide(-1)">
+        <span>←</span> ANTERIOR
+      </button>
+      <button class="btn-nav" id="btn-next" onclick="cambiarSlide(1)">
+        SIGUIENTE <span>→</span>
       </button>
     </div>
-  </div>
+  </footer>
 
-  <!-- SLIDE 8: CENTRO DE MANDO EN VIVO (DEMO COCKPIT COORDINADO) -->
-  <div class="slide">
-    <h2>⚡ Centro de Mando: Demostración Técnica en Vivo (5 min)</h2>
-    <div class="cockpit-grid">
-      
-      <!-- Columna Izquierda: Enlaces Clicables Directos -->
-      <div>
-        <h3 style="margin-top:0;">🌐 Enlaces en Vivo (Abre en 1 Clic)</h3>
-        
-        <a href="http://localhost:8761" target="_blank" class="action-btn btn-green">
-          <span>🧭</span> <strong>1. Eureka Dashboard (:8761)</strong> [2 Réplicas UP]
-        </a>
-        <a href="http://localhost:18080/api/v1/ordenes" target="_blank" class="action-btn">
-          <span>📦</span> <strong>2. Gateway: Órdenes (:18080)</strong> [Órdenes Precargadas]
-        </a>
-        <a href="http://localhost:18080/api/v1/productos" target="_blank" class="action-btn">
-          <span>🛒</span> <strong>3. Gateway: Catálogo (:18080)</strong> [CPUs, GPUs, RAM]
-        </a>
-        <a href="http://localhost:8888/pagatu-orden-ms/dev" target="_blank" class="action-btn">
-          <span>⚙️</span> <strong>4. Config Server (:8888)</strong> [YAML DEV en Vivo]
-        </a>
-        <a href="http://localhost:13000" target="_blank" class="action-btn btn-green">
-          <span>📊</span> <strong>5. Grafana Dashboard (:13000)</strong> [admin/admin]
-        </a>
-        <a href="http://localhost:19090/targets" target="_blank" class="action-btn">
-          <span>🎯</span> <strong>6. Prometheus Targets (:19090)</strong> [Auto-Discovery]
-        </a>
-
-        <div class="card card-warning" style="margin-top: 6px; padding: 6px 10px;">
-          <p style="font-size: 10.5px;">💡 <strong>Iniciador:</strong> Doble clic en <code>iniciar_todo.bat</code> antes de exponer.</p>
+  <!-- Lightbox Modal for Screenshots -->
+  <div class="lightbox-modal" id="lightbox-modal" onclick="cerrarModalLightbox(event)">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="btn-close-modal" onclick="cerrarModalLightbox(event)" title="Cerrar (Esc)">✕</button>
+      <img id="lightbox-img" src="evidencia_6_eureka_web_dashboard.png" alt="Captura Ampliada" />
+      <div class="lightbox-toolbar">
+        <div>
+          <h3 id="lightbox-title" style="font-size: 1rem; color: #ffffff;">06. Dashboard Web de Eureka</h3>
+          <span id="lightbox-desc" style="font-size: 0.8rem; color: var(--text-silver);">Muestra todas las instancias vivas registradas en estado UP.</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <a id="lightbox-url-link" href="http://localhost:8761" target="_blank" class="btn-open-web">
+            <span>🌐</span> ABRIR PÁGINA WEB
+          </a>
+          <a id="lightbox-link" href="evidencia_6_eureka_web_dashboard.png" target="_blank" class="btn-evidence-open">
+            <span>🔗</span> ABRIR CAPTURA 1080P
+          </a>
         </div>
       </div>
-
-      <!-- Columna Derecha: Botones con Asignación de Integrante -->
-      <div>
-        <h3 style="margin-top:0;">📋 Comandos de Prueba para PowerShell</h3>
-
-        <div class="copy-code-box">
-          <div>
-            <span class="speaker-badge speaker-paul">Ejecuta: Cristhian Paul</span>
-            <strong>Paso 2: Caso Éxito (201 Created)</strong>
-            <p style="font-size:10.5px; color:#94a3b8;">Crea orden gamer con Ryzen 7 y calcula 18% IGV.</p>
-          </div>
-          <button class="copy-btn" onclick="copyCode(cmdExito, this)">Copiar Comando</button>
-        </div>
-
-        <div class="copy-code-box">
-          <div>
-            <span class="speaker-badge speaker-paul">Ejecuta: Cristhian Paul</span>
-            <strong>Paso 2: Caso Error Validación (400 Bad Request)</strong>
-            <p style="font-size:10.5px; color:#94a3b8;">Envía body vacío para probar validación HTTP.</p>
-          </div>
-          <button class="copy-btn" onclick="copyCode(cmdError400, this)">Copiar Comando</button>
-        </div>
-
-        <div class="copy-code-box">
-          <div>
-            <span class="speaker-badge speaker-paul">Ejecuta: Cristhian Paul</span>
-            <strong>Paso 2: Caso No Encontrado (404 Not Found)</strong>
-            <p style="font-size:10.5px; color:#94a3b8;">Consulta orden inexistente ID 99999.</p>
-          </div>
-          <button class="copy-btn" onclick="copyCode(cmdError404, this)">Copiar Comando</button>
-        </div>
-
-        <div class="copy-code-box">
-          <div>
-            <span class="speaker-badge speaker-eliceo">Ejecuta: Eliceo Parillo</span>
-            <strong>Paso 5: Balanceo Round Robin (4 Peticiones)</strong>
-            <p style="font-size:10.5px; color:#94a3b8;">Dispara 4 requests y muestra alternancia 8082 vs 8083.</p>
-          </div>
-          <button class="copy-btn" onclick="copyCode(cmdBalanceo, this)">Copiar Comando</button>
-        </div>
-
-        <div class="copy-code-box">
-          <div>
-            <span class="speaker-badge speaker-eliceo">Ejecuta: Eliceo Parillo</span>
-            <strong>Paso 6: Tolerancia a Fallos</strong>
-            <p style="font-size:10.5px; color:#94a3b8;">Apaga la consola 8082 y verifica que 8083 sigue respondiendo.</p>
-          </div>
-          <button class="copy-btn" onclick="copyCode(cmdTolerancia, this)">Copiar Comando</button>
-        </div>
-
-      </div>
-
     </div>
   </div>
 
-  <!-- SLIDE 9: BITÁCORA DEVOPS (7 PROBLEMAS DE LABORATORIO) -->
-  <div class="slide">
-    <h2>Bitácora DevOps: Resolución de los 7 Desafíos de Laboratorio</h2>
-    <div class="speaker-badge speaker-eliceo">🎤 Hablan: Eliceo Parillo y Cristhian Paul</div>
-    <p>Soluciones de ingeniería implementadas para garantizar la portabilidad en equipos de laboratorio:</p>
-    
-    <div class="grid-2" style="margin-top: 6px;">
-      <div class="card">
-        <h3>Desafíos de Entorno y Rutas</h3>
-        <ul>
-          <li><strong>1. Hardcoded Paths:</strong> Rutas relativas dinámicas en Python y PowerShell.</li>
-          <li><strong>2. Falta de Python:</strong> Lanzador nativo <code>iniciar_todo.ps1</code> en PowerShell puro.</li>
-          <li><strong>3. Conflicto Java 17/21:</strong> Autodetección de JDK 21 e inyección forzada de <code>$env:JAVA_HOME</code>.</li>
-          <li><strong>4. Comillas en PowerShell:</strong> Reemplazo por <code>$env:SERVER_PORT='8083'</code> nativo.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Desafíos de Configuración y Docker</h3>
-        <ul>
-          <li><strong>5. Config Server Vacío:</strong> Fallback dinámico <code>${CONFIG_REPO_PATH:file:../config-repo}</code>.</li>
-          <li><strong>6. PostgreSQL Apagado (5433):</strong> Script <code>iniciar_db.bat</code> en puerto 5433 evitando colisiones.</li>
-          <li><strong>7. Credenciales rechazadas:</strong> Estandarización de usuario <code>admin</code> y clave <code>adminpassword</code>.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="card card-highlight" style="margin-top: 8px;">
-      <p>🛡️ <strong>Script Preventivo para Grupo 4:</strong> <code>limpiar_pc_laboratorio.bat</code> libera en 3 segundos los puertos ocupados por grupos anteriores antes de iniciar.</p>
-    </div>
-  </div>
+  <!-- Interactive Slide Controller Script -->
+  <script>
+    const SERVER_URL = "http://localhost:5050";
+    let currentSlide = parseInt(localStorage.getItem("chaskipc_active_slide")) || 8;
+    const slides = document.querySelectorAll(".slide-page");
+    const totalSlides = slides.length;
 
-  <!-- SLIDE 10: BALOTARIO TEÓRICO ASIGNADO POR INTEGRANTE -->
-  <div class="slide">
-    <h2>3. Balotario Teórico Asignado por Integrante (Tabla 4)</h2>
-    <p>Respuestas técnicas preparadas para la fase de preguntas individuales del docente:</p>
+    // Evidence Captures Database with URLs and Commands
+    const EVIDENCIAS = [
+      {
+        file: "evidencia_1_config_server.png",
+        title: "01. Config Server Centralizado (:8888)",
+        desc: "Servidor Spring Cloud Config levantado leyendo propiedades desde el repositorio local 'config-repo'.",
+        url: "http://localhost:8888/pagatu-orden-ms/dev",
+        urlShort: ":8888 (dev)",
+        cmd: 'cd "C:\\Users\\USUARIO\\Documents\\Tarea Eureka\\pagatu-config" ; $env:CONFIG_REPO_PATH = "file:///C:/Users/USUARIO/Documents/Tarea Eureka/config-repo" ; .\\mvnw.cmd spring-boot:run'
+      },
+      {
+        file: "evidencia_2_eureka_server.png",
+        title: "02. Eureka Service Registry (:8761)",
+        desc: "Servidor de descubrimiento activo recibiendo latidos cada 30s y margen de disponibilidad CAP.",
+        url: "http://localhost:8761",
+        urlShort: ":8761 (Eureka)",
+        cmd: 'cd "C:\\Users\\USUARIO\\Documents\\Tarea Eureka\\pagatu-eureka" ; .\\mvnw.cmd spring-boot:run'
+      },
+      {
+        file: "evidencia_3_catalogo_ms.png",
+        title: "03. pc-catalogo-ms (:8081)",
+        desc: "Microservicio de catálogo de hardware conectado a Eureka y exponiendo categorías y productos.",
+        url: "http://localhost:18080/api/v1/productos",
+        urlShort: ":18080/productos",
+        cmd: 'cd "C:\\Users\\USUARIO\\Documents\\Tarea Eureka\\pagatu-catalogo-ms" ; .\\mvnw.cmd spring-boot:run'
+      },
+      {
+        file: "evidencia_4_orden_instancia1.png",
+        title: "04. pc-orden-ms Instancia 1 (:8082)",
+        desc: "Primera réplica transaccional levantada con PostgreSQL :5433 y cálculo de IGV 18%.",
+        url: "http://localhost:8082/api/v1/ordenes/instancia",
+        urlShort: ":8082/instancia",
+        cmd: 'cd "C:\\Users\\USUARIO\\Documents\\Tarea Eureka\\pagatu-orden-ms" ; .\\mvnw.cmd spring-boot:run'
+      },
+      {
+        file: "evidencia_5_orden_instancia2.png",
+        title: "05. pc-orden-ms Instancia 2 (:8083)",
+        desc: "Segunda réplica transaccional activa para demostración de balanceo de carga Round-Robin.",
+        url: "http://localhost:8083/api/v1/ordenes/instancia",
+        urlShort: ":8083/instancia",
+        cmd: 'cd "C:\\Users\\USUARIO\\Documents\\Tarea Eureka\\pagatu-orden-ms" ; $env:SERVER_PORT = \'8083\' ; .\\mvnw.cmd spring-boot:run'
+      },
+      {
+        file: "evidencia_6_eureka_web_dashboard.png",
+        title: "06. Dashboard Web de Eureka (:8761)",
+        desc: "Panel web oficial confirmando que todas las instancias (8081, 8082, 8083) están en estado UP.",
+        url: "http://localhost:8761",
+        urlShort: ":8761 (Dashboard)",
+        cmd: 'Start-Process "http://localhost:8761"'
+      },
+      {
+        file: "evidencia_7_pruebas_crud_powershell.png",
+        title: "07. Pruebas CRUD en PowerShell (Gateway :18080)",
+        desc: "Peticiones POST y GET exitosas con HTTP 201 Created y cálculo exacto de subtotal e IGV.",
+        url: "http://localhost:18080/api/v1/ordenes",
+        urlShort: ":18080/ordenes",
+        cmd: 'Invoke-RestMethod -Uri "http://localhost:18080/api/v1/ordenes" -Method POST -Headers @{"Content-Type"="application/json"} -Body \'{"clienteNombre":"Gamer Pro S05","detalles":[{"productoId":1,"cantidad":2,"precioUnitario":100}]}\''
+      }
+    ];
 
-    <div class="grid-2" style="margin-top: 6px;">
-      <!-- Preguntas Eliceo -->
-      <div>
-        <div class="qa-card" style="border-left:4px solid var(--eliceo-color);">
-          <span class="speaker-badge speaker-eliceo">Responde: Eliceo Parillo</span>
-          <h4>1. ¿Por qué no depender de puertos fijos?</h4>
-          <p>Impide el escalado horizontal. Con <code>instance-id: ${app.name}:${server.port}</code> y Eureka, las instancias son efímeras y se anuncian dinámicamente.</p>
-        </div>
-        <div class="qa-card" style="border-left:4px solid var(--eliceo-color);">
-          <span class="speaker-badge speaker-eliceo">Responde: Eliceo Parillo</span>
-          <h4>2. ¿Config Server vs Propiedad en Código?</h4>
-          <p>Cumple el Factor III de Twelve-Factor App. Permite alternar entre DEV (BD local, debug) y PROD (Docker aislado, validate) sin recompilar el JAR.</p>
-        </div>
-      </div>
+    let evidenciaActiva = 5; // Por defecto mostrar el Dashboard de Eureka
 
-      <!-- Preguntas Paul -->
-      <div>
-        <div class="qa-card" style="border-left:4px solid var(--paul-color);">
-          <span class="speaker-badge speaker-paul">Responde: Cristhian Paul</span>
-          <h4>3. ¿Por qué el desalojo no es instantáneo?</h4>
-          <p>Evita el <em>flapping</em> (inestabilidad por latencia transitoria). Eureka espera 30s de latido y 90s de arrendamiento antes de expulsar el nodo.</p>
-        </div>
-        <div class="qa-card" style="border-left:4px solid var(--paul-color);">
-          <span class="speaker-badge speaker-paul">Responde: Cristhian Paul</span>
-          <h4>4. ¿Qué es lb:// y quién lo resuelve?</h4>
-          <p>Es un URI lógico de Spring Cloud LoadBalancer. El filtro reactivo del Gateway consulta Eureka y reescribe la URL a la IP física real.</p>
-        </div>
-      </div>
-    </div>
+    function seleccionarEvidencia(idx) {
+      evidenciaActiva = idx;
+      const data = EVIDENCIAS[idx];
 
-    <div class="qa-card" style="margin-top: 4px; border-left:4px solid var(--secondary);">
-      <h4>5. ¿Por qué Round Robin es suficiente para instancias sin estado? [Pregunta Conjunta]</h4>
-      <p>Porque las instancias no guardan sesión de usuario en RAM; todo el estado vive en PostgreSQL compartida. Cada petición HTTP es químicamente autónoma.</p>
-    </div>
-  </div>
+      document.querySelectorAll(".evidence-btn").forEach((btn, i) => {
+        if (i === idx) btn.classList.add("active");
+        else btn.classList.remove("active");
+      });
 
-  <!-- SLIDE 11: RÚBRICA OFICIAL DE EVALUACIÓN (20/20) -->
-  <div class="slide">
-    <h2>5. Rúbrica Oficial de Evaluación de la Unidad I (Nota de Equipo)</h2>
-    <p>Matriz oficial de calificación de la Tabla 7 del sílabo universitario:</p>
-    
-    <table>
-      <thead>
-        <tr>
-          <th>Criterio Oficial del Sílabo</th>
-          <th>Peso</th>
-          <th>Nivel Obtenido</th>
-          <th>Evidencia Técnica en ChaskiPC</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td><strong>1. Servicio REST funcional y persistente</strong></td><td>15%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>JPA sobre PostgreSQL (5433), CRUD de órdenes con DataInitializer.</td></tr>
-        <tr><td><strong>2. Configuración externa por ambiente</strong></td><td>15%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Config Server operativo con perfiles DEV y PROD en config-repo.</td></tr>
-        <tr><td><strong>3. Registro y descubrimiento de servicios</strong></td><td>20%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Eureka Server administrando el ciclo de vida y latidos de todos los nodos.</td></tr>
-        <tr><td><strong>4. Punto único de acceso mediante Gateway</strong></td><td>20%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Spring Cloud Gateway enrutando peticiones dinámicas con esquemas lb://.</td></tr>
-        <tr><td><strong>5. Distribución de tráfico entre instancias</strong></td><td>20%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Dos réplicas (8082 y 8083) balanceadas por Round Robin y tolerancia a fallos.</td></tr>
-        <tr><td><strong>6. Ejecución reproducible y documentación</strong></td><td>10%</td><td><span class="badge badge-prod">A (20 pts)</span></td><td>Lanzadores de 1 clic, README completo y portabilidad multi-entorno probada.</td></tr>
-      </tbody>
-    </table>
-    
-    <div style="text-align: right; margin-top: 12px;">
-      <span class="badge badge-prod" style="font-size: 13px; padding: 7px 18px;">NOTA ESTIMADA EQUIPO 01: 20 / 20</span>
-    </div>
-  </div>
+      // Update Hero Image & Title
+      document.getElementById("evidence-display-img").src = data.file;
+      document.getElementById("evidence-display-title").innerText = data.title;
+      document.getElementById("evidence-display-desc").innerText = data.desc;
 
-</div>
+      // Update Mini Buttons & Links
+      const bDirect = document.getElementById("btn-open-direct");
+      if (bDirect) bDirect.href = data.file;
 
-<!-- Notificación Toast -->
-<div id="toast">✅ ¡Comando copiado al portapapeles!</div>
+      const hudWeb = document.getElementById("hud-web-btn");
+      if (hudWeb) {
+        hudWeb.href = data.url;
+        hudWeb.title = `Abrir página web: ${data.url}`;
+      }
 
-<footer>
-  <button class="nav-btn" onclick="prevSlide()">◀ Anterior</button>
-  <div class="mini-dots" id="miniDots"></div>
-  <button class="nav-btn" onclick="nextSlide()">Siguiente ▶</button>
-</footer>
+      const hudCmd = document.getElementById("hud-cmd-btn");
+      if (hudCmd) {
+        hudCmd.title = `Copiar comando: ${data.cmd}`;
+      }
 
-<script>
-  let currentSlide = 0;
-  const slides = document.querySelectorAll('.slide');
-  const counter = document.getElementById('slideCounter');
-  const progressBar = document.getElementById('progressBar');
-  const miniDotsContainer = document.getElementById('miniDots');
-  const toast = document.getElementById('toast');
+      // Update Footer Links
+      const footDirect = document.getElementById("footer-link-direct");
+      if (footDirect) footDirect.href = data.file;
 
-  // Crear mini dots interactivos
-  slides.forEach((_, idx) => {
-    const dot = document.createElement('div');
-    dot.className = 'dot' + (idx === 0 ? ' active' : '');
-    dot.title = `Diapositiva ${idx + 1}`;
-    dot.onclick = () => goToSlide(idx);
-    miniDotsContainer.appendChild(dot);
-  });
+      const footWeb = document.getElementById("footer-link-web");
+      if (footWeb) {
+        footWeb.href = data.url;
+        footWeb.title = `Abrir página web: ${data.url}`;
+      }
 
-  const dots = document.querySelectorAll('.dot');
-
-  // Comandos de Prueba para PowerShell
-  const cmdExito = `$orden = @{ cliente = 'Eliceo Parillo Mostajo'; tipoComprobante = 'FACTURA'; metodoPago = 'MERCADO_PAGO'; detalles = @( @{ productoId = 1; nombreProducto = 'AMD Ryzen 7 7800X3D'; precioUnitario = 1780.00; cantidad = 1 }, @{ productoId = 4; nombreProducto = 'Kingston Fury 1TB NVMe Gen4'; precioUnitario = 380.00; cantidad = 1 } ) } | ConvertTo-Json -Depth 5; Invoke-RestMethod -Method Post -Uri 'http://localhost:18080/api/v1/ordenes' -Body $orden -ContentType 'application/json'`;
-
-  const cmdError400 = `try { Invoke-RestMethod -Method Post -Uri 'http://localhost:18080/api/v1/ordenes' -Body '{}' -ContentType 'application/json' } catch { Write-Host 'Codigo HTTP recibido correctamente:' $_.Exception.Response.StatusCode.value__ -ForegroundColor Red }`;
-
-  const cmdError404 = `try { Invoke-RestMethod -Uri 'http://localhost:18080/api/v1/ordenes/99999' } catch { Write-Host 'Codigo HTTP recibido correctamente:' $_.Exception.Response.StatusCode.value__ -ForegroundColor Yellow }`;
-
-  const cmdBalanceo = `Write-Host 'Disparando 4 peticiones al Gateway (mira las consolas 8082 y 8083)...' -ForegroundColor Cyan; 1..4 | ForEach-Object { $res = Invoke-RestMethod -Uri 'http://localhost:18080/api/v1/ordenes'; Write-Host "Peticion $_ procesada con exito." -ForegroundColor Green; Start-Sleep -Milliseconds 400 }`;
-
-  const cmdTolerancia = `Write-Host 'Verificando respuesta del Gateway tras detener una instancia:' -ForegroundColor Cyan; Invoke-RestMethod -Uri 'http://localhost:18080/api/v1/ordenes'`;
-
-  function updateSlide(index) {
-    slides.forEach((s, i) => {
-      s.classList.toggle('active', i === index);
-    });
-    dots.forEach((d, i) => {
-      d.classList.toggle('active', i === index);
-    });
-    counter.textContent = `${index + 1} / ${slides.length}`;
-    progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
-  }
-
-  function nextSlide() {
-    if (currentSlide < slides.length - 1) {
-      currentSlide++;
-      updateSlide(currentSlide);
+      // Update Lightbox Target
+      document.getElementById("lightbox-img").src = data.file;
+      document.getElementById("lightbox-title").innerText = data.title;
+      document.getElementById("lightbox-desc").innerText = data.desc;
+      document.getElementById("lightbox-link").href = data.file;
+      document.getElementById("lightbox-url-link").href = data.url;
     }
-  }
 
-  function prevSlide() {
-    if (currentSlide > 0) {
-      currentSlide--;
-      updateSlide(currentSlide);
-    }
-  }
-
-  function goToSlide(index) {
-    currentSlide = index;
-    updateSlide(currentSlide);
-  }
-
-  function copyCode(text, btnElement) {
-    navigator.clipboard.writeText(text).then(() => {
-      btnElement.textContent = '¡Copiado!';
-      btnElement.classList.add('copied');
-      showToast();
+    function mostrarToast(msg) {
+      const toast = document.getElementById("discreet-toast");
+      if (!toast) return;
+      document.getElementById("toast-msg").innerText = msg;
+      toast.style.display = "flex";
       setTimeout(() => {
-        btnElement.textContent = 'Copiar Comando';
-        btnElement.classList.remove('copied');
-      }, 2000);
-    });
-  }
-
-  function showToast() {
-    toast.className = 'show';
-    setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 2500);
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-      nextSlide();
-    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-      prevSlide();
-    } else if (e.key >= '1' && e.key <= '9') {
-      goToSlide(parseInt(e.key) - 1);
-    } else if (e.key === 'd' || e.key === 'D') {
-      goToSlide(7);
+        toast.style.display = "none";
+      }, 2500);
     }
-  });
-</script>
 
+    function copiarComando() {
+      const data = EVIDENCIAS[evidenciaActiva];
+      navigator.clipboard.writeText(data.cmd).then(() => {
+        const lbl = document.getElementById("label-cmd");
+        if (lbl) lbl.innerText = "✓ Copiado!";
+        mostrarToast("✓ Comando copiado al portapapeles");
+        setTimeout(() => {
+          if (lbl) lbl.innerText = "Copiar CMD";
+        }, 2000);
+      }).catch(() => {
+        mostrarToast("CMD: " + data.cmd);
+      });
+    }
+
+    function abrirModalLightbox() {
+      document.getElementById("lightbox-modal").classList.add("active");
+    }
+
+    function cerrarModalLightbox(e) {
+      document.getElementById("lightbox-modal").classList.remove("active");
+    }
+
+    function updateSlide() {
+      localStorage.setItem("chaskipc_active_slide", currentSlide);
+      slides.forEach((s, idx) => {
+        if (idx === currentSlide) {
+          s.classList.add("active");
+          const pillar = s.getAttribute("data-pillar");
+          const speaker = s.getAttribute("data-speaker");
+          document.getElementById("top-pillar-tag").innerText = pillar;
+          document.getElementById("footer-speaker").innerText = speaker;
+        } else {
+          s.classList.remove("active");
+        }
+      });
+
+      const numStr = String(currentSlide + 1).padStart(2, "0");
+      const totalStr = String(totalSlides).padStart(2, "0");
+      document.getElementById("slide-indicator").innerText = `${numStr} / ${totalStr}`;
+
+      document.getElementById("btn-prev").disabled = (currentSlide === 0);
+      document.getElementById("btn-next").disabled = (currentSlide === totalSlides - 1);
+    }
+
+    function cambiarSlide(delta) {
+      const next = currentSlide + delta;
+      if (next >= 0 && next < totalSlides) {
+        currentSlide = next;
+        updateSlide();
+      }
+    }
+
+    // Keyboard Navigation
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        cerrarModalLightbox();
+      } else if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") {
+        cambiarSlide(1);
+      } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+        cambiarSlide(-1);
+      }
+    });
+
+    // Terminal Logging
+    function appendTerminal(msg, isError = false) {
+      const term = document.getElementById("terminal-body");
+      const line = document.createElement("div");
+      const time = new Date().toLocaleTimeString();
+      line.style.color = isError ? "#f87171" : "#e4e4e7";
+      line.innerHTML = `<span style="color:#a1a1aa">[${time}]</span> ${msg}`;
+      term.appendChild(line);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function limpiarTerminal() {
+      document.getElementById("terminal-body").innerHTML = 
+        `<div>chaskipc@cloud:~$ Consola limpia.</div>`;
+    }
+
+    // Health Polling
+    async function checkHealth() {
+      try {
+        const res = await fetch(`${SERVER_URL}/api/status`, { cache: "no-store" });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        
+        document.getElementById("server-status-dot").style.backgroundColor = "var(--accent-emerald)";
+        document.getElementById("server-status-label").innerText = "ONLINE (:5050)";
+
+        if (data.services) {
+          for (const [key, svc] of Object.entries(data.services)) {
+            const el = document.getElementById(`card-${key}`);
+            if (el) {
+              const span = el.querySelector(".status");
+              if (svc.up) {
+                el.classList.add("up");
+                span.innerText = "UP";
+              } else {
+                el.classList.remove("up");
+                span.innerText = "OFF";
+              }
+            }
+          }
+        }
+      } catch (err) {
+        document.getElementById("server-status-dot").style.backgroundColor = "#ef4444";
+        document.getElementById("server-status-label").innerText = "OFFLINE";
+      }
+    }
+
+    // Launch Actions
+    async function ejecutarAccion(actionName) {
+      appendTerminal(`Ejecutando acción: ${actionName}...`);
+      try {
+        const res = await fetch(`${SERVER_URL}/api/${actionName}`, { method: "POST" });
+        const data = await res.json();
+        appendTerminal(data.msg, !data.ok);
+      } catch (err) {
+        appendTerminal(`Fallo al conectar con servidor local: ${err.message}`, true);
+      }
+    }
+
+    // Official Live Tests
+    async function ejecutarPrueba(endpoint, testLabel) {
+      // Switch cockpit capture to show the official CRUD / test evidence!
+      verCapturaEnCockpit('evidencia_7_pruebas_crud_powershell.png', testLabel, 'http://localhost:18080/api/v1/ordenes');
+
+      appendTerminal(`Iniciando prueba: ${testLabel}...`);
+      try {
+        const res = await fetch(`${SERVER_URL}/api/${endpoint}`, { method: "POST" });
+        const data = await res.json();
+        appendTerminal(`Resultado: ${data.msg}`, !data.ok);
+        if (data.data) {
+          appendTerminal(JSON.stringify(data.data, null, 2));
+        }
+      } catch (err) {
+        appendTerminal(`Error de conexión: ${err.message}`, true);
+      }
+    }
+
+    // Initialize
+    updateSlide();
+    seleccionarEvidencia(5); // Iniciar con el Dashboard de Eureka
+    checkHealth();
+    setInterval(checkHealth, 4000);
+  
+    function cambiarASlide(index) {
+      currentSlide = index;
+      localStorage.setItem("chaskipc_active_slide", currentSlide);
+      updateSlide();
+    }
+
+    function verCapturaEnCockpit(imgSrc, title, webUrl) {
+      const img = document.getElementById("cockpit-display-img");
+      if (img) img.src = imgSrc;
+      const capTitle = document.getElementById("cockpit-cap-title");
+      if (capTitle) capTitle.innerText = `📸 Captura Operativa: ${title}`;
+      const webBtn = document.getElementById("cockpit-capture-web");
+      if (webBtn && webUrl) {
+        webBtn.href = webUrl;
+        webBtn.title = `Abrir página web: ${webUrl}`;
+      }
+      appendTerminal(`Visualizando captura de funcionamiento: ${title}`);
+    }
+
+    function abrirCockpitLightbox() {
+      const activeImg = document.getElementById("cockpit-display-img");
+      const activeSrc = activeImg ? activeImg.src : "evidencia_6_eureka_web_dashboard.png";
+      const capTitle = document.getElementById("cockpit-cap-title");
+      const titleText = capTitle ? capTitle.innerText : "Captura Operativa";
+
+      document.getElementById("lightbox-img").src = activeSrc;
+      document.getElementById("lightbox-title").innerText = titleText;
+      document.getElementById("lightbox-desc").innerText = "Evidencia de funcionamiento en vivo registrada en el ecosistema.";
+      document.getElementById("lightbox-link").href = activeSrc;
+      abrirModalLightbox();
+    }
+
+  </script>
+<div id="discreet-toast" class="discreet-toast"><span>✓</span> <span id="toast-msg">Comando copiado</span></div>
 </body>
 </html>
