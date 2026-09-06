@@ -1,0 +1,29 @@
+site_name: ChaskiByte Systems - Ecosistema Distribuido ChaskiPC
+site_description: Documentacion oficial del curso Desarrollo de Aplicaciones Distribuidas (2026-2) - UPeU
+site_author: Equipo 01 - ChaskiByte Systems
+docs_dir: docs
+
+theme:
+  name: material
+  language: es
+  palette:
+    - scheme: slate
+      primary: teal
+      accent: cyan
+
+nav:
+  - Inicio: index.md
+  - Silabo 2026-2: silabo_dist_2026_2.md
+  - Sesiones:
+      - S01 - Construccion Servicio Base: sesiones/S01_guia.md
+      - S02 - Configuracion Centralizada: sesiones/S02_guia.md
+      - S03 - Eureka y Concurrencia: sesiones/S03_guia.md
+      - S04 - API Gateway y Balanceo: sesiones/S04_guia.md
+      - S05 - Evaluacion Unidad I: sesiones/S05_guia.md
+  - Entregables:
+      - Sesion 03 - Informe: entregables/S03_Equipo01_ParilloEliceo.md
+      - Sesion 04 - Informe: entregables/S04_Equipo01_ParilloEliceo.md
+      - Sesion 05 - Informe Unidad I: entregables/S05_Equipo01_ParilloEliceo.md
+  - Tecnico:
+      - Brief Tecnico: tecnico/BRIEF_TECNICO.md
+      - Guion de Sustentacion: tecnico/PRESENTACION.md

@@ -141,45 +141,49 @@ El sistema cuenta con un mapeo exhaustivo y desacoplado en cada una de sus capas
 ## 📂 4. Estructura del Repositorio
 
 ```text
-ChaskiByte-Systems/
-├── config-repo/                     # Repositorio centralizado de configuraciones (DEV y PROD)
-│   ├── application.yml
-│   ├── pagatu-gateway-dev.yml       # Rutas lb:// y reglas de Gateway
-│   ├── pagatu-orden-ms-dev.yml      # DB PostgreSQL y Eureka Client
-│   ├── pagatu-catalogo-ms-dev.yml   # Catálogo JPA y Eureka Client
-│   └── ...
-├── services/                        # Microservicios de dominio / negocio
-│   ├── pagatu-catalogo-ms/          # Catálogo ChaskiPC: Categorías y Productos (:8081)
-│   ├── pagatu-orden-ms/             # Órdenes ChaskiPC: Cabecera-Detalle e IGV (:8082, :8083)
-│   └── pagatu-cliente-ms/           # Clientes y perfil de comprador (:8084)
-├── infra/                           # Servidores de infraestructura Spring Cloud y Docker
-│   ├── pagatu-config/               # Spring Cloud Config Server (:8888)
-│   ├── pagatu-eureka/               # Netflix Eureka Service Discovery (:8761)
-│   ├── pagatu-gateway/              # Spring Cloud Gateway no bloqueante (:18080)
-│   ├── docker-compose-db.yml        # PostgreSQL :5433 en contenedor
-│   └── compose.yml                  # Docker Compose de Producción Local (Red pagatu-prod-net)
-├── obs/                             # Docker Compose de Observabilidad (Prometheus, Grafana, Loki)
-│   ├── compose-dev.yml
+pagatu/ (ChaskiByte-Systems)
+├── docs/                             # Documentación del curso (MkDocs)
+│   ├── index.md                      # Landing page de la documentación
+│   ├── sesiones/                     # Guías paso a paso de laboratorio (S01, S02, S03, S04, S05)
+│   ├── silabo_dist_2026_2.md         # Sílabo vigente de la asignatura (UPeU 2026-2)
+│   ├── entregables/                  # Informes PDF, HTML y Markdown (S01, S03, S04, S05)
+│   └── tecnico/                      # Brief técnico oficial y guion de sustentación
+├── services/                         # Microservicios de dominio / negocio
+│   ├── pagatu-catalogo-ms/           # Categorías y productos de hardware gamer (S1, Puerto 8081)
+│   ├── pagatu-orden-ms/              # Órdenes de compra: Cabecera-Detalle e IGV (S2, Puertos 8082, 8083)
+│   └── pagatu-cliente-ms/            # Perfil de cliente + validadores RENIEC y SUNAT (S2, Puerto 8084)
+├── infra/                            # Infraestructura que los microservicios necesitan para funcionar
+│   ├── pagatu-config/                # Spring Cloud Config Server (S2, listo, Puerto 8888)
+│   ├── pagatu-eureka/                # Netflix Eureka Service Discovery (S3, listo, Puerto 8761)
+│   ├── pagatu-gateway/               # Spring Cloud Gateway no bloqueante (S4, listo, Puerto 18080)
+│   ├── docker-compose-db.yml         # Contenedor PostgreSQL 15 (:5433)
+│   └── compose.yml                   # Docker Compose de Producción Local (Red pagatu-prod-net)
+├── obs/                              # Stack de Observabilidad exterior (S3, opcional)
+│   ├── compose-dev.yml               # Prometheus (:19090) + Grafana (:13000) + Loki (:13100) + Promtail
 │   ├── prometheus/
 │   └── grafana/
-├── docs/                            # Documentación integral, guías y entregables académicos
-│   ├── entregables/                 # Informes PDF, HTML y Markdown (S01, S03, S04, S05)
-│   ├── guias/                       # Guías de laboratorio y sesiones (S03, S04, S05)
-│   └── tecnico/                     # Ficha técnica oficial (BRIEF_TECNICO.md) y guion (PRESENTACION.md)
-├── overrides/                       # Variables de entorno y configuraciones locales
+├── clients/                          # Frontend SPA Angular (pendiente, planificado desde S11)
+│   ├── src/app/                      # Componentes, servicios Gateway y modelos TypeScript
+│   ├── angular.json
+│   ├── package.json
+│   └── README.md
+├── config-repo/                      # Repositorio Git centralizado de configuraciones (DEV y PROD)
+├── overrides/                        # Variables de entorno y configuraciones locales
 │   ├── README.md
 │   └── dev-overrides.env.sample
-├── iniciar_db.bat                   # Script de 1 clic para arrancar PostgreSQL (Puerto 5433)
-├── iniciar_infra_completa.bat       # Levanta PostgreSQL + Prometheus + Grafana + Loki en 1 clic
-├── iniciar_observabilidad.bat       # Levanta stack de observabilidad
-├── iniciar_todo.bat                 # Lanzador universal Windows (autodetecta Python o PowerShell)
-├── iniciar_todo.ps1                 # Lanzador nativo en PowerShell puro (cero dependencias)
-├── iniciar_todo.py                  # Lanzador en Python con rutas relativas dinámicas
-├── limpiar_pc_laboratorio.bat       # Limpieza preventiva de puertos y procesos
-├── presentacion.html                # Presentación interactiva y Centro de Mando en vivo (:5050)
-├── presentacion.pptx                # Diapositivas PowerPoint 16:9 oficiales
-├── servidor_control.py              # Backend local API REST para Centro de Mando
-└── README.md
+├── mkdocs.yml                        # Configuración de compilación y servidor MkDocs Material
+├── iniciar_db.bat                    # Script de 1 clic para arrancar PostgreSQL (Puerto 5433)
+├── iniciar_infra_completa.bat        # Levanta PostgreSQL + Prometheus + Grafana + Loki en 1 clic
+├── iniciar_observabilidad.bat        # Levanta stack de observabilidad
+├── iniciar_todo.bat                  # Lanzador universal Windows (autodetecta Python o PowerShell)
+├── iniciar_todo.ps1                  # Lanzador nativo en PowerShell puro (cero dependencias)
+├── iniciar_todo.py                   # Lanzador en Python con rutas relativas dinámicas
+├── limpiar_pc_laboratorio.bat        # Limpieza preventiva de puertos y procesos
+├── presentacion.html                 # Presentación interactiva y Centro de Mando en vivo (:5050)
+├── presentacion.pptx                 # Diapositivas PowerPoint 16:9 oficiales
+├── presentacion.pdf                  # Documento PDF oficial de sustentación
+├── servidor_control.py               # Backend local API REST para Centro de Mando
+└── README.md                         # Documentación técnica general
 ```
 
 ---
@@ -267,7 +271,9 @@ Invoke-RestMethod -Method Post -Uri "http://localhost:18080/api/v1/ordenes" -Bod
 
 ---
 
-## 📑 6. Entregables Académicos Oficiales
+## 📑 6. Entregables Académicos y Documentación Oficial
+* 📋 [**`docs/silabo_dist_2026_2.md`**](docs/silabo_dist_2026_2.md): **Sílabo Vigente Oficial 2026-2** (Desarrollo de Aplicaciones Distribuidas - UPeU).
+* 📖 [**`docs/sesiones/`**](docs/sesiones/): Guías paso a paso completas de laboratorio (`S01`, `S02`, `S03`, `S04`, `S05`).
 * 📄 [**`docs/tecnico/BRIEF_TECNICO.md`**](docs/tecnico/BRIEF_TECNICO.md): Ficha técnica oficial del proyecto sello ChaskiPC.
 * 📄 [**`services/pagatu-orden-ms/S01_Equipo01_ParilloEliceo.pdf`**](services/pagatu-orden-ms/S01_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 01 (Construcción del Microservicio Base, persistencia inicial y escalado horizontal).
 * 📄 [**`docs/entregables/S03_Equipo01_ParilloEliceo.pdf`**](docs/entregables/S03_Equipo01_ParilloEliceo.pdf): Informe de la Sesión 03 (Eureka Server, Múltiples Instancias, Observabilidad).
