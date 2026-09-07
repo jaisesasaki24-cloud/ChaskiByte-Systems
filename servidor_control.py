@@ -201,10 +201,23 @@ class ControlHandler(SimpleHTTPRequestHandler):
                 subprocess.run(["powershell", "-Command", ps_cmd], capture_output=True, timeout=5)
                 response_data = {
                     "ok": True,
-                    "msg": "Instancia en puerto 8082 detenida forzosamente. Vuelve a consultar el Gateway para comprobar que la instancia 8083 atiende transparentemente."
+                    "msg": "Instancia en puerto 8082 detenida forzosamente. Comprueba que el Gateway sigue operando y luego usa RESTAURAR :8082."
                 }
             except Exception as e:
                 response_data = {"ok": False, "msg": f"Error al detener puerto 8082: {str(e)}"}
+
+        elif parsed.path == "/api/test/iniciar-8082":
+            jdk21 = "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot"
+            ms_dir = os.path.join(BASE_DIR, "services", "pagatu-orden-ms")
+            ps_cmd = f'$env:JAVA_HOME = "{jdk21}"; cd "{ms_dir}"; .\\mvnw.cmd spring-boot:run'
+            try:
+                subprocess.Popen(["powershell.exe", "-NoExit", "-Command", ps_cmd], cwd=ms_dir, shell=True)
+                response_data = {
+                    "ok": True,
+                    "msg": "Relanzando pc-orden-ms (Instancia 1) en puerto 8082. En unos instantes volverá a estar UP en Eureka."
+                }
+            except Exception as e:
+                response_data = {"ok": False, "msg": f"Error al iniciar puerto 8082: {str(e)}"}
 
         res_bytes = json.dumps(response_data).encode("utf-8")
         self.send_response(200)
