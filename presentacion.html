@@ -1978,27 +1978,16 @@
             </div>
           </div>
 
-          <!-- Split View: Live Terminal & Visual Proof Frame -->
-          <div class="cockpit-main-split">
-            <div class="terminal-window">
-              <div class="terminal-header" style="justify-content: flex-end;">
-                <button onclick="limpiarTerminal()" style="background:transparent; border:none; color:#a1a1aa; cursor:pointer; font-size:0.75rem; font-family:'JetBrains Mono',monospace;">Limpiar</button>
-              </div>
-              <div class="terminal-body" id="terminal-body">
-                <div>chaskipc@cloud:~$ Centro de Mando listo. Ejecuta una prueba arriba para verificar en caliente.</div>
+          <!-- Full-Width Hero Evidence Display Frame (Sin terminal, vista limpia) -->
+          <div class="cockpit-preview-frame" style="height: 520px; width: 100%; border-radius: 8px; position: relative;">
+            <div style="position: absolute; top: 10px; left: 10px; right: 10px; z-index: 5; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.65); padding: 6px 14px; border-radius: 6px; backdrop-filter: blur(8px);">
+              <span id="cockpit-cap-title" style="font-size: 12px; font-weight: 700; color: #ffffff;">📸 Evidencia Operativa</span>
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <a id="cockpit-capture-web" href="http://localhost:8761" target="_blank" class="solo-mini-btn" style="width: 26px; height: 26px; font-size: 12px;" title="Abrir página web del servicio">🌐</a>
+                <button onclick="abrirCockpitLightbox()" class="solo-mini-btn" style="width: 26px; height: 26px; font-size: 12px;" title="Ampliar en pantalla completa">⛶</button>
               </div>
             </div>
-
-            <div class="cockpit-preview-frame">
-              <div style="position: absolute; top: 8px; left: 8px; right: 8px; z-index: 5; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px;">
-                <span id="cockpit-cap-title" style="font-size: 11px; font-weight: 700; color: #ffffff;">📸 Evidencia Operativa</span>
-                <div style="display: flex; gap: 4px;">
-                  <a id="cockpit-capture-web" href="http://localhost:8761" target="_blank" class="solo-mini-btn" style="width: 22px; height: 22px; font-size: 11px;" title="Abrir página web del servicio">🌐</a>
-                  <button onclick="abrirCockpitLightbox()" class="solo-mini-btn" style="width: 22px; height: 22px; font-size: 11px;" title="Ampliar">⛶</button>
-                </div>
-              </div>
-              <img id="cockpit-display-img" src="evidencia_6_eureka_web_dashboard.png" alt="Captura de Estado" />
-            </div>
+            <img id="cockpit-display-img" src="evidencia_6_eureka_web_dashboard.png" alt="Captura de Estado" style="width: 100%; height: 100%; object-fit: contain;" />
           </div>
         </div>
       </div>
@@ -2148,7 +2137,8 @@
       if (!toast) return;
       document.getElementById("toast-msg").innerText = msg;
       toast.style.display = "flex";
-      setTimeout(() => { toast.style.display = "none"; }, 2500);
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => { toast.style.display = "none"; }, 3500);
     }
 
     function copiarComando() {
@@ -2228,6 +2218,7 @@
 
     // Terminal Logging
     function appendTerminal(msg, isError = false) {
+      mostrarToast(msg);
       const term = document.getElementById("terminal-body");
       if (!term) return;
       const line = document.createElement("div");
