@@ -776,6 +776,60 @@
     }
 
     /* Cockpit Styles */
+    
+    .mini-btn-sq {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-bright);
+      border-radius: 6px;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #ffffff;
+      padding: 0;
+    }
+    .mini-btn-sq:hover {
+      background: #ffffff;
+      color: #0c0d10;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    .mini-btn-sq:active {
+      transform: translateY(0);
+    }
+    .mini-btn-sq.green {
+      border-color: var(--accent-emerald);
+      color: #10b981;
+    }
+    .mini-btn-sq.green:hover {
+      background: var(--accent-emerald);
+      color: #0c0d10;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+    .mini-btn-sq.red {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+    .mini-btn-sq.red:hover {
+      background: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    }
+    .mini-btn-sq.amber {
+      border-color: #f59e0b;
+      color: #f59e0b;
+    }
+    .mini-btn-sq.amber:hover {
+      background: #f59e0b;
+      color: #0c0d10;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+    }
+
     .cockpit-toolbar {
       display: flex;
       gap: 0.65rem;
@@ -878,7 +932,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
-      height: 340px;
+      height: 480px;
     }
 
     .terminal-window {
@@ -1835,32 +1889,30 @@
            SLIDE 13: PILAR 3 - CENTRO DE MANDO EN VIVO
       =========================================== -->
       <div class="slide-page" data-pillar="DEMOSTRACIÓN EN TIEMPO REAL" data-speaker="EQUIPO 01 • DEMOSTRACIÓN OPERATIVA EN VIVO">
-        <div class="slide-title-group">
-          <div class="slide-meta-row">
-            <div class="speaker-tag">CONSOLA OPERATIVA INTERACTIVA</div>
-            <div class="speaker-tag">VERIFICACIÓN Y PRUEBAS EN VIVO</div>
-          </div>
-          <h2 class="slide-title">CONSOLA DE CONTROL OPERATIVO & SUITE DE PRUEBAS EN VIVO</h2>
-          <p class="slide-subtitle">Monitoreo de telemetría de microservicios, ejecución de transacciones y auditoría de balanceo Round-Robin en tiempo real</p>
-          <div class="accent-line-wrap"><div class="accent-pill"></div></div>
-        </div>
+        <div class="slide-body" style="padding-top: 0.5rem;">
+          <!-- Minimalist Unified Icon Toolbar (Cuadrados Mini sin nombres) -->
+          <div style="display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.65rem; flex-wrap: wrap;">
+            <!-- Lanzadores y Limpieza -->
+            <button class="mini-btn-sq green" onclick="ejecutarAccion('iniciar-todo')" title="Iniciar Ecosistema Completo (iniciar_todo.bat)">🚀</button>
+            <button class="mini-btn-sq" onclick="ejecutarAccion('iniciar-db')" title="Iniciar PostgreSQL en Docker (:5433)">🐘</button>
+            <button class="mini-btn-sq" onclick="ejecutarAccion('iniciar-obs')" title="Iniciar Stack de Observabilidad Grafana (:13000) y Prometheus">📊</button>
+            <button class="mini-btn-sq" onclick="ejecutarAccion('limpiar')" title="Limpiar Puertos de Laboratorio (limpiar_pc_laboratorio.bat)">🧹</button>
+            <button class="mini-btn-sq" onclick="cambiarASlide(11)" title="Ver Galería de Capturas 1080p (Slide 12)">📸</button>
 
-        <div class="slide-body">
-          <div class="cockpit-toolbar">
-            <button class="btn-exec-action active-green" onclick="ejecutarAccion('iniciar-todo')">▶ INICIAR ECOSISTEMA</button>
-            <button class="btn-exec-action" onclick="ejecutarAccion('iniciar-db')">🐘 INICIAR POSTGRESQL</button>
-            <button class="btn-exec-action" onclick="ejecutarAccion('iniciar-obs')">📊 INICIAR GRAFANA</button>
-            <button class="btn-exec-action" onclick="ejecutarAccion('limpiar')">🧹 LIMPIAR PUERTOS</button>
-          </div>
+            <!-- Separador vertical -->
+            <div style="width: 1px; height: 26px; background: rgba(255,255,255,0.2); margin: 0 0.25rem;"></div>
 
-          <!-- Quick Slide Navigation Tabs -->
-          <div class="tab-chips-row">
-            <button onclick="cambiarASlide(11)" class="tab-chip">📸 Ir a Galería de Capturas 1080p (Slide 12)</button>
-            <button onclick="cambiarASlide(12)" class="tab-chip active">⚡ Centro de Mando en Vivo (Slide 13)</button>
+            <!-- Suite de Pruebas Oficiales -->
+            <button class="mini-btn-sq" onclick="ejecutarPrueba('test/201', 'Crear Orden con IGV 18% (201)')" title="Test 201 Created: Crear Orden con IGV 18% en PostgreSQL">🛒</button>
+            <button class="mini-btn-sq amber" onclick="ejecutarPrueba('test/400', 'Validar Bad Request (400)')" title="Test 400 Bad Request: Error de Validación de Cliente">⚠️</button>
+            <button class="mini-btn-sq" onclick="ejecutarPrueba('test/404', 'Consultar ID Inexistente (404)')" title="Test 404 Not Found: Recurso No Encontrado">🔍</button>
+            <button class="mini-btn-sq" onclick="ejecutarPrueba('test/balanceo', 'Balanceo Round-Robin (x4)')" title="Test Balanceo: 4 Peticiones Round-Robin vía Gateway">⚖️</button>
+            <button class="mini-btn-sq red" onclick="ejecutarPrueba('test/apagar-8082', 'Detener Instancia :8082')" title="Simular Falla: Detener réplica en puerto 8082 (Tolerancia a fallos)">🛑</button>
+            <button class="mini-btn-sq green" onclick="ejecutarPrueba('test/iniciar-8082', 'Relanzar Instancia :8082')" title="Restaurar: Relanzar réplica en puerto 8082">♻️</button>
           </div>
 
           <!-- Services Grid with Discreet Mini Icon Buttons -->
-          <div class="services-grid-mini" id="services-grid-mini" style="margin-top: 0.65rem;">
+          <div class="services-grid-mini" id="services-grid-mini" style="margin-bottom: 0.65rem;">
             <div class="svc-pill-card" id="card-eureka">
               <h5>Eureka Server (:8761)</h5>
               <div style="display: flex; gap: 0.4rem; align-items: center;">
@@ -1926,25 +1978,14 @@
             </div>
           </div>
 
-          <!-- Official Live Test Action Buttons -->
-          <div class="cockpit-toolbar" style="margin-top: 0.2rem;">
-            <button class="btn-exec-action" onclick="ejecutarPrueba('test/201', 'Crear Orden con IGV 18% (201)')">TEST 201 (POST ORDEN)</button>
-            <button class="btn-exec-action" onclick="ejecutarPrueba('test/400', 'Validar Bad Request (400)')">TEST 400 (ERROR CLIENTE)</button>
-            <button class="btn-exec-action" onclick="ejecutarPrueba('test/404', 'Consultar ID Inexistente (404)')">TEST 404 (NOT FOUND)</button>
-            <button class="btn-exec-action" onclick="ejecutarPrueba('test/balanceo', 'Balanceo Round-Robin (x4)')">TEST BALANCEO (ROUND-ROBIN)</button>
-            <button class="btn-exec-action" style="border-color: #ef4444; color: #ef4444;" onclick="ejecutarPrueba('test/apagar-8082', 'Detener Instancia :8082')">KILL :8082 (TOLERANCIA)</button>
-            <button class="btn-exec-action" style="border-color: #10b981; color: #10b981;" onclick="ejecutarPrueba('test/iniciar-8082', 'Relanzar Instancia :8082')">RESTAURAR :8082</button>
-          </div>
-
           <!-- Split View: Live Terminal & Visual Proof Frame -->
           <div class="cockpit-main-split">
             <div class="terminal-window">
-              <div class="terminal-header">
-                <span>TERMINAL DE PRUEBAS OFICIALES • CHASKIPC</span>
-                <button onclick="limpiarTerminal()" style="background:transparent; border:none; color:#a1a1aa; cursor:pointer;">Limpiar</button>
+              <div class="terminal-header" style="justify-content: flex-end;">
+                <button onclick="limpiarTerminal()" style="background:transparent; border:none; color:#a1a1aa; cursor:pointer; font-size:0.75rem; font-family:'JetBrains Mono',monospace;">Limpiar</button>
               </div>
               <div class="terminal-body" id="terminal-body">
-                <div>chaskipc@cloud:~$ Centro de Mando listo. Ejecuta una prueba oficial arriba para verificar en caliente.</div>
+                <div>chaskipc@cloud:~$ Centro de Mando listo. Ejecuta una prueba arriba para verificar en caliente.</div>
               </div>
             </div>
 
@@ -1961,7 +2002,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </main>
 
