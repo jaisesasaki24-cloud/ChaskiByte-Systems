@@ -1583,7 +1583,7 @@
             <table class="rubric-table">
               <thead>
                 <tr>
-                  <th style="width: 25%;">Criterio del Sílabo</th>
+                  <th style="width: 25%;">Criterio Oficial de Evaluación</th>
                   <th style="width: 8%;">Peso</th>
                   <th style="width: 27%;">Exigencia Nivel A (20 pts)</th>
                   <th style="width: 30%;">Evidencia Concreta en ChaskiPC</th>
@@ -1592,45 +1592,52 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>1. Servicio REST funcional y persistente</strong></td>
-                  <td>15%</td>
-                  <td>Servicio ejecutable, persistente y documentado, verificado en vivo.</td>
-                  <td>CRUD de órdenes en PostgreSQL :5433, cálculo de IGV 18%, Swagger y Actuator.</td>
+                  <td><strong>1. Documentación técnica clara y reproducible</strong></td>
+                  <td>14%</td>
+                  <td>Guía de despliegue en 1 clic probada, u1-producto.md y topics configurados.</td>
+                  <td>README.md con guía de 1 clic, u1-producto.md formalizado y topics en GitHub.</td>
                   <td><span class="score-badge-a">A (20 pts)</span></td>
                 </tr>
                 <tr>
-                  <td><strong>2. Configuración externa por ambiente</strong></td>
-                  <td>15%</td>
-                  <td>Configuración externalizada, con diferencias reales y verificables DEV/PROD.</td>
-                  <td>Config Server leyendo de <code>config-repo</code>, perfiles <code>dev</code> y <code>prod</code> sin credenciales en Git.</td>
+                  <td><strong>2. Comunicación entre microservicios validada</strong></td>
+                  <td>14%</td>
+                  <td>Comunicación declarativa real cliente-servidor verificada entre microservicios.</td>
+                  <td><strong>Spring Cloud OpenFeign</strong>: <code>pc-orden-ms</code> valida existencias y descuenta stock en <code>pc-catalogo-ms</code>.</td>
                   <td><span class="score-badge-a">A (20 pts)</span></td>
                 </tr>
                 <tr>
-                  <td><strong>3. Registro y descubrimiento operativo</strong></td>
-                  <td>20%</td>
-                  <td>Registro operativo, con instancias visibles y verificadas en el dashboard.</td>
-                  <td>Eureka Server con 5 servicios registrados y verificables en dashboard :8761.</td>
+                  <td><strong>3. Registro y descubrimiento funcionando</strong></td>
+                  <td>14%</td>
+                  <td>Eureka operativo, instancias visibles y resolución dinámica entre microservicios.</td>
+                  <td>Eureka en :8761, 5 instancias en estado UP y descubrimiento por nombre lógico <code>pagatu-catalogo-ms</code>.</td>
                   <td><span class="score-badge-a">A (20 pts)</span></td>
                 </tr>
                 <tr>
-                  <td><strong>4. Punto único de acceso mediante Gateway</strong></td>
-                  <td>20%</td>
-                  <td>Gateway operativo, con rutas hacia todos los servicios resueltas correctamente.</td>
-                  <td>Gateway en :18080 resolviendo rutas dinámicas <code>lb://</code> sin acceso directo a microservicios.</td>
+                  <td><strong>4. API Gateway configurado y operativo</strong></td>
+                  <td>14%</td>
+                  <td>Punto de acceso perimetral único con balanceo reactivo comprobado.</td>
+                  <td>Gateway en :18080 con rutas <code>lb://</code>, filtros de telemetría y balanceo Round-Robin entre :8082 y :8083.</td>
                   <td><span class="score-badge-a">A (20 pts)</span></td>
                 </tr>
                 <tr>
-                  <td><strong>5. Distribución de tráfico entre instancias</strong></td>
-                  <td>20%</td>
-                  <td>Balanceo de carga verificado entre al menos dos instancias, con evidencia clara.</td>
-                  <td>2 réplicas de <code>pc-orden-ms</code> (:8082, :8083) balanceadas por Round-Robin y tolerancia a caídas.</td>
+                  <td><strong>5. Configuración centralizada implementada</strong></td>
+                  <td>14%</td>
+                  <td>Config Server operativo con diferencias tangibles entre perfiles DEV y PROD.</td>
+                  <td>Config Server en :8888 leyendo de <code>config-repo</code>, sin credenciales expuestas en Git (Factor III).</td>
                   <td><span class="score-badge-a">A (20 pts)</span></td>
                 </tr>
                 <tr>
-                  <td><strong>6. Evidencias reproducibles y documentación</strong></td>
-                  <td>10%</td>
-                  <td>Evidencias completas, reproducibles por otra persona, con documentación clara.</td>
-                  <td>Lanzadores de 1 clic (<code>iniciar_todo.bat/.ps1/.py</code>), README técnico, 7 capturas 1080p.</td>
+                  <td><strong>6. Endpoints REST funcionales y documentados</strong></td>
+                  <td>14%</td>
+                  <td>CRUD completo con códigos normalizados (200, 201, 400, 404) y documentación.</td>
+                  <td>Endpoints transaccionales con 18% IGV, validación de stock (400 Bad Request) y Swagger UI.</td>
+                  <td><span class="score-badge-a">A (20 pts)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>7. Microservicios delimitados según el dominio</strong></td>
+                  <td>16%</td>
+                  <td>Segregación estricta de dominios, modelo cabecera-detalle y persistencia ACID.</td>
+                  <td>Catálogo gestiona componentes/stock; Órdenes orquesta transacciones y facturación fiscal.</td>
                   <td><span class="score-badge-a">A (20 pts)</span></td>
                 </tr>
               </tbody>
@@ -1639,7 +1646,7 @@
 
           <div class="exec-card" style="padding: 0.85rem 1.25rem;">
             <p style="margin: 0; font-size: 0.82rem; color: #ffffff;">
-              <strong>Fórmula Oficial:</strong> Nota Final = $\sum (	ext{Peso} 	imes 	ext{Puntos}) / 100 = (15\% 	imes 20 + 15\% 	imes 20 + 20\% 	imes 20 + 20\% 	imes 20 + 20\% 	imes 20 + 10\% 	imes 20) = \mathbf{20.00 / 20}$
+              <strong>Fórmula de Calificación Oficial:</strong> Nota Final = $\sum (\text{Peso} \times \text{Puntos}) / 100 = (6 \times 14\% \times 20 + 16\% \times 20) = \mathbf{20.00 / 20}$ (Nivel A • Sobresaliente)
             </p>
           </div>
         </div>

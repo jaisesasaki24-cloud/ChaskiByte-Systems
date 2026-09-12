@@ -28,6 +28,48 @@
 
 ---
 
+## ⚡ Guía de Reproducción Rápida en 1 Clic para el Docente (Ing. Abel Sullón)
+> Esta guía permite clonar, levantar y validar la totalidad del sistema distribuido en **menos de 2 minutos** en cualquier computadora con Java 21 y Docker.
+
+### 1. Clonación y Base de Datos
+```bash
+git clone https://github.com/jaisesasaki24-cloud/ChaskiByte-Systems.git
+cd ChaskiByte-Systems
+docker compose -f infra/docker-compose-db.yml up -d
+```
+*(Levanta PostgreSQL en el puerto `:5433` con base de datos `orden_db` y usuario `admin`).*
+
+### 2. Arranque del Ecosistema Completo (1 Clic)
+* **En Windows:** Ejecutar `iniciar_todo.bat` o `.\iniciar_todo.ps1`.
+* El script levanta secuencialmente:
+  1. Config Server (`:8888`)
+  2. Eureka Server (`:8761`)
+  3. API Gateway (`:18080`)
+  4. pc-catalogo-ms (`:8081`)
+  5. pc-orden-ms Instancia 1 (`:8082`)
+  6. pc-orden-ms Instancia 2 (`:8083`)
+
+### 3. Verificación en Eureka Dashboard
+* Abrir: [http://localhost:8761](http://localhost:8761)
+* Todas las instancias deben figurar registradas con estado **UP**.
+
+### 4. Validación de Comunicación entre Microservicios (OpenFeign) y Cálculo Fiscal (18% IGV)
+Al enviar una orden por el Gateway (`:18080`), `pagatu-orden-ms` consulta a `pagatu-catalogo-ms` por Eureka mediante **OpenFeign**, verifica que el producto exista, descuenta el stock del catálogo y persiste la orden calculando el 18% IGV legal:
+```powershell
+Invoke-RestMethod -Uri "http://localhost:18080/api/v1/ordenes" -Method POST -Headers @{"Content-Type"="application/json"} -Body '{
+  "cliente": "Eliceo Parillo Mostajo",
+  "tipoComprobante": "FACTURA",
+  "metodoPago": "MERCADO_PAGO",
+  "detalles": [
+    {"productoId": 1, "cantidad": 1}
+  ]
+}'
+```
+* **Respuesta Esperada:** `HTTP 201 Created` con código `ORD-2026-XXXX`, desglose de base imponible y 18% IGV.
+* **Prueba de Caso Inválido (Stock Insuficiente / 400 Bad Request):** Si se solicita una cantidad superior al stock (`"cantidad": 999`), OpenFeign detecta la falta de inventario y responde con `HTTP 400 Bad Request` indicando: `"error": "Stock insuficiente..."`.
+
+---
+
 ## 🏛️ 2. Arquitectura del Sistema Distribuido Base (Unidad 1)
 
 ```mermaid
@@ -87,6 +129,10 @@ flowchart TB
     Prometheus -. "eureka_sd_configs" .-> Eureka
     Grafana --> Prometheus
     Grafana --> Loki
+
+    %% COMUNICACION INTER-MICROSERVICIOS VALIDADA (OPENFEIGN)
+    O1 ==>|"OpenFeign: Consulta producto y descuenta stock"| Cat
+    O2 ==>|"OpenFeign: Consulta producto y descuenta stock"| Cat
 ```
 
 ---

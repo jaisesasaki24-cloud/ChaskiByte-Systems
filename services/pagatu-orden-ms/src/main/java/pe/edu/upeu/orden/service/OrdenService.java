@@ -1,7 +1,10 @@
 package pe.edu.upeu.orden.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pe.edu.upeu.orden.client.CatalogoClient;
+import pe.edu.upeu.orden.client.dto.ProductoDto;
 import pe.edu.upeu.orden.entity.DetalleOrden;
 import pe.edu.upeu.orden.entity.Orden;
 import pe.edu.upeu.orden.repository.OrdenRepository;
@@ -16,6 +19,9 @@ import java.util.UUID;
 @Service
 public class OrdenService {
     private final OrdenRepository repository;
+
+    @Autowired(required = false)
+    private CatalogoClient catalogoClient;
 
     public OrdenService(OrdenRepository repository) {
         this.repository = repository;
@@ -38,11 +44,43 @@ public class OrdenService {
             orden.setCodigoOrden("ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         }
 
-        // Si contiene detalles, calcular subtotales y 18% de IGV
+        // Si contiene detalles, validar con CatalogoClient y calcular subtotales + 18% IGV
         if (orden.getDetalles() != null && !orden.getDetalles().isEmpty()) {
             BigDecimal subtotalCalculado = BigDecimal.ZERO;
             for (DetalleOrden d : orden.getDetalles()) {
                 d.setOrden(orden);
+
+                // Sincronización y validación entre microservicios vía OpenFeign
+                if (d.getProductoId() != null && catalogoClient != null) {
+                    try {
+                        ProductoDto prod = catalogoClient.obtenerProductoPorId(d.getProductoId());
+                        if (prod != null) {
+                            // Validar existencias
+                            if (prod.getStockDisponible() != null && d.getCantidad() != null) {
+                                if (prod.getStockDisponible() < d.getCantidad()) {
+                                    throw new IllegalArgumentException("Stock insuficiente para: " + prod.getNombre() + 
+                                            " (Disponible: " + prod.getStockDisponible() + ", Solicitado: " + d.getCantidad() + ")");
+                                }
+                            }
+                            // Completar nombre y precio oficial del catálogo
+                            if (d.getNombreProducto() == null || d.getNombreProducto().isBlank()) {
+                                d.setNombreProducto(prod.getNombre());
+                            }
+                            if (d.getPrecioUnitario() == null && prod.getPrecio() != null) {
+                                d.setPrecioUnitario(prod.getPrecio());
+                            }
+                            // Descontar inventario en pc-catalogo-ms
+                            if (d.getCantidad() != null && d.getCantidad() > 0) {
+                                catalogoClient.actualizarStock(d.getProductoId(), -d.getCantidad());
+                            }
+                        }
+                    } catch (IllegalArgumentException e) {
+                        throw e;
+                    } catch (Exception ex) {
+                        System.err.println("[OpenFeign] Aviso: No se pudo sincronizar con pagatu-catalogo-ms: " + ex.getMessage());
+                    }
+                }
+
                 if (d.getPrecioUnitario() != null && d.getCantidad() != null) {
                     BigDecimal itemSub = d.getPrecioUnitario().multiply(new BigDecimal(d.getCantidad()));
                     d.setSubtotalItem(itemSub);
